@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
 import config from 'config';
 import { CreateUserInput } from '../schema/user.schema';
-import { createUser, getUser, validateEmail } from '../services/user.service';
+import {
+  createUser,
+  getUser,
+  validateEmail,
+} from '../services/user-v1.service';
 import { createSession } from '../services/session.service';
 import { signJwt } from '../utils/jwt.utils';
 import {
@@ -72,7 +76,7 @@ export async function createUserController(
 
 export async function getUserController(req: Request, res: Response) {
   console.log('pobieranie danych użytkownika');
-  const userId = req.userId;
+  const userId = res.locals.user._id;
   console.log({ userId });
   const user = await getUser({ uid: userId });
 
