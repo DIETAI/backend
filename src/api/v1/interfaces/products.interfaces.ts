@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { IUserDocument } from './user.interfaces';
+import { IAssetDocument } from './assets.interfaces';
 
 export interface IMacrohydrate {
   gram: number;
@@ -8,7 +9,7 @@ export interface IMacrohydrate {
 
 export interface IMicrohydrate {
   amount?: number;
-  unit: 'mg' | 'uq' | 'j.';
+  unit?: 'mg' | 'uq' | 'j.';
 }
 
 export type IMeasureType =
@@ -43,8 +44,8 @@ export interface IProductInput {
   measureUnit: 'g' | 'l';
   dietKindsExclude?: string[];
   season?: 'zima' | 'wiosna' | 'lato' | 'jesień';
-  image?: string;
-  gallery?: string[];
+  image?: IAssetDocument['_id'];
+  gallery?: IAssetDocument['_id'][];
   //macrohydrates
   protein: IMacrohydrate;
   fat: IMacrohydrate;
@@ -64,6 +65,7 @@ export interface IProductInput {
   monounsaturatedFattyAcids?: number;
   //vitamins
   vitaminA?: IMicrohydrate;
+  vitaminB1?: IMicrohydrate;
   vitaminB2?: IMicrohydrate;
   vitaminB5?: IMicrohydrate;
   vitaminB6?: IMicrohydrate;

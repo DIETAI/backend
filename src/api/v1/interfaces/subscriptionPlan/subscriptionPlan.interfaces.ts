@@ -5,15 +5,26 @@ export interface ISubscriptionPlanFeature {
   name: string;
 }
 
+export interface ISubscriptionPlanVariant {
+  name: string;
+  time: '1month' | '3months' | '6months';
+  price: number;
+  salePrice?: number;
+  stripePriceId: string;
+}
+
 export interface ISubscriptionPlanInput {
+  stripeId: string;
   name: 'test' | 'standard' | 'pro' | 'vip';
-  roles: ('admin' | 'patient' | 'dietetic' | 'personal')[];
+  role: 'admin' | 'patient' | 'dietetic' | 'personal';
+  // roles: ('admin' | 'patient' | 'dietetic' | 'personal')[];
   shortDescription?: string;
   description?: string;
   price: number;
   salePrice?: number;
   image: IAssetDocument['_id'];
   features?: ISubscriptionPlanFeature[];
+  variants: ISubscriptionPlanVariant[];
 }
 
 export interface ISubscriptionPlanDocument

@@ -3,7 +3,8 @@ import { object, number, string, TypeOf, z, array, date } from 'zod';
 const payload = {
   body: object({
     name: z.enum(['test', 'standard', 'pro', 'vip']),
-    roles: array(z.enum(['dietetic', 'admin', 'patient', 'personal'])),
+    role: z.enum(['dietetic', 'admin', 'patient', 'personal']),
+    // roles: array(z.enum(['dietetic', 'admin', 'patient', 'personal'])),
     image: string(),
     shortDescription: string().optional(),
     description: string().optional(),
@@ -16,6 +17,18 @@ const payload = {
         name: string({ required_error: 'To pole jest wymagane' }),
       })
     ).optional(),
+    variants: array(
+      object({
+        name: string({
+          required_error: 'Variant name is required',
+        }),
+        time: z.enum(['1month', '3months', '6months']),
+        price: number({
+          required_error: 'Variant price is required',
+        }),
+        salePrice: number().optional(),
+      })
+    ),
   }),
 };
 

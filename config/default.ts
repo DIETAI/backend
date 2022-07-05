@@ -9,6 +9,8 @@ export default {
   accessTokenPublicKey: ``,
   refreshTokenPrivateKey: ``,
   refreshTokenPublicKey: ``,
+  stripeSecret: ``,
+  stripeWebhookSecret: ``,
   // googleClientId:
   //   '769866122856-jdklv80a00phl9s8t5qoqvsusupgm5mk.apps.googleusercontent.com',
   // googleClientSecret: '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',

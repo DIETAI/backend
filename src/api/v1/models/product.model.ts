@@ -13,11 +13,12 @@ const ProductSchema = new Schema<IProductDocument>(
     name: { type: String, required: true },
     kcal: { type: Number, required: true },
     image: {
-      type: String,
-      default:
-        'https://icon-library.com/images/products-icon-png/products-icon-png-9.jpg',
+      type: mongoose.Schema.Types.String,
+      ref: 'Asset',
     },
-    gallery: [{ type: String }],
+    gallery: [
+      { type: mongoose.Schema.Types.String, ref: 'Asset', required: true },
+    ],
     description: { type: String },
     subGroupId: { type: String },
     season: { type: String },
@@ -64,88 +65,92 @@ const ProductSchema = new Schema<IProductDocument>(
     //vitamins
     vitaminA: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
+    },
+    vitaminB1: {
+      amount: { type: Number },
+      unit: { type: String },
     },
     vitaminB2: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     vitaminB5: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     vitaminB6: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     vitaminB12: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     folicAcid: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     biotin: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     vitaminC: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     vitaminD: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     vitaminE: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     vitaminPP: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     vitaminK: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     //minerals
     zinc: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     phosphorus: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     magnesium: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     copper: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     potassium: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     selenium: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     sodium: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     calcium: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     iron: {
       amount: { type: Number },
-      unit: { type: String, required: true },
+      unit: { type: String },
     },
     //measures
     measures: [

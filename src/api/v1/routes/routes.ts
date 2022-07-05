@@ -12,6 +12,7 @@ import dinnerRoutes from './dinner.routes';
 import productRoutes from './product.routes';
 import assetRoutes from './asset.routes';
 import subscriptionPlanRoutes from './subscriptionPlans.routes';
+import transactionRoutes from './transaction.routes';
 
 const routes = (app: Express) => {
   app.use('/api/v1/user', userRoutes);
@@ -27,6 +28,7 @@ const routes = (app: Express) => {
   app.use('/api/v1/dinners', dinnerRoutes);
   app.use('/api/v1/assets', assetRoutes);
   app.use('/api/v1/subscriptionPlans', subscriptionPlanRoutes);
+  app.use('/api/v1/transactions', transactionRoutes);
 };
 
 export default routes;
