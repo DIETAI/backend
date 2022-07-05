@@ -5,7 +5,7 @@ import {
   createUserSessionController,
   deleteUserSessionController,
   getUserSessionsController,
-  googleOAuthController,
+  // googleOAuthController,
 } from '../controllers/session.controller';
 
 //schema
@@ -26,6 +26,6 @@ router.post(
 router.get('/', requireUser, getUserSessionsController);
 router.delete('/', requireUser, deleteUserSessionController);
 
-router.get('/oauth/google', googleOAuthController);
+// router.get('/oauth/google', googleOAuthController);
 
 export default router;
