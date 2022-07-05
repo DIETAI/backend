@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import config from 'config';
 import logger from './logger';
 
 const dbUri = process.env.DB_CONNECTION as string;

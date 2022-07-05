@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
 import responseTime from 'response-time';
 import connect from './api/v1/utils/dbConnect';
 import logger from './api/v1/utils/logger';
