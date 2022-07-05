@@ -8,8 +8,8 @@ import {
 
 import { databaseResponseTimeHistogram } from '../../utils/metrics';
 import { Stripe } from 'stripe';
-import config from 'config';
-const stripeSecret = config.get<string>('stripeSecret');
+
+const stripeSecret = process.env.STRIPE_SECRET;
 const stripe = require('stripe')(stripeSecret);
 
 export async function createStripeOrder(stripePriceId: string, userId: string) {

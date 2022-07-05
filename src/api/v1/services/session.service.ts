@@ -1,10 +1,9 @@
-import { get } from "lodash";
-import config from "config";
-import { FilterQuery, UpdateQuery } from "mongoose";
-import SessionModel from "../models/session.model";
-import { ISessionDocument } from "../interfaces/session.interfaces";
-import { verifyJwt, signJwt } from "../utils/jwt.utils";
-import { getUser } from "./user.service";
+import { get } from 'lodash';
+import { FilterQuery, UpdateQuery } from 'mongoose';
+import SessionModel from '../models/session.model';
+import { ISessionDocument } from '../interfaces/session.interfaces';
+import { verifyJwt, signJwt } from '../utils/jwt.utils';
+import { getUser } from './user.service';
 
 export async function createSession(userId: string, userAgent: string) {
   const session = await SessionModel.create({ user: userId, userAgent });
@@ -28,11 +27,11 @@ export async function reIssueAccessToken({
 }: {
   refreshToken: string;
 }) {
-  const { decoded } = verifyJwt(refreshToken, "refreshTokenPublicKey");
+  const { decoded } = verifyJwt(refreshToken, 'refreshTokenPublicKey');
 
-  if (!decoded || !get(decoded, "session")) return false;
+  if (!decoded || !get(decoded, 'session')) return false;
 
-  const session = await SessionModel.findById(get(decoded, "session"));
+  const session = await SessionModel.findById(get(decoded, 'session'));
 
   if (!session || !session.valid) return false;
 
@@ -42,8 +41,8 @@ export async function reIssueAccessToken({
 
   const accessToken = signJwt(
     { ...user, session: session._id },
-    "accessTokenPrivateKey",
-    { expiresIn: config.get("accessTokenTtl") } // 15 minutes
+    'accessTokenPrivateKey',
+    { expiresIn: '15m' } // 15 minutes
   );
 
   return accessToken;

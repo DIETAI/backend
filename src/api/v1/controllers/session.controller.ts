@@ -1,5 +1,4 @@
 import { CookieOptions, Request, Response } from 'express';
-import config from 'config';
 import {
   createSession,
   findSessions,
@@ -18,6 +17,8 @@ import {
   refreshTokenCookieOptions,
 } from '../utils/cookieOptions';
 
+const origin = process.env.ORIGIN || 'http://localhost:3000';
+
 export async function createUserSessionController(req: Request, res: Response) {
   // Validate the user's password
   const user = await validatePassword(req.body);
@@ -34,14 +35,14 @@ export async function createUserSessionController(req: Request, res: Response) {
   const accessToken = signJwt(
     { ...user, session: session._id },
     'accessTokenPrivateKey',
-    { expiresIn: config.get('accessTokenTtl') } // 15 minutes,
+    { expiresIn: '15m' } // 15 minutes,
   );
 
   // create a refresh token
   const refreshToken = signJwt(
     { ...user, session: session._id },
     'refreshTokenPrivateKey',
-    { expiresIn: config.get('refreshTokenTtl') } // 15 minutes
+    { expiresIn: '1y' }
   );
 
   // return access & refresh tokens
@@ -151,14 +152,14 @@ export async function googleOAuthController(req: Request, res: Response) {
     const accessToken = signJwt(
       { ...user, session: session._id },
       'accessTokenPrivateKey',
-      { expiresIn: config.get('accessTokenTtl') } // 15 minutes
+      { expiresIn: '15m' } // 15 minutes
     );
 
     // create a refresh token
     const refreshToken = signJwt(
       { ...user, session: session._id },
       'refreshTokenPrivateKey',
-      { expiresIn: config.get('refreshTokenTtl') } // 1 year
+      { expiresIn: '1y' } // 1 year
     );
 
     // set cookies
@@ -166,9 +167,9 @@ export async function googleOAuthController(req: Request, res: Response) {
     res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
 
     // redirect back to client
-    res.redirect(config.get('origin'));
+    res.redirect(origin);
   } catch (error) {
     log.error(error, 'Failed to authorize Google user');
-    return res.redirect(`${config.get('origin')}/oauth/error`);
+    return res.redirect(`${origin}/oauth/error`);
   }
 }

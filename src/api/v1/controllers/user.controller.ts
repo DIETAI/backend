@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import config from 'config';
 import { CreateUserInput } from '../schema/user.schema';
 import {
   createUser,
@@ -54,14 +53,14 @@ export async function createUserController(
     const accessToken = signJwt(
       { ...user, session: session._id },
       'accessTokenPrivateKey',
-      { expiresIn: config.get('accessTokenTtl') } // 15 minutes,
+      { expiresIn: '15m' } // 15 minutes,
     );
 
     // create a refresh token
     const refreshToken = signJwt(
       { ...user, session: session._id },
       'refreshTokenPrivateKey',
-      { expiresIn: config.get('refreshTokenTtl') } // 15 minutes
+      { expiresIn: '1y' }
     );
 
     res.cookie('accessToken', accessToken, accessTokenCookieOptions);

@@ -1,10 +1,9 @@
 import { createTransaction } from '../../services/transaction/transaction.service';
 import { Stripe } from 'stripe';
 import { Request, Response } from 'express';
-import config from 'config';
 
-const stripeWebhookSecret = config.get<string>('stripeWebhookSecret');
-const stripeSecret = config.get<string>('stripeSecret');
+const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+const stripeSecret = process.env.STRIPE_SECRET;
 const stripe = require('stripe')(stripeSecret);
 
 //transactionWebhook

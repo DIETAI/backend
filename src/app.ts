@@ -1,8 +1,6 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
-
-import config from 'config';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -17,12 +15,12 @@ import {
   startMetricsServer,
 } from './api/v1/utils/metrics';
 
-const port = config.get<number>('port');
+const port = process.env.PORT || 1337;
 const app = express();
 
 app.use(
   cors({
-    origin: config.get('origin'),
+    origin: process.env.ORIGIN || 'http://localhost:3000',
     credentials: true,
   })
 );
