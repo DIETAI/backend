@@ -25,6 +25,11 @@ router.post(
   createStripeOrderSessionController
 );
 
-router.post('/webhook', createStripePaymentWebhook);
+router.post(
+  '/webhook',
+  // express.raw({ type: '*/*' }),
+  // express.raw({ type: 'application/json' }),
+  createStripePaymentWebhook
+);
 
 export default router;

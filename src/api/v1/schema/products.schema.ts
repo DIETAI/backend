@@ -308,6 +308,12 @@ const params = {
   }),
 };
 
+const query = {
+  query: object({
+    page: string().optional(),
+  }),
+};
+
 export const createProductSchema = object({
   ...payload,
 });
@@ -325,7 +331,12 @@ export const getProductSchema = object({
   ...params,
 });
 
+export const getProductsSchema = object({
+  ...query,
+});
+
 export type CreateProductInput = TypeOf<typeof createProductSchema>;
 export type UpdateProductInput = TypeOf<typeof updateProductSchema>;
 export type GetProductInput = TypeOf<typeof getProductSchema>;
+export type GetProductsInput = TypeOf<typeof getProductsSchema>;
 export type DeleteProductInput = TypeOf<typeof deleteProductSchema>;

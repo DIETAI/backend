@@ -4,6 +4,7 @@ import {
   UpdateProductInput,
   DeleteProductInput,
   GetProductInput,
+  GetProductsInput,
 } from '../schema/products.schema';
 import {
   createProduct,
@@ -12,6 +13,8 @@ import {
   getProduct,
   getUserProducts,
 } from '../services/products.service';
+
+import ProductModel from '../models/product.model';
 
 export async function createProductController(
   req: Request<{}, {}, CreateProductInput['body']>,
@@ -77,8 +80,46 @@ export async function getProductController(
   return res.send(product);
 }
 
-export async function getProductsController(req: Request, res: Response) {
+const ITEMS_PER_PAGE = 5;
+
+export async function getProductsController(
+  req: Request<{}, {}, {}, GetProductsInput['query']>,
+  res: Response
+) {
   const userId = res.locals.user._id;
+  const queryPage = req.query.page;
+
+  console.log({ productsQuery: queryPage });
+
+  if (queryPage) {
+    const page = parseInt(queryPage);
+    const skip = (page - 1) * ITEMS_PER_PAGE; // 1 * 20 = 20
+    console.log({ skip });
+    const countPromise = ProductModel.estimatedDocumentCount();
+    const productsPromise = ProductModel.find({ user: userId })
+      .limit(ITEMS_PER_PAGE)
+      .skip(skip);
+
+    const [count, products] = await Promise.all([
+      countPromise,
+      productsPromise,
+    ]);
+
+    const pageCount = count / ITEMS_PER_PAGE; // 400 items / 20 = 20
+
+    if (!count || !products) {
+      return res.sendStatus(404);
+    }
+
+    return res.send({
+      pagination: {
+        count,
+        pageCount,
+      },
+      products,
+    });
+  }
+
   const products = await getUserProducts({ user: userId });
 
   if (!products) {

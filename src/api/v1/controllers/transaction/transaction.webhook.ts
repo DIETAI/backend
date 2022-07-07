@@ -1,29 +1,45 @@
 import { createTransaction } from '../../services/transaction/transaction.service';
 import { Stripe } from 'stripe';
 import { Request, Response } from 'express';
+import { buffer } from 'micro';
 
-const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+// const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripe = require('stripe')(stripeSecret);
 
+const stripeWebhookSecret = 'whsec_XGPVFywdGsHon0J0ZtrnfnZfpcAB4RE2';
+
 //transactionWebhook
 export async function createStripePaymentWebhook(req: Request, res: Response) {
-  const stripeSignature = req.headers['stripe-signature'];
+  const sig = req.headers['stripe-signature'];
 
-  if (!stripeSignature) {
+  if (!sig) {
     return res.sendStatus(404);
   }
+
+  console.log({ sig });
+
+  console.log(req.body);
+  // const rawBody = JSON.stringify(req.body, null, 2);
+  console.log({ rawBody: req.rawBody });
+  // const rawBodyAsBuffer = new Buffer(req.raw, 'base64');
+  // console.log({ raw: req.raw });
+  // console.log({ req });
 
   let event;
 
   try {
+    //problem z req.rawBody
     event = stripe.webhooks.constructEvent(
-      req.body,
-      stripeSignature,
+      req.rawBody,
+      sig,
       stripeWebhookSecret
     );
-  } catch (err) {
+
+    console.log({ event });
+  } catch (err: any) {
     res.status(400).send(`Webhook Error: ${err}`);
+    console.log({ err: err.message });
     return;
   }
 
