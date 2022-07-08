@@ -4,14 +4,14 @@ import {
   UpdateDinnerInput,
   DeleteDinnerInput,
   GetDinnerInput,
-} from '../schema/dinner.schema';
+} from '../../schema/dinners/dinner.schema';
 import {
   createDinner,
   deleteDinner,
   getAndUpdateDinner,
   getDinner,
   getDinners,
-} from '../services/dinner.service';
+} from '../../services/dinner/dinner.service';
 
 export async function createDinnerController(
   req: Request<{}, {}, CreateDinnerInput['body']>,

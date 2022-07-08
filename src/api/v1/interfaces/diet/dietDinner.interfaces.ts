@@ -3,7 +3,7 @@ import { IDietDocument } from './diet.interfaces';
 import { IDietDayDocument } from './dietDay.interfaces';
 import { IDietMealDocument } from './dietMeal.interfaces';
 import { IUserDocument } from '../user.interfaces';
-import { IDinnerDocument } from '../dinners.interfaces';
+import { IDinnerDocument } from '../dinners/dinners.interfaces';
 import { IMealValues } from './dietMeal.interfaces';
 
 export interface IMacrohydratesTotal {
@@ -53,6 +53,7 @@ export interface IDietDinnerInput {
   dietMealId: IDietMealDocument['_id'];
   dinnerId: IDinnerDocument['_id']; //np.zupa pomidorowa
   // name: string;
+  //dinnerPortions: []
   products: IDietDinnerProduct[];
   order: number;
   // establishments: IMealValues;

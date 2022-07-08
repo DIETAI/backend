@@ -16,15 +16,6 @@ const payload = {
     dietKinds: array(string()).optional(),
     tags: array(string()).optional(),
     preparation_time: string().optional(),
-    products: array(
-      object({
-        productId: string(),
-        defaultAmount: number(),
-        minAmount: number().optional(),
-        maxAmount: number().optional(),
-        portionsGram: array(number()).optional(),
-      })
-    ),
   }),
 };
 

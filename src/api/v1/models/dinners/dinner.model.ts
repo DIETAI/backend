@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IDinnerDocument } from '../interfaces/dinners.interfaces';
+import { IDinnerDocument } from '../../interfaces/dinners/dinners.interfaces';
 
 const Schema = mongoose.Schema;
 
@@ -15,15 +15,6 @@ const DinnerSchema = new Schema<IDinnerDocument>(
     recipe: { type: String },
     dietKinds: [{ type: String }],
     tags: [{ type: String }],
-    products: [
-      {
-        productId: { type: String, required: true },
-        defaultAmount: { type: Number, required: true },
-        minAmount: { type: Number },
-        maxAmount: { type: Number },
-        portionsGram: [{ type: Number }],
-      },
-    ],
   },
   {
     timestamps: true,

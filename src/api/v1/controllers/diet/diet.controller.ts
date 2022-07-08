@@ -35,7 +35,7 @@ import {
   getDietMeals,
 } from '../../services/diet/dietMeal.service';
 import { getDietDinners } from '../../services/diet/dietDinner.service';
-import { getDinner, getDinners } from '../../services/dinner.service';
+import { getDinner, getDinners } from '../../services/dinner/dinner.service';
 
 export async function createDietController(
   req: Request<{}, {}, CreateDietInput['body']>,

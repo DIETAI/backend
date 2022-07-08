@@ -1,14 +1,5 @@
 import mongoose from 'mongoose';
-import { IUserDocument } from './user.interfaces';
-import { IProductDocument } from './products.interfaces';
-
-export interface IDinnerProduct {
-  productId: IProductDocument['_id'];
-  defaultAmount: number;
-  minAmount?: number;
-  maxAmount?: number;
-  portionsGram?: number[];
-}
+import { IUserDocument } from '../user.interfaces';
 
 export interface IDinnerInput {
   user: IUserDocument['_id'];
@@ -28,7 +19,6 @@ export interface IDinnerInput {
   dietKinds?: string[];
   tags?: string[];
   preparation_time?: string;
-  products: IDinnerProduct[];
 }
 
 export interface IDinnerDocument extends IDinnerInput, mongoose.Document {

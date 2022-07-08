@@ -1,12 +1,12 @@
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
 
-import DinnerModel from '../models/dinner.model';
+import DinnerModel from '../../models/dinners/dinner.model';
 import {
   IDinnerInput,
   IDinnerDocument,
-} from '../interfaces/dinners.interfaces';
+} from '../../interfaces/dinners/dinners.interfaces';
 
-import { databaseResponseTimeHistogram } from '../utils/metrics';
+import { databaseResponseTimeHistogram } from '../../utils/metrics';
 
 export async function createDinner(input: IDinnerInput) {
   const metricsLabels = {
