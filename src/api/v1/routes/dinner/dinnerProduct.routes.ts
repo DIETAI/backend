@@ -6,7 +6,10 @@ import {
   updateDinnerProductController,
   deleteDinnerProductController,
   getDinnerProductController,
+  getDinnerProductQueryController,
   getDinnerProductsController,
+  getDinnerProductsQueryController,
+  getAllDinnerProductsController,
 } from '../../controllers/dinner/dinnerProduct.controller';
 
 //schema
@@ -31,9 +34,27 @@ router.get(
 );
 
 router.get(
+  '/:dinnerProductId/query',
+  [requireUser, validateSchema(getDinnerProductSchema)],
+  getDinnerProductQueryController
+);
+
+router.get(
   '/dinner/:dinnerId',
   [requireUser, validateSchema(getDinnerProductsSchema)],
   getDinnerProductsController
+);
+
+router.get(
+  '/dinner/:dinnerId/query',
+  [requireUser, validateSchema(getDinnerProductsSchema)],
+  getDinnerProductsQueryController
+);
+
+router.get(
+  '/',
+  // [requireUser],
+  getAllDinnerProductsController
 );
 
 router.post(

@@ -77,10 +77,10 @@ export interface IDietMealInput {
   dietId: IDietDocument['_id'];
   dayId: IDietDayDocument['_id'];
   // establishments: IMealValues;
-  establishmentId: IDietEstablishmentDocument['_id'];
+  establishmentMealId: string;
   name: string;
   type: MealType;
-  total?: ITotal;
+  total: ITotal;
   order: number;
 }
 

@@ -33,9 +33,16 @@ import { getDietEstablishment } from '../../services/dietEstablishment.service';
 import {
   createDietMeal,
   getDietMeals,
+  deleteDietMeal,
 } from '../../services/diet/dietMeal.service';
-import { getDietDinners } from '../../services/diet/dietDinner.service';
+import {
+  getDietDinners,
+  deleteDietDinner,
+} from '../../services/diet/dietDinner.service';
 import { getDinner, getDinners } from '../../services/dinner/dinner.service';
+import { getDinnerPortion } from '../../services/dinner/dinnerPortion.service';
+import { getDinnerProduct } from '../../services/dinner/dinnerProduct.service';
+import { getProduct } from '../../services/products.service';
 
 export async function createDietController(
   req: Request<{}, {}, CreateDietInput['body']>,
@@ -73,6 +80,28 @@ export async function createDietController(
         dietId: diet._id,
         user: userId,
         establishmentId: diet.establishmentId,
+        total: {
+          kcal: 0,
+          protein: {
+            gram: 0,
+            kcal: 0,
+            procent: 0,
+          },
+          fat: {
+            gram: 0,
+            kcal: 0,
+            procent: 0,
+          },
+          carbohydrates: {
+            gram: 0,
+            kcal: 0,
+            procent: 0,
+          },
+          fiber: {
+            gram: 0,
+            kcal: 0,
+          },
+        },
       });
 
       if (!newDietDay) {
@@ -85,11 +114,34 @@ export async function createDietController(
           const newDayMeal = await createDietMeal({
             name: establishmentMeal.name,
             type: establishmentMeal.type,
-            establishmentId: dietEstablishment._id,
+            establishmentMealId: establishmentMeal._id,
             user: userId,
             dietId: diet._id,
             dayId: newDietDay._id,
             order: mealIndex + 1,
+            total: {
+              kcal: 0,
+              procent: 0,
+              protein: {
+                gram: 0,
+                kcal: 0,
+                procent: 0,
+              },
+              fat: {
+                gram: 0,
+                kcal: 0,
+                procent: 0,
+              },
+              carbohydrates: {
+                gram: 0,
+                kcal: 0,
+                procent: 0,
+              },
+              fiber: {
+                gram: 0,
+                kcal: 0,
+              },
+            },
           });
 
           if (!newDayMeal) {
@@ -179,54 +231,22 @@ export async function getDietQueryController(
     return res.sendStatus(403);
   }
 
-  const dietDays = await getDietDays({
+  const dietDaysQ = getDietDays({
     dietId: diet._id,
   });
+
+  const dietEstablishmentQ = getDietEstablishment({
+    _id: diet.establishmentId,
+  });
+
+  const [dietDays, dietEstablishment] = await Promise.all([
+    dietDaysQ,
+    dietEstablishmentQ,
+  ]);
 
   if (!dietDays) {
     return res.sendStatus(404);
   }
-
-  // const dietMeals = await getDietMeals({
-  //   dietId: diet._id,
-  // });
-
-  // if (!dietMeals) {
-  //   return res.sendStatus(404);
-  // }
-
-  // const dietDinners = await getDietDinners({
-  //   dietId: diet._id,
-  // });
-
-  // console.log({ dietDinners });
-
-  // if (!dietDinners) {
-  //   return res.sendStatus(404);
-  // }
-
-  // const q = {
-  //   ...diet,
-  //   days: getDietDays({
-  //     dietId: diet._id
-  //   }).then((days) =>
-  //    days.map((dietDay) => ({
-  //     ...dietDay,
-  //     meals: getDietMeals({
-  //       dayId: dietDay._id
-  //     }).then((meals) => meals.map((dayMeal) => ({
-  //       ...dayMeal,
-  //       dinners: getDietDinners({
-  //         dietMealId: dayMeal._id
-  //       }).then((dinners) => dinners.map((mealDinner) => ({
-  //         ...mealDinner,
-  //         dinner: getDinner({
-  //           _id: mealDinner.dinnerId
-  //         }).then((dinner) => dinner)
-  //       })))
-  //     })))
-  //   })))
-  // }
 
   const dietDaysQuery = await Promise.all(
     dietDays.map(async (dietDay) => {
@@ -242,11 +262,41 @@ export async function getDietQueryController(
 
           const dinners = await Promise.all(
             dietDinnersData.map(async (dietDinner) => {
-              const dinner = await getDinner(dietDinner.dinnerId);
+              const dinnerPortion = await getDinnerPortion({
+                _id: dietDinner.dinnerPortionId,
+              });
+              const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
+
+              if (!dinnerPortion) return;
+
+              const dinnerProducts = await Promise.all(
+                dinnerPortion.dinnerProducts.map(async (dietDinnerProduct) => {
+                  const dinnerProduct = await getDinnerProduct({
+                    _id: dietDinnerProduct.dinnerProductId,
+                  });
+                  const product = await getProduct({
+                    _id: dinnerProduct?.productId,
+                  });
+
+                  return {
+                    ...dietDinnerProduct,
+                    dinnerProduct: {
+                      ...dinnerProduct,
+                      product,
+                    },
+                  };
+                })
+              );
+
+              const dinnerObj = {
+                ...dinnerPortion,
+                dinnerProducts,
+                dinner,
+              };
 
               return {
                 ...dietDinner,
-                dinner,
+                dinnerPortion: dinnerObj,
               };
             })
           );
@@ -262,38 +312,16 @@ export async function getDietQueryController(
 
       return {
         ...dietDay,
-        meals,
+        meals: [...meals].sort((a, b) => a.order - b.order),
       };
     })
   );
 
   const dietQueryObj = {
     ...diet,
-    days: dietDaysQuery,
+    establishment: dietEstablishment,
+    days: [...dietDaysQuery].sort((a, b) => a.order - b.order),
   };
-
-  // const dietQueryObj = {
-  //   ...diet,
-  //   days: dietDays.map((dietDay) => ({
-  //     ...dietDay,
-  //     meals: dietMeals
-  //       .filter(
-  //         (dietMeal) => dietMeal.dayId.toString() === dietDay._id.toString()
-  //       )
-  //       .map((dayMeal) => ({
-  //         ...dayMeal,
-  //         dinners: dietDinners
-  //           .filter(
-  //             (dietDinner) =>
-  //               dietDinner.dietMealId.toString() === dayMeal._id.toString()
-  //           )
-  //           .map((mealDinner) => ({
-  //             ...mealDinner,
-  //             dinner: {},
-  //           })),
-  //       })),
-  //   })),
-  // };
 
   return res.send(dietQueryObj);
 }
@@ -316,9 +344,28 @@ export async function deleteDietController(
   const userId = res.locals.user._id;
   const dietId = req.params.dietId;
 
-  const diet = await getDiet({
+  const dietObj = getDiet({
     _id: dietId,
   });
+
+  const dietDays = getDietDays({
+    dietId: dietId,
+  });
+
+  const dietMeals = getDietMeals({
+    dietId: dietId,
+  });
+
+  const dietDinners = getDietDinners({
+    dietId: dietId,
+  });
+
+  const [diet, days, meals, dinners] = await Promise.all([
+    dietObj,
+    dietDays,
+    dietMeals,
+    dietDinners,
+  ]);
 
   if (!diet) {
     return res.sendStatus(404);
@@ -328,7 +375,24 @@ export async function deleteDietController(
     return res.sendStatus(403);
   }
 
-  await deleteDiet({ _id: dietId });
+  const deleteDays = await Promise.all(
+    days.map(async (dietDay) => {
+      await deleteDiet({ _id: dietId });
+      const deleteDay = await deleteDietDay({ dietId: dietId });
+
+      const deleteMeals = await Promise.all(
+        meals.map(async (dietMeal) => {
+          const deleteMeal = await deleteDietMeal({ dietId: dietId });
+
+          const deleteDinners = await Promise.all(
+            dinners.map(async (dietDinner) => {
+              const deleteDinner = await deleteDietDinner({ dietId: dietId });
+            })
+          );
+        })
+      );
+    })
+  );
 
   return res.sendStatus(200);
 }

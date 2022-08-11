@@ -30,6 +30,8 @@ router.get(
   getDietController
 );
 
+// router.get('/:dietId/days/:dayId/meals/:mealId/dinners/:dinnerId/')
+
 router.get(
   '/:dietId/query',
   [requireUser, validateSchema(getDietSchema)],

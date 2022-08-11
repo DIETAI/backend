@@ -3,6 +3,7 @@ import { object, number, string, TypeOf, z, array } from 'zod';
 const payload = {
   body: object({
     //basicInfo
+
     name: string({
       required_error: 'Name is required',
     }),
@@ -19,6 +20,10 @@ const payload = {
     }).positive(),
     //meals
     meals: object({
+      _id: string({
+        required_error: 'Meal _id is required',
+        invalid_type_error: 'Meal _id must be a string',
+      }),
       time: string({
         required_error: 'Meal time is required',
         invalid_type_error: 'Meal time must be a string',

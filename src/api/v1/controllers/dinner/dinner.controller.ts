@@ -12,6 +12,17 @@ import {
   getDinner,
   getDinners,
 } from '../../services/dinner/dinner.service';
+import {
+  deleteDinnerPortion,
+  getDinnerPortions,
+} from '../../services/dinner/dinnerPortion.service';
+import {
+  getDinnerProducts,
+  deleteDinnerProduct,
+} from '../../services/dinner/dinnerProduct.service';
+
+//events
+import { dinnerEmitter } from './events';
 
 export async function createDinnerController(
   req: Request<{}, {}, CreateDinnerInput['body']>,
@@ -108,6 +119,26 @@ export async function deleteDinnerController(
   }
 
   await deleteDinner({ _id: dinnerId });
+
+  const dinnerProducts = await getDinnerProducts({ dinnerId: dinnerId });
+  const dinnerPortions = await getDinnerPortions({ dinnerId: dinnerId });
+
+  const deleteDinnerProducts = await Promise.all(
+    dinnerProducts.map(async (dinnerProduct) => {
+      await deleteDinnerProduct({ _id: dinnerProduct._id });
+    })
+  );
+
+  const deleteDinnerPortions = await Promise.all(
+    dinnerPortions.map(async (dinnerPortion) => {
+      await deleteDinnerPortion({ _id: dinnerPortion._id });
+      dinnerEmitter.emit('dinnerPortion:delete', dinnerPortion._id);
+    })
+  );
+
+  await deleteDinnerPortion({ dinnerId: dinnerId });
+
+  //delete dinner products & portions & change diet macro
 
   return res.sendStatus(200);
 }

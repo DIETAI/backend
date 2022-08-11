@@ -18,25 +18,28 @@ const DietDaySchema = new Schema<IDietDayDocument>(
     order: { type: Number, required: true },
     date: { type: Date },
     total: {
-      kcal: { type: Number },
-      protein: {
-        gram: { type: Number },
+      required: true,
+      type: {
         kcal: { type: Number },
-        procent: { type: Number },
-      },
-      fat: {
-        gram: { type: Number },
-        kcal: { type: Number },
-        procent: { type: Number },
-      },
-      carbohydrates: {
-        gram: { type: Number },
-        kcal: { type: Number },
-        procent: { type: Number },
-      },
-      fiber: {
-        gram: { type: Number },
-        kcal: { type: Number },
+        protein: {
+          gram: { type: Number },
+          kcal: { type: Number },
+          procent: { type: Number },
+        },
+        fat: {
+          gram: { type: Number },
+          kcal: { type: Number },
+          procent: { type: Number },
+        },
+        carbohydrates: {
+          gram: { type: Number },
+          kcal: { type: Number },
+          procent: { type: Number },
+        },
+        fiber: {
+          gram: { type: Number },
+          kcal: { type: Number },
+        },
       },
     },
   },

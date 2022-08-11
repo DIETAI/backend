@@ -23,7 +23,7 @@ export interface IDietDayInput {
   date?: Date;
   name?: string;
   order: number;
-  total?: ITotal;
+  total: ITotal;
 }
 
 export interface IDietDayDocument extends IDietDayInput, mongoose.Document {

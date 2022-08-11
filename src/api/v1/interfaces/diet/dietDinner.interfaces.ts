@@ -4,6 +4,7 @@ import { IDietDayDocument } from './dietDay.interfaces';
 import { IDietMealDocument } from './dietMeal.interfaces';
 import { IUserDocument } from '../user.interfaces';
 import { IDinnerDocument } from '../dinners/dinners.interfaces';
+import { IDinnerPortionDocument } from '../dinners/dinnerPortions.interfaces';
 import { IMealValues } from './dietMeal.interfaces';
 
 export interface IMacrohydratesTotal {
@@ -51,15 +52,15 @@ export interface IDietDinnerInput {
   dietId: IDietDocument['_id'];
   dayId: IDietDayDocument['_id'];
   dietMealId: IDietMealDocument['_id'];
-  dinnerId: IDinnerDocument['_id']; //np.zupa pomidorowa
+  // dinnerId: IDinnerDocument['_id']; //np.zupa pomidorowa
   // name: string;
-  //dinnerPortions: []
-  products: IDietDinnerProduct[];
+  dinnerPortionId: IDinnerPortionDocument['_id']; //include dinnerProducts
+  // products: IDietDinnerProduct[];
   order: number;
   // establishments: IMealValues;
-  total?: {
-    kcal?: number;
-  };
+  // total?: {
+  //   kcal?: number;
+  // };
   // dietDinnerProducts: IDietDinnerProduct[]; //selected dinnerProduct portion
 }
 

@@ -88,16 +88,17 @@ export async function getProductsController(
 ) {
   const userId = res.locals.user._id;
   const queryPage = req.query.page;
+  const itemsCount = req.query.itemsCount;
 
-  console.log({ productsQuery: queryPage });
+  console.log({ productsQuery: queryPage, itemsCount });
 
-  if (queryPage) {
+  if (queryPage && itemsCount) {
     const page = parseInt(queryPage);
-    const skip = (page - 1) * ITEMS_PER_PAGE; // 1 * 20 = 20
+    const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
     console.log({ skip });
     const countPromise = ProductModel.estimatedDocumentCount();
     const productsPromise = ProductModel.find({ user: userId })
-      .limit(ITEMS_PER_PAGE)
+      .limit(parseInt(itemsCount))
       .skip(skip);
 
     const [count, products] = await Promise.all([
@@ -105,7 +106,7 @@ export async function getProductsController(
       productsPromise,
     ]);
 
-    const pageCount = count / ITEMS_PER_PAGE; // 400 items / 20 = 20
+    const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
 
     if (!count || !products) {
       return res.sendStatus(404);

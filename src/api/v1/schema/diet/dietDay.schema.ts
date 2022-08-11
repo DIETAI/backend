@@ -71,7 +71,7 @@ const payload = {
           invalid_type_error: 'Fiber kcal must be a number',
         }),
       }),
-    }).optional(),
+    }),
   }),
 };
 

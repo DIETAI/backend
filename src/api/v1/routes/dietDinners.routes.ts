@@ -7,6 +7,8 @@ import {
   deleteDietDinnerController,
   getDietDinnerController,
   getDietDinnersController,
+  getDietDinnersByPortionIdController,
+  getDietDinnersQueryController,
 } from '../controllers/diet/dietDinner.controller';
 
 //schema
@@ -15,6 +17,7 @@ import {
   deleteDietDinnerSchema,
   getDietDinnerSchema,
   getDietDinnersSchema,
+  getDietDinnersByPortionSchema,
   updateDietDinnerSchema,
 } from '../schema/diet/dietDinner.schema';
 
@@ -31,9 +34,20 @@ router.get(
 );
 
 router.get(
+  '/dinnerPortion/:dinnerPortionId',
+  [requireUser, validateSchema(getDietDinnersByPortionSchema)],
+  getDietDinnersByPortionIdController
+);
+
+router.get(
   '/meal/:dietMealId',
   [requireUser, validateSchema(getDietDinnersSchema)],
   getDietDinnersController
+);
+router.get(
+  '/meal/:dietMealId/query',
+  [requireUser, validateSchema(getDietDinnersSchema)],
+  getDietDinnersQueryController
 );
 
 router.post(

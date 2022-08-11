@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { IDinnerPortionDocument } from '../../interfaces/dinners/dinnerPortions.interfaces';
+import { totalSchemaValues } from '../total/total.schema';
 
 const Schema = mongoose.Schema;
 
@@ -17,13 +18,20 @@ const DinnerPortionSchema = new Schema<IDinnerPortionDocument>(
           },
           portion: { type: Number, required: true },
           total: {
-            kcal: { type: Number },
+            ...totalSchemaValues,
           },
+
+          // total: {
+          //   kcal: { type: Number },
+          // },
         },
       ],
     },
+    // total: {
+    //   kcal: { type: Number },
+    // },
     total: {
-      kcal: { type: Number },
+      ...totalSchemaValues,
     },
     type: { type: String, required: true },
   },

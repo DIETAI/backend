@@ -6,10 +6,7 @@ const Schema = mongoose.Schema;
 const DietMealSchema = new Schema<IDietMealDocument>(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    establishmentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'DietEstablishment',
-    },
+    establishmentMealId: { type: String, required: true },
     dietId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Diet',
@@ -22,26 +19,29 @@ const DietMealSchema = new Schema<IDietMealDocument>(
     type: { type: String, required: true },
     order: { type: Number, required: true },
     total: {
-      kcal: { type: Number },
-      procent: { type: Number },
-      protein: {
-        gram: { type: Number },
+      required: true,
+      type: {
         kcal: { type: Number },
         procent: { type: Number },
-      },
-      fat: {
-        gram: { type: Number },
-        kcal: { type: Number },
-        procent: { type: Number },
-      },
-      carbohydrates: {
-        gram: { type: Number },
-        kcal: { type: Number },
-        procent: { type: Number },
-      },
-      fiber: {
-        gram: { type: Number },
-        kcal: { type: Number },
+        protein: {
+          gram: { type: Number },
+          kcal: { type: Number },
+          procent: { type: Number },
+        },
+        fat: {
+          gram: { type: Number },
+          kcal: { type: Number },
+          procent: { type: Number },
+        },
+        carbohydrates: {
+          gram: { type: Number },
+          kcal: { type: Number },
+          procent: { type: Number },
+        },
+        fiber: {
+          gram: { type: Number },
+          kcal: { type: Number },
+        },
       },
     },
   },

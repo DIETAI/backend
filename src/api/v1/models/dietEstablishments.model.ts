@@ -15,6 +15,7 @@ const DietEstablishmentSchema = new Schema<IDietEstablishmentDocument>(
     kcal: { type: Number, required: true },
     meals: [
       {
+        _id: { type: String, required: true },
         time: { type: String, required: true },
         name: { type: String, required: true },
         type: { type: String, required: true },

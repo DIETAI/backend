@@ -17,6 +17,9 @@ import {
 import { getDinnerProduct } from '../../services/dinner/dinnerProduct.service';
 import { getProduct } from '../../services/products.service';
 
+//events
+import { dinnerEmitter } from './events';
+
 export async function createDinnerPortionController(
   req: Request<{}, {}, CreateDinnerPortionInput['body']>,
   res: Response
@@ -189,6 +192,7 @@ export async function deleteDinnerPortionController(
   }
 
   await deleteDinnerPortion({ _id: dinnerPortionId });
+  dinnerEmitter.emit('dinnerPortion:delete', dinnerPortionId);
 
   return res.sendStatus(200);
 }

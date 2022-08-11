@@ -21,44 +21,49 @@ const DietDinnerSchema = new Schema<IDietDinnerDocument>(
       ref: 'DietMeal',
       required: true,
     },
-    dinnerId: {
+    dinnerPortionId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Dinner',
+      ref: 'DinnerPortion',
       required: true,
     },
-    products: [
-      {
-        productId: { type: String, required: true },
-        selectedPortionGram: { type: Number, required: true },
-        total: {
-          kcal: { type: Number },
-        },
-      },
-    ],
+    // dinnerId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: 'Dinner',
+    //   required: true,
+    // },
+    // products: [
+    //   {
+    //     productId: { type: String, required: true },
+    //     selectedPortionGram: { type: Number, required: true },
+    //     total: {
+    //       kcal: { type: Number },
+    //     },
+    //   },
+    // ],
     // name: { type: String, required: true },
     order: { type: Number, required: true },
-    total: {
-      kcal: { type: Number },
-      // protein: {
-      //   gram: { type: Number },
-      //   kcal: { type: Number },
-      //   procent: { type: Number },
-      // },
-      // fat: {
-      //   gram: { type: Number },
-      //   kcal: { type: Number },
-      //   procent: { type: Number },
-      // },
-      // carbohydrates: {
-      //   gram: { type: Number },
-      //   kcal: { type: Number },
-      //   procent: { type: Number },
-      // },
-      // fiber: {
-      //   gram: { type: Number },
-      //   kcal: { type: Number },
-      // },
-    },
+    // total: {
+    //   kcal: { type: Number },
+    //   // protein: {
+    //   //   gram: { type: Number },
+    //   //   kcal: { type: Number },
+    //   //   procent: { type: Number },
+    //   // },
+    //   // fat: {
+    //   //   gram: { type: Number },
+    //   //   kcal: { type: Number },
+    //   //   procent: { type: Number },
+    //   // },
+    //   // carbohydrates: {
+    //   //   gram: { type: Number },
+    //   //   kcal: { type: Number },
+    //   //   procent: { type: Number },
+    //   // },
+    //   // fiber: {
+    //   //   gram: { type: Number },
+    //   //   kcal: { type: Number },
+    //   // },
+    // },
   },
 
   {

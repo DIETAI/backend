@@ -1,21 +1,11 @@
-import { object, number, string, TypeOf, z, literal, array } from 'zod';
+import { object, number, string, TypeOf, z, array } from 'zod';
 
-const payload = {
-  body: object({
-    name: string({
-      required_error: 'Name is required',
-    }),
+export const totalSchema = {
+  total: object({
     kcal: number({
       required_error: 'Kcal is required',
       invalid_type_error: 'Kcal must be a number',
-    }).positive(),
-    image: string().optional(),
-    gallery: array(string()).optional(),
-    description: string().optional(),
-    subGroupId: string().optional(),
-    measureUnit: z.enum(['g', 'l']),
-    season: z.enum(['zima', 'wiosna', 'lato', 'jesień']).optional(),
-    dietKindsExclude: array(string()).optional(),
+    }),
     //macrohydrates
     protein: object({
       gram: number({
@@ -259,85 +249,5 @@ const payload = {
       }).optional(),
       unit: z.enum(['mg', 'uq', 'j.']).optional(),
     }).optional(),
-
-    //measures
-    measures: array(
-      object({
-        type: z.enum([
-          'porcja',
-          'sztuka',
-          'szklanka',
-          'łyżka',
-          'łyżeczka',
-          'garść',
-          'opakowanie',
-          'plaster',
-          'ząbek',
-          'kostka',
-        ]),
-        amount: number({
-          required_error: 'Measure amount is required',
-          invalid_type_error: 'Measure amount must be a number',
-        }).positive(),
-        unit: z.enum(['g', 'ml']),
-      })
-    ),
-
-    //prices
-    prices: array(
-      object({
-        shop: string({
-          required_error: 'Shop is required',
-          invalid_type_error: 'Shop must be string',
-        }),
-        price: number({
-          required_error: 'Price is required',
-          invalid_type_error: 'Price must be a number',
-        }).positive(),
-        currency: z.enum(['PLN', 'USD', 'EUR']),
-      })
-    ),
   }),
 };
-
-const params = {
-  params: object({
-    productId: string({
-      required_error: 'productId is required',
-    }),
-  }),
-};
-
-const query = {
-  query: object({
-    page: string().optional(),
-    itemsCount: string().optional(),
-  }),
-};
-
-export const createProductSchema = object({
-  ...payload,
-});
-
-export const updateProductSchema = object({
-  ...payload,
-  ...params,
-});
-
-export const deleteProductSchema = object({
-  ...params,
-});
-
-export const getProductSchema = object({
-  ...params,
-});
-
-export const getProductsSchema = object({
-  ...query,
-});
-
-export type CreateProductInput = TypeOf<typeof createProductSchema>;
-export type UpdateProductInput = TypeOf<typeof updateProductSchema>;
-export type GetProductInput = TypeOf<typeof getProductSchema>;
-export type GetProductsInput = TypeOf<typeof getProductsSchema>;
-export type DeleteProductInput = TypeOf<typeof deleteProductSchema>;

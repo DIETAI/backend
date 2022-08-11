@@ -14,8 +14,8 @@ const payload = {
     dayId: string({
       required_error: 'Day Id is required',
     }),
-    establishmentId: string({
-      required_error: 'Establishment Id is required',
+    establishmentMealId: string({
+      required_error: 'Establishment meal Id is required',
     }),
     total: object({
       kcal: number({
@@ -78,7 +78,7 @@ const payload = {
           invalid_type_error: 'Fiber kcal must be a number',
         }),
       }),
-    }).optional(),
+    }),
   }),
 };
 

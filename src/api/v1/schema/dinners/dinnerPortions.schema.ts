@@ -1,23 +1,26 @@
 import { object, number, string, TypeOf, z, array } from 'zod';
+import { totalSchema } from '../total/total.schema';
 
 const payload = {
   body: object({
+    ...totalSchema,
     dinnerId: string({
       required_error: 'Dinner Id is required',
     }),
-    total: object({
-      kcal: number().optional(),
-    }),
+    // total: object({
+    //   kcal: number().optional(),
+    // }),
     type: z.enum(['default', 'custom']),
     dinnerProducts: array(
       object({
+        ...totalSchema,
         dinnerProductId: string({
           required_error: 'DinnerProduct Id is required',
         }),
         portion: number({ required_error: 'Portion is required' }),
-        total: object({
-          kcal: number().optional(),
-        }),
+        // total: object({
+        //   kcal: number().optional(),
+        // }),
       })
     ),
   }),

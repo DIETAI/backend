@@ -3,14 +3,15 @@ import { IUserDocument } from '../user.interfaces';
 import { IProductDocument } from '../products.interfaces';
 import { IDinnerDocument } from './dinners.interfaces';
 import { IDinnerProductDocument } from './dinnerProducts.interfaces';
+import { ITotal } from '../total/totalCount.interfaces';
 
-interface ITotal {
-  kcal?: number;
-}
+// interface ITotal {
+//   kcal?: number;
+// }
 
 type IDinnerPortionType = 'default' | 'custom';
 
-interface IDinnerProductPortion {
+export interface IDinnerProductPortion {
   dinnerProductId: IDinnerProductDocument['_id'];
   portion: number;
   total: ITotal;

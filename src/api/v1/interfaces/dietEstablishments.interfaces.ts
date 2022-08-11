@@ -3,6 +3,7 @@ import { IUserDocument } from './user.interfaces';
 import { IMeasurementDocument } from './measurement.interfaces';
 
 export interface IDietEstablishmentMeal {
+  _id: string;
   time: string;
   name: string;
   type: 'breakfast' | 'second_breakfast' | 'lunch' | 'snack' | 'dinner';
