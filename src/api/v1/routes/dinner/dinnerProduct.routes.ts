@@ -51,11 +51,7 @@ router.get(
   getDinnerProductsQueryController
 );
 
-router.get(
-  '/',
-  // [requireUser],
-  getAllDinnerProductsController
-);
+router.get('/', getAllDinnerProductsController);
 
 router.post(
   '/',
