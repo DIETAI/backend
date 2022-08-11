@@ -7,7 +7,7 @@ import {
   deleteDinnerController,
   getDinnerController,
   getDinnersController,
-} from '../controllers/dinner.controller';
+} from '../controllers/dinner/dinner.controller';
 
 //schema
 import {
@@ -15,7 +15,7 @@ import {
   deleteDinnerSchema,
   getDinnerSchema,
   updateDinnerSchema,
-} from '../schema/dinner.schema';
+} from '../schema/dinners/dinner.schema';
 
 //middleware
 import requireUser from '../middleware/requireUser';
