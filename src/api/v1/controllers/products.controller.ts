@@ -80,7 +80,15 @@ export async function getProductController(
   return res.send(product);
 }
 
-const ITEMS_PER_PAGE = 5;
+export async function getAllProductsController(req: Request, res: Response) {
+  const products = await getUserProducts({});
+
+  if (!products) {
+    return res.sendStatus(404);
+  }
+
+  return res.send(products);
+}
 
 export async function getProductsController(
   req: Request<{}, {}, {}, GetProductsInput['query']>,

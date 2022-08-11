@@ -11,6 +11,7 @@ import dietDinnersRoutes from './dietDinners.routes';
 import dinnerRoutes from './dinner/dinner.routes';
 import dinnerProductRoutes from './dinner/dinnerProduct.routes';
 import dinnerPortionRoutes from './dinner/dinnerPortion.routes';
+import productAllRoutes from './productAll.routes';
 import productRoutes from './product.routes';
 import assetRoutes from './asset.routes';
 import subscriptionPlanRoutes from './subscriptionPlans.routes';
@@ -21,6 +22,7 @@ const routes = (app: Express) => {
   app.use('/api/v1/sessions', sessionRoutes);
   // app.use('/api/v1/roles', roleRoutes);
   app.use('/api/v1/products', productRoutes);
+  app.use('/api/v1/all-products', productAllRoutes);
   app.use('/api/v1/measurements', measurementRoutes);
   app.use('/api/v1/dietEstablishments', dietEstablishmentRoutes);
   app.use('/api/v1/diets', dietRoutes);

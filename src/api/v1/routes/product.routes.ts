@@ -7,6 +7,7 @@ import {
   deleteProductController,
   getProductController,
   getProductsController,
+  getAllProductsController,
 } from '../controllers/products.controller';
 
 //schema
