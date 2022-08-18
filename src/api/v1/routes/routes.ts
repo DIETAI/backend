@@ -16,6 +16,7 @@ import productRoutes from './product.routes';
 import assetRoutes from './asset.routes';
 import subscriptionPlanRoutes from './subscriptionPlans.routes';
 import transactionRoutes from './transaction.routes';
+import clientRoutes from './client.routes';
 
 const routes = (app: Express) => {
   app.use('/api/v1/user', userRoutes);
@@ -35,6 +36,7 @@ const routes = (app: Express) => {
   app.use('/api/v1/assets', assetRoutes);
   app.use('/api/v1/subscriptionPlans', subscriptionPlanRoutes);
   app.use('/api/v1/transactions', transactionRoutes);
+  app.use('/api/v1/clients', clientRoutes);
 };
 
 export default routes;
