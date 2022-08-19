@@ -62,6 +62,13 @@ const params = {
   }),
 };
 
+const query = {
+  query: object({
+    page: string().optional(),
+    itemsCount: string().optional(),
+  }),
+};
+
 export const createClientSchema = object({
   ...payload,
 });
@@ -79,7 +86,12 @@ export const getClientSchema = object({
   ...params,
 });
 
+export const getClientsSchema = object({
+  ...query,
+});
+
 export type CreateClientInput = TypeOf<typeof createClientSchema>;
 export type UpdateClientInput = TypeOf<typeof updateClientSchema>;
 export type GetClientInput = TypeOf<typeof getClientSchema>;
+export type GetClientsInput = TypeOf<typeof getClientsSchema>;
 export type DeleteClientInput = TypeOf<typeof deleteClientSchema>;

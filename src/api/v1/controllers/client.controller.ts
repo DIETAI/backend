@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
+import ClientModel from '../models/client.model';
 import {
   CreateClientInput,
   UpdateClientInput,
   DeleteClientInput,
   GetClientInput,
+  GetClientsInput,
 } from '../schema/client.schema';
 import {
   createClient,
@@ -71,8 +73,41 @@ export async function getClientController(
   return res.send(client);
 }
 
-export async function getClientsController(req: Request, res: Response) {
+export async function getClientsController(
+  req: Request<{}, {}, {}, GetClientsInput['query']>,
+  res: Response
+) {
   const userId = res.locals.user._id;
+  const queryPage = req.query.page;
+  const itemsCount = req.query.itemsCount;
+
+  if (queryPage && itemsCount) {
+    const page = parseInt(queryPage);
+    const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
+    console.log({ skip });
+
+    const countPromise = ClientModel.estimatedDocumentCount();
+    const clientsPromise = ClientModel.find({ user: userId })
+      .limit(parseInt(itemsCount))
+      .skip(skip);
+
+    const [count, clients] = await Promise.all([countPromise, clientsPromise]);
+
+    const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
+
+    if (!count || !clients) {
+      return res.sendStatus(404);
+    }
+
+    return res.send({
+      pagination: {
+        count,
+        pageCount,
+      },
+      clients,
+    });
+  }
+
   const clients = await getClients({ user: userId });
 
   if (!clients) {
