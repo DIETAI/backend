@@ -4,6 +4,7 @@ import {
   UpdateMeasurementInput,
   DeleteMeasurementInput,
   GetMeasurementInput,
+  GetMeasurementsInput,
 } from '../schema/measurement.schema';
 import {
   createMeasurement,
@@ -12,6 +13,7 @@ import {
   getMeasurement,
   getMeasurements,
 } from '../services/measurement.service';
+import MeasurementModel from '../models/measurement.model';
 
 export async function createMeasurementController(
   req: Request<{}, {}, CreateMeasurementInput['body']>,
@@ -75,8 +77,44 @@ export async function getMeasurementController(
   return res.send(measurement);
 }
 
-export async function getMeasurementsController(req: Request, res: Response) {
+export async function getMeasurementsController(
+  req: Request<{}, {}, {}, GetMeasurementsInput['query']>,
+  res: Response
+) {
   const userId = res.locals.user._id;
+  const queryPage = req.query.page;
+  const itemsCount = req.query.itemsCount;
+
+  if (queryPage && itemsCount) {
+    const page = parseInt(queryPage);
+    const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
+    console.log({ skip });
+
+    const countPromise = MeasurementModel.estimatedDocumentCount();
+    const measurementsPromise = MeasurementModel.find({ user: userId })
+      .limit(parseInt(itemsCount))
+      .skip(skip);
+
+    const [count, measurements] = await Promise.all([
+      countPromise,
+      measurementsPromise,
+    ]);
+
+    const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
+
+    if (!count || !measurements) {
+      return res.sendStatus(404);
+    }
+
+    return res.send({
+      pagination: {
+        count,
+        pageCount,
+      },
+      measurements,
+    });
+  }
+
   const measurements = await getMeasurements({ user: userId });
 
   if (!measurements) {

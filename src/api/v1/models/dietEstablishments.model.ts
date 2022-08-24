@@ -6,12 +6,13 @@ const Schema = mongoose.Schema;
 const DietEstablishmentSchema = new Schema<IDietEstablishmentDocument>(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    // client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
+    client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
     name: { type: String, required: true },
     folder: { type: String },
     description: { type: String },
     dietKind: { type: String },
     measurementId: { type: mongoose.Schema.Types.ObjectId, ref: 'Measurement' },
+    clientMeasurementCpm: { type: Boolean, required: true },
     kcal: { type: Number, required: true },
     meals: [
       {

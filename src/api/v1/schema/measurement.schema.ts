@@ -67,6 +67,13 @@ const params = {
   }),
 };
 
+const query = {
+  query: object({
+    page: string().optional(),
+    itemsCount: string().optional(),
+  }),
+};
+
 export const createMeasurementSchema = object({
   ...payload,
 });
@@ -84,7 +91,12 @@ export const getMeasurementSchema = object({
   ...params,
 });
 
+export const getMeasurementsSchema = object({
+  ...query,
+});
+
 export type CreateMeasurementInput = TypeOf<typeof createMeasurementSchema>;
 export type UpdateMeasurementInput = TypeOf<typeof updateMeasurementSchema>;
 export type GetMeasurementInput = TypeOf<typeof getMeasurementSchema>;
+export type GetMeasurementsInput = TypeOf<typeof getMeasurementsSchema>;
 export type DeleteMeasurementInput = TypeOf<typeof deleteMeasurementSchema>;

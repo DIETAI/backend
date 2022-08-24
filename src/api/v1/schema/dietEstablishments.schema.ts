@@ -1,4 +1,4 @@
-import { object, number, string, TypeOf, z, array } from 'zod';
+import { object, number, string, TypeOf, z, array, boolean } from 'zod';
 
 const payload = {
   body: object({
@@ -7,13 +7,14 @@ const payload = {
     name: string({
       required_error: 'Name is required',
     }),
-    // client: string({
-    //   required_error: 'Client is required',
-    // }),
+    client: string({
+      required_error: 'Client is required',
+    }),
     folder: string().optional(),
     description: string().optional(),
     dietKind: string().optional(),
     measurementId: string().optional(),
+    clientMeasurementCpm: boolean(),
     kcal: number({
       required_error: 'Kcal is required',
       invalid_type_error: 'Meal time must be a number',
