@@ -5,27 +5,27 @@ const payload = {
     name: string({
       required_error: 'Name is required',
     }),
-    // client: string({
-    //   required_error: 'Client is required',
-    // }),
+    client: string({
+      required_error: 'Client is required',
+    }),
     date: z.string().transform((date) => new Date(date)),
     notes: string().optional(),
     images: array(string()).optional(),
-    age: number({
-      required_error: 'Weight is required',
-    }).positive(),
-    sex: z.enum(['male', 'female']),
+    // age: number({
+    //   required_error: 'Age is required',
+    // }).positive(),
+    // sex: z.enum(['male', 'female']),
     weight: number({
       required_error: 'Weight is required',
     }).positive(),
     height: number({
       required_error: 'Height is required',
     }).positive(),
-    pal: number({
-      required_error: 'Pal is required',
-    })
-      .min(1.3, 'Pal too short - should 1.3')
-      .max(2.2, 'Pal too big - max 2.2'),
+    // pal: number({
+    //   required_error: 'Pal is required',
+    // })
+    //   .min(1.3, 'Pal too short - should 1.3')
+    //   .max(2.2, 'Pal too big - max 2.2'),
     bmi: number({
       required_error: 'Bmi is required',
     }).min(16, 'Height too short - should 16 minimum'),

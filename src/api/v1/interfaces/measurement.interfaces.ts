@@ -1,18 +1,19 @@
 import mongoose from 'mongoose';
 import { IUserDocument } from './user.interfaces';
 import { IAssetDocument } from './assets.interfaces';
+import { IClientDocument } from './client.interfaces';
 
 export interface IMeasurementInput {
   user: IUserDocument['_id'];
-  //   client: IClientDocument['_id'];
+  client: IClientDocument['_id'];
   name: string;
   date: Date;
   notes?: string;
   weight: number;
   height: number;
-  age: number;
-  sex: 'male' | 'female';
-  pal: number;
+  // age: number;
+  // sex: 'male' | 'female';
+  // pal: number;
   bmi: number;
   images?: IAssetDocument['_id'][];
   //   bmi_type: 'niedowaga' | 'norma' | 'nadwaga' | 'otyłość';

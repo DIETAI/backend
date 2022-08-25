@@ -14,6 +14,7 @@ import {
   getMeasurements,
 } from '../services/measurement.service';
 import MeasurementModel from '../models/measurement.model';
+import { getClient } from '../services/client.service';
 
 export async function createMeasurementController(
   req: Request<{}, {}, CreateMeasurementInput['body']>,
@@ -106,12 +107,27 @@ export async function getMeasurementsController(
       return res.sendStatus(404);
     }
 
+    const measurementsQuery = await Promise.all(
+      measurements.map(async (measurement) => {
+        const client = await getClient({ _id: measurement.client });
+
+        return {
+          ...measurement.toObject(),
+          measurementClient: {
+            name: client?.name,
+            lastName: client?.lastName,
+            fullName: client?.name + ' ' + client?.lastName,
+          },
+        };
+      })
+    );
+
     return res.send({
       pagination: {
         count,
         pageCount,
       },
-      measurements,
+      measurements: measurementsQuery,
     });
   }
 

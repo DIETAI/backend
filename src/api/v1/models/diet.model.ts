@@ -11,6 +11,10 @@ const DietSchema = new Schema<IDietDocument>(
     dayStart: { type: Date },
     dayEnd: { type: Date },
     folder: { type: String },
+    clientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Client',
+    },
     establishmentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'DietEstablishment',

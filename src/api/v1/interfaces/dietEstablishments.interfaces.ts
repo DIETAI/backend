@@ -31,7 +31,6 @@ export interface IDietEstablishmentMinerals {
 export interface IDietEstablishmentInput {
   //basicInfo
   user: IUserDocument['_id'];
-  //   client: IClientDocument['_id'];
   name: string;
   folder?: string;
   description?: string;

@@ -46,6 +46,8 @@ const payload = {
 
     expectedBodyWeight: number().positive().optional(),
     specificAims: array(string()).optional(),
+    likedProducts: array(string()).optional(),
+    dislikedProducts: array(string()).optional(),
     pal: number({
       required_error: 'Pal is required',
     })

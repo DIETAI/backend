@@ -35,6 +35,8 @@ export interface IClientInput {
   expectedBodyWeight?: number;
   specificAims?: string[];
   pal: number;
+  likedProducts?: string[];
+  dislikedProducts?: string[];
 }
 
 export interface IClientDocument extends IClientInput, mongoose.Document {

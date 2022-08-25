@@ -25,6 +25,8 @@ const ClientSchema = new Schema<IClientDocument>(
     alergens: [{ type: String }],
     expectedBodyWeight: { type: Number },
     specificAims: [{ type: String }],
+    likedProducts: [{ type: String }],
+    dislikedProducts: [{ type: String }],
     pal: { type: Number },
   },
   {

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { IUserDocument } from '../user.interfaces';
 import { IDietEstablishmentDocument } from '../dietEstablishments.interfaces';
+import { IClientDocument } from '../client.interfaces';
 
 export interface IDietInput {
   //basicInfo
@@ -10,6 +11,7 @@ export interface IDietInput {
   daysAmount: number;
   dayStart?: Date;
   dayEnd?: Date;
+  clientId: IClientDocument['_id'];
   establishmentId: IDietEstablishmentDocument['_id'];
 }
 

@@ -139,6 +139,40 @@ export async function getDietDinnerController(
   return res.send(dietDinner);
 }
 
+export async function getAllDietDinnersController(
+  req: Request<GetDietDinnersInput['params']>,
+  res: Response
+) {
+  // const userId = res.locals.user._id;
+  // const mealId = req.params.dietMealId;
+
+  const dietDinners = await getDietDinners({});
+
+  if (!dietDinners) {
+    return res.sendStatus(404);
+  }
+
+  const dietDinnersQuery = await Promise.all(
+    dietDinners.map(async (dietDinner) => {
+      const diet = await getDiet({ _id: dietDinner.dietId });
+      const dinnerPortion = await getDinnerPortion({
+        _id: dietDinner.dinnerPortionId,
+      });
+      const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
+
+      return {
+        ...dietDinner,
+        diet,
+        dinner,
+      };
+    })
+  );
+
+  const sortedDinners = [...dietDinnersQuery].sort((a, b) => a.order - b.order);
+
+  return res.send(sortedDinners);
+}
+
 export async function getDietDinnersController(
   req: Request<GetDietDinnersInput['params']>,
   res: Response

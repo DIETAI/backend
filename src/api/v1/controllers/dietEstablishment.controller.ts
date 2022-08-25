@@ -5,6 +5,7 @@ import {
   DeleteDietEstablishmentInput,
   GetDietEstablishmentInput,
 } from '../schema/dietEstablishments.schema';
+import { getClient } from '../services/client.service';
 import {
   createDietEstablishment,
   deleteDietEstablishment,
@@ -92,7 +93,20 @@ export async function getDietEstablishmentsController(
     return res.sendStatus(404);
   }
 
-  return res.send(dietEstablishments);
+  const dietEstablishmentQuery = await Promise.all(
+    dietEstablishments.map(async (dietEstablishment) => {
+      const client = await getClient({ _id: dietEstablishment.client });
+
+      return {
+        ...dietEstablishment,
+        patient: {
+          fullName: client?.name + ' ' + client?.lastName,
+        },
+      };
+    })
+  );
+
+  return res.send(dietEstablishmentQuery);
 }
 
 export async function deleteDietEstablishmentController(

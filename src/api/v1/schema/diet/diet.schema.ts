@@ -7,6 +7,9 @@ const payload = {
       required_error: 'Name is required',
     }),
     folder: string().optional(),
+    clientId: string({
+      required_error: 'Client is required',
+    }),
     establishmentId: string({
       required_error: 'Establishment is required',
     }),

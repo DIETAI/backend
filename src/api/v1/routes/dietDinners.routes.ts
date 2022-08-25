@@ -9,6 +9,7 @@ import {
   getDietDinnersController,
   getDietDinnersByPortionIdController,
   getDietDinnersQueryController,
+  getAllDietDinnersController,
 } from '../controllers/diet/dietDinner.controller';
 
 //schema
@@ -32,6 +33,8 @@ router.get(
   [requireUser, validateSchema(getDietDinnerSchema)],
   getDietDinnerController
 );
+
+router.get('/', getAllDietDinnersController);
 
 router.get(
   '/dinnerPortion/:dinnerPortionId',
