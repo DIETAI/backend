@@ -20,10 +20,14 @@ import {
 import { getDiet } from '../../services/diet/diet.service';
 
 import { getDinnerPortion } from '../../services/dinner/dinnerPortion.service';
-import { getDinnerProduct } from '../../services/dinner/dinnerProduct.service';
+import {
+  getDinnerProduct,
+  getDinnerProducts,
+} from '../../services/dinner/dinnerProduct.service';
 import { getProduct } from '../../services/products.service';
 import { getDinner } from '../../services/dinner/dinner.service';
 import { dietEmitter } from './events';
+import { getDietMeal } from '../../services/diet/dietMeal.service';
 
 export async function createDietDinnerController(
   req: Request<{}, {}, CreateDietDinnerInput['body']>,
@@ -159,11 +163,29 @@ export async function getAllDietDinnersController(
         _id: dietDinner.dinnerPortionId,
       });
       const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
+      const dinnerProducts = await getDinnerProducts({ dinnerId: dinner?._id });
+      const meal = await getDietMeal({ _id: dietDinner.dietMealId });
 
       return {
-        ...dietDinner,
-        diet,
-        dinner,
+        _id: dietDinner._id,
+        userId: dietDinner.user,
+        diet: {
+          _id: diet?._id,
+          name: diet?.name,
+          clientId: diet?.clientId,
+          clientPreferencesGroup: 1,
+        },
+        dinner: {
+          _id: dinner?._id,
+          name: dinner?.name,
+          products: dinnerProducts.map((dinnerProduct) => dinnerProduct._id),
+          likedProductsPoints: 0,
+        },
+        meal: {
+          _id: meal?._id,
+          name: meal?.name,
+          type: meal?.type,
+        },
       };
     })
   );
