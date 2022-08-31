@@ -190,9 +190,9 @@ export async function getAllDietDinnersController(
     })
   );
 
-  const sortedDinners = [...dietDinnersQuery].sort((a, b) => a.order - b.order);
+  // const sortedDinners = [...dietDinnersQuery].sort((a, b) => a.order - b.order);
 
-  return res.send(sortedDinners);
+  return res.send(dietDinnersQuery);
 }
 
 export async function getDietDinnersController(
