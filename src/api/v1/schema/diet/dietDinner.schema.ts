@@ -59,6 +59,14 @@ const dietMealParams = {
   }),
 };
 
+const dietDayParams = {
+  params: object({
+    dayId: string({
+      required_error: 'dayId is required',
+    }),
+  }),
+};
+
 const dinnerPortionParams = {
   params: object({
     dinnerPortionId: string({
@@ -84,6 +92,10 @@ export const getDietDinnerSchema = object({
   ...params,
 });
 
+export const getDietDinnersByDayIdSchema = object({
+  ...dietDayParams,
+});
+
 export const getDietDinnersSchema = object({
   ...dietMealParams,
 });
@@ -98,5 +110,8 @@ export type GetDietDinnerInput = TypeOf<typeof getDietDinnerSchema>;
 export type GetDietDinnersInput = TypeOf<typeof getDietDinnersSchema>;
 export type GetDietDinnersByPortionInput = TypeOf<
   typeof getDietDinnersByPortionSchema
+>;
+export type GetDietDinnersByDayIdInput = TypeOf<
+  typeof getDietDinnersByDayIdSchema
 >;
 export type DeleteDietDinnerInput = TypeOf<typeof deleteDietDinnerSchema>;

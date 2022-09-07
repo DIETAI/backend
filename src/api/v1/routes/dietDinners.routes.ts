@@ -10,6 +10,7 @@ import {
   getDietDinnersByPortionIdController,
   getDietDinnersQueryController,
   getAllDietDinnersController,
+  getDietDinnersByDayIdController,
 } from '../controllers/diet/dietDinner.controller';
 
 //schema
@@ -20,6 +21,7 @@ import {
   getDietDinnersSchema,
   getDietDinnersByPortionSchema,
   updateDietDinnerSchema,
+  getDietDinnersByDayIdSchema,
 } from '../schema/diet/dietDinner.schema';
 
 //middleware
@@ -40,6 +42,12 @@ router.get(
   '/dinnerPortion/:dinnerPortionId',
   [requireUser, validateSchema(getDietDinnersByPortionSchema)],
   getDietDinnersByPortionIdController
+);
+
+router.get(
+  '/day/:dayId',
+  [requireUser, validateSchema(getDietDinnersByDayIdSchema)],
+  getDietDinnersByDayIdController
 );
 
 router.get(

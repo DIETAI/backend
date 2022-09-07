@@ -7,6 +7,7 @@ import {
   GetDietDinnerInput,
   GetDietDinnersInput,
   GetDietDinnersByPortionInput,
+  GetDietDinnersByDayIdInput,
 } from '../../schema/diet/dietDinner.schema';
 
 import {
@@ -119,6 +120,8 @@ export async function updateDietDinnerController(
     }
   );
 
+  dietEmitter.emit('dietDinner::created', 200, dietDinner);
+
   return res.send(updatedDietDinner);
 }
 
@@ -216,6 +219,45 @@ export async function getDietDinnersController(
   return res.send(sortedDinners);
 }
 
+export async function getDietDinnersByDayIdController(
+  req: Request<GetDietDinnersByDayIdInput['params']>,
+  res: Response
+) {
+  const userId = res.locals.user._id;
+  const dayId = req.params.dayId;
+
+  const dietDinners = await getDietDinners({
+    user: userId,
+    dayId: dayId,
+  });
+
+  if (!dietDinners) {
+    return res.sendStatus(404);
+  }
+
+  const dietDinnersQuery = await Promise.all(
+    dietDinners.map(async (dietDinner) => {
+      const diet = await getDiet({ _id: dietDinner.dietId });
+      const dinnerPortion = await getDinnerPortion({
+        _id: dietDinner.dinnerPortionId,
+      });
+      const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
+      const meal = await getDietMeal({ _id: dietDinner.dietMealId });
+
+      return {
+        ...dietDinner,
+        diet,
+        dinner,
+        meal,
+      };
+    })
+  );
+
+  const sortedDinners = [...dietDinnersQuery].sort((a, b) => a.order - b.order);
+
+  return res.send(sortedDinners);
+}
+
 export async function getDietDinnersByPortionIdController(
   req: Request<GetDietDinnersByPortionInput['params']>,
   res: Response
@@ -302,6 +344,8 @@ export async function deleteDietDinnerController(
   }
 
   await deleteDietDinner({ _id: dietDinnerId });
+
+  dietEmitter.emit('dietDinner::deleted', 200, dietDinner);
 
   return res.sendStatus(200);
 }
