@@ -16,6 +16,7 @@ const payload = {
     measureUnit: z.enum(['g', 'l']),
     season: z.enum(['zima', 'wiosna', 'lato', 'jesień']).optional(),
     dietKindsExclude: array(string()).optional(),
+    tags: array(string()).optional(),
     //macrohydrates
     protein: object({
       gram: number({

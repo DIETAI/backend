@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { IUserDocument } from './user.interfaces';
 import { IAssetDocument } from './assets.interfaces';
+import { IDietKindDocument } from './dietKind/dietKind.interfaces';
 
 export interface IMacrohydrate {
   gram: number;
@@ -42,7 +43,8 @@ export interface IProductInput {
   description?: string;
   subGroupId?: string;
   measureUnit: 'g' | 'l';
-  dietKindsExclude?: string[];
+  dietKindsExclude?: IDietKindDocument['_id'][];
+  tags?: string[];
   season?: 'zima' | 'wiosna' | 'lato' | 'jesień';
   image?: IAssetDocument['_id'];
   gallery?: IAssetDocument['_id'][];
@@ -91,8 +93,6 @@ export interface IProductInput {
   measures: IMeasure[];
   //prices
   prices: IPrice[];
-  //tags
-  tags?: string[];
 }
 
 export interface IProductDocument extends IProductInput, mongoose.Document {

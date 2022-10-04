@@ -64,6 +64,30 @@ const payload = {
         required_error: 'Protein procent is required',
         invalid_type_error: 'Protein procent must be a number',
       }),
+      min_procent: number({
+        required_error: 'Min protein procent is required',
+        invalid_type_error: 'Min protein procent must be a number',
+      }),
+      max_procent: number({
+        required_error: 'Max protein procent is required',
+        invalid_type_error: 'Max protein procent must be a number',
+      }),
+      min_gram: number({
+        required_error: 'Min protein gram is required',
+        invalid_type_error: 'Min protein gram must be a number',
+      }),
+      max_gram: number({
+        required_error: 'Max protein gram is required',
+        invalid_type_error: 'Max protein gram must be a number',
+      }),
+      min_kcal: number({
+        required_error: 'Min protein kcal is required',
+        invalid_type_error: 'Min protein kcal must be a number',
+      }),
+      max_kcal: number({
+        required_error: 'Max protein kcal is required',
+        invalid_type_error: 'Max protein kcal must be a number',
+      }),
     }),
     fat: object({
       gram: number({
@@ -78,6 +102,30 @@ const payload = {
         required_error: 'Fat procent is required',
         invalid_type_error: 'Fat procent procent must be a number',
       }),
+      min_procent: number({
+        required_error: 'Min fat procent is required',
+        invalid_type_error: 'Min fat procent must be a number',
+      }),
+      max_procent: number({
+        required_error: 'Max fat procent is required',
+        invalid_type_error: 'Max fat procent must be a number',
+      }),
+      min_gram: number({
+        required_error: 'Min fat gram is required',
+        invalid_type_error: 'Min fat gram must be a number',
+      }),
+      max_gram: number({
+        required_error: 'Max fat gram is required',
+        invalid_type_error: 'Max fat gram must be a number',
+      }),
+      min_kcal: number({
+        required_error: 'Min fat kcal is required',
+        invalid_type_error: 'Min fat kcal must be a number',
+      }),
+      max_kcal: number({
+        required_error: 'Max fat kcal is required',
+        invalid_type_error: 'Max fat kcal must be a number',
+      }),
     }),
     carbohydrates: object({
       gram: number({
@@ -91,6 +139,30 @@ const payload = {
       procent: number({
         required_error: 'Carbohydrates procent is required',
         invalid_type_error: 'Carbohydrates procent procent must be a number',
+      }),
+      min_procent: number({
+        required_error: 'Min carbohydrates procent is required',
+        invalid_type_error: 'Min carbohydrates procent must be a number',
+      }),
+      max_procent: number({
+        required_error: 'Max carbohydrates procent is required',
+        invalid_type_error: 'Max carbohydrates procent must be a number',
+      }),
+      min_gram: number({
+        required_error: 'Min carbohydrates gram is required',
+        invalid_type_error: 'Min carbohydrates gram must be a number',
+      }),
+      max_gram: number({
+        required_error: 'Max carbohydrates gram is required',
+        invalid_type_error: 'Max carbohydrates gram must be a number',
+      }),
+      min_kcal: number({
+        required_error: 'Min carbohydrates kcal is required',
+        invalid_type_error: 'Min carbohydrates kcal must be a number',
+      }),
+      max_kcal: number({
+        required_error: 'Max carbohydrates kcal is required',
+        invalid_type_error: 'Max carbohydrates kcal must be a number',
       }),
     }),
     digestableCarbohydrates: object({

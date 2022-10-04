@@ -303,7 +303,7 @@ export async function getDietQueryController(
 
           const mealObj = {
             ...dietMeal,
-            dinners,
+            dinners: [...dinners].sort((a, b) => a?.order - b?.order),
           };
 
           return mealObj;

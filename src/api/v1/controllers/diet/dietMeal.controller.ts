@@ -7,6 +7,8 @@ import {
   GetDietDayMealInput,
   GetDietDayMealsInput,
 } from '../../schema/diet/dietMeal.schema';
+import { getDiet } from '../../services/diet/diet.service';
+import { getDietDinners } from '../../services/diet/dietDinner.service';
 
 import {
   createDietMeal,
@@ -15,6 +17,14 @@ import {
   getDietMeal,
   getDietMeals,
 } from '../../services/diet/dietMeal.service';
+import {
+  getDietEstablishment,
+  getDietEstablishments,
+} from '../../services/dietEstablishment.service';
+import { getDinner } from '../../services/dinner/dinner.service';
+import { getDinnerPortion } from '../../services/dinner/dinnerPortion.service';
+import { getDinnerProducts } from '../../services/dinner/dinnerProduct.service';
+import { getProduct } from '../../services/products.service';
 
 export async function createDietMealController(
   req: Request<{}, {}, CreateDietDayMealInput['body']>,
@@ -103,6 +113,80 @@ export async function getDietMealsController(
   const sortedMeals = [...dietMeals].sort((a, b) => a.order - b.order);
 
   return res.send(sortedMeals);
+}
+
+export async function getAllDietMealsController(
+  req: Request<GetDietDayMealsInput['params']>,
+  res: Response
+) {
+  const dietMeals = await getDietMeals({});
+
+  if (!dietMeals) {
+    return res.sendStatus(404);
+  }
+
+  const establishments = await getDietEstablishments({});
+  const establishmentsMeals = establishments.flatMap(
+    (establishment) => establishment.meals
+  );
+
+  const dietMealsDinners = await Promise.all(
+    dietMeals.map(async (dietMeal) => {
+      const mealEstablishment = establishmentsMeals.find(
+        (mealEstablishment) =>
+          mealEstablishment._id === dietMeal.establishmentMealId
+      );
+      const diet = await getDiet({ _id: dietMeal.dietId });
+      const dietEstablishment = await getDietEstablishment({
+        _id: diet?.establishmentId,
+      });
+      const mealDinners = await getDietDinners({ dietMealId: dietMeal._id });
+
+      const dinners = await Promise.all(
+        mealDinners.map(async (mealDinner) => {
+          const dinnerPortion = await getDinnerPortion({
+            _id: mealDinner.dinnerPortionId,
+          });
+          const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
+          const dinnerProducts = await getDinnerProducts({
+            dinnerId: dinner?._id,
+          });
+
+          const dinnerProductsQuery = await Promise.all(
+            dinnerProducts.map(async (dinnerProduct) => {
+              const product = await getProduct({
+                _id: dinnerProduct.productId,
+              });
+
+              return {
+                ...dinnerProduct,
+                product,
+              };
+            })
+          );
+
+          return {
+            ...mealDinner,
+            dinner,
+            dinnerProducts: dinnerProductsQuery,
+          };
+        })
+      );
+
+      return {
+        ...dietMeal,
+        dinners,
+        dietEstablishment,
+        mealEstablishment,
+      };
+    })
+  );
+
+  const filteredDietMealsDinners = dietMealsDinners.filter(
+    (dietMeal) => dietMeal.dinners.length > 0
+  );
+
+  return res.send(dietMealsDinners);
 }
 
 export async function deleteDietMealController(

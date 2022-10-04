@@ -7,6 +7,7 @@ import {
   deleteDietMealController,
   getDietMealController,
   getDietMealsController,
+  getAllDietMealsController,
 } from '../controllers/diet/dietMeal.controller';
 
 //schema
@@ -35,6 +36,8 @@ router.get(
   [requireUser, validateSchema(getDietDayMealsSchema)],
   getDietMealsController
 );
+
+router.get('/', [requireUser], getAllDietMealsController);
 
 router.post(
   '/',

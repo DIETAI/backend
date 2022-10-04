@@ -4,6 +4,7 @@ import sessionRoutes from './session.routes';
 // import roleRoutes from './role.routes';
 import measurementRoutes from './measurement.routes';
 import dietEstablishmentRoutes from './dietEstablishment.routes';
+import dietKindRoutes from './dietKind.routes';
 import dietRoutes from './diet.routes';
 import dietDaysRoutes from './dietDays.routes';
 import dietMealsRoutes from './dietMeals.routes';
@@ -26,6 +27,7 @@ const routes = (app: Express) => {
   app.use('/api/v1/all-products', productAllRoutes);
   app.use('/api/v1/measurements', measurementRoutes);
   app.use('/api/v1/dietEstablishments', dietEstablishmentRoutes);
+  app.use('/api/v1/dietKinds', dietKindRoutes);
   app.use('/api/v1/diets', dietRoutes);
   app.use('/api/v1/dietDays', dietDaysRoutes);
   app.use('/api/v1/dietMeals', dietMealsRoutes);
