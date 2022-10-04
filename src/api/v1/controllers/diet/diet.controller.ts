@@ -301,9 +301,16 @@ export async function getDietQueryController(
             })
           );
 
+          // if (!dinners) {
+          //   return {
+          //     ...dietMeal,
+          //     dinners: [],
+          //   };
+          // }
+
           const mealObj = {
             ...dietMeal,
-            dinners: [...dinners].sort((a, b) => a?.order - b?.order),
+            dinners: [...dinners].sort((a: any, b: any) => a.order - b.order),
           };
 
           return mealObj;
