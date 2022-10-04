@@ -8,6 +8,7 @@ import {
   getDietMealController,
   getDietMealsController,
   getAllDietMealsController,
+  getDietMealsToRecommendController,
 } from '../controllers/diet/dietMeal.controller';
 
 //schema

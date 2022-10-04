@@ -8,6 +8,7 @@ import dietKindRoutes from './dietKind.routes';
 import dietRoutes from './diet.routes';
 import dietDaysRoutes from './dietDays.routes';
 import dietMealsRoutes from './dietMeals.routes';
+import dietMealsRecommendRoutes from './dietMealsRecommend.routes';
 import dietDinnersRoutes from './dietDinners.routes';
 import dinnerRoutes from './dinner/dinner.routes';
 import dinnerProductRoutes from './dinner/dinnerProduct.routes';
@@ -31,6 +32,7 @@ const routes = (app: Express) => {
   app.use('/api/v1/diets', dietRoutes);
   app.use('/api/v1/dietDays', dietDaysRoutes);
   app.use('/api/v1/dietMeals', dietMealsRoutes);
+  app.use('/api/v1/dietMealsRecommend', dietMealsRecommendRoutes);
   app.use('/api/v1/dietDinners', dietDinnersRoutes);
   app.use('/api/v1/dinners', dinnerRoutes);
   app.use('/api/v1/dinnerProducts', dinnerProductRoutes);

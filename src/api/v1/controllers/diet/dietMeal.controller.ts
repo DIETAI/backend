@@ -115,6 +115,40 @@ export async function getDietMealsController(
   return res.send(sortedMeals);
 }
 
+export async function getDietMealsToRecommendController(
+  req: Request<GetDietDayMealsInput['params']>,
+  res: Response
+) {
+  const dietMeals = await getDietMeals({});
+
+  if (!dietMeals) {
+    return res.sendStatus(404);
+  }
+
+  const dietMealsWithDinners = await Promise.all(
+    dietMeals.map(async (dietMeal) => {
+      const mealDinners = await getDietDinners({ dietMealId: dietMeal._id });
+
+      const newMealObj = {
+        _id: dietMeal._id,
+        userId: dietMeal.user,
+        name: dietMeal.name,
+        type: dietMeal.type,
+        order: dietMeal.order,
+        dinners: mealDinners,
+      };
+
+      return newMealObj;
+    })
+  );
+
+  const filteredDietMealsDinners = dietMealsWithDinners.filter(
+    (dietMeal) => dietMeal.dinners.length > 0
+  );
+
+  return res.send(filteredDietMealsDinners);
+}
+
 export async function getAllDietMealsController(
   req: Request<GetDietDayMealsInput['params']>,
   res: Response
