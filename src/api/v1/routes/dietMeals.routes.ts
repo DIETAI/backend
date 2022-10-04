@@ -37,7 +37,7 @@ router.get(
   getDietMealsController
 );
 
-router.get('/', [requireUser], getAllDietMealsController);
+router.get('/', getAllDietMealsController);
 
 router.post(
   '/',
