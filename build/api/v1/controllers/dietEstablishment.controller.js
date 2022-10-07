@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteDietEstablishmentController = exports.getDietEstablishmentsController = exports.getDietEstablishmentController = exports.updateDietEstablishmentController = exports.createDietEstablishmentController = void 0;
+const client_service_1 = require("../services/client.service");
 const dietEstablishment_service_1 = require("../services/dietEstablishment.service");
 function createDietEstablishmentController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -65,7 +66,13 @@ function getDietEstablishmentsController(req, res) {
         if (!dietEstablishments) {
             return res.sendStatus(404);
         }
-        return res.send(dietEstablishments);
+        const dietEstablishmentQuery = yield Promise.all(dietEstablishments.map((dietEstablishment) => __awaiter(this, void 0, void 0, function* () {
+            const client = yield (0, client_service_1.getClient)({ _id: dietEstablishment.client });
+            return Object.assign(Object.assign({}, dietEstablishment), { patient: {
+                    fullName: (client === null || client === void 0 ? void 0 : client.name) + ' ' + (client === null || client === void 0 ? void 0 : client.lastName),
+                } });
+        })));
+        return res.send(dietEstablishmentQuery);
     });
 }
 exports.getDietEstablishmentsController = getDietEstablishmentsController;

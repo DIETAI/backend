@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDietDinnersByPortionSchema = exports.getDietDinnersSchema = exports.getDietDinnerSchema = exports.deleteDietDinnerSchema = exports.updateDietDinnerSchema = exports.createDietDinnerSchema = void 0;
+exports.getDietDinnersByPortionSchema = exports.getDietDinnersSchema = exports.getDietDinnersByDayIdSchema = exports.getDietDinnerSchema = exports.deleteDietDinnerSchema = exports.updateDietDinnerSchema = exports.createDietDinnerSchema = void 0;
 const zod_1 = require("zod");
 const payload = {
     body: (0, zod_1.object)({
@@ -58,6 +58,13 @@ const dietMealParams = {
         }),
     }),
 };
+const dietDayParams = {
+    params: (0, zod_1.object)({
+        dayId: (0, zod_1.string)({
+            required_error: 'dayId is required',
+        }),
+    }),
+};
 const dinnerPortionParams = {
     params: (0, zod_1.object)({
         dinnerPortionId: (0, zod_1.string)({
@@ -69,5 +76,6 @@ exports.createDietDinnerSchema = (0, zod_1.object)(Object.assign({}, payload));
 exports.updateDietDinnerSchema = (0, zod_1.object)(Object.assign(Object.assign({}, payload), params));
 exports.deleteDietDinnerSchema = (0, zod_1.object)(Object.assign({}, params));
 exports.getDietDinnerSchema = (0, zod_1.object)(Object.assign({}, params));
+exports.getDietDinnersByDayIdSchema = (0, zod_1.object)(Object.assign({}, dietDayParams));
 exports.getDietDinnersSchema = (0, zod_1.object)(Object.assign({}, dietMealParams));
 exports.getDietDinnersByPortionSchema = (0, zod_1.object)(Object.assign({}, dinnerPortionParams));

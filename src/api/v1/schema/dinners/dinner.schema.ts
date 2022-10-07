@@ -13,7 +13,7 @@ const payload = {
     mealTypesKind: z.enum(['mainCourse', 'soup', 'drink']),
     description: string().optional(),
     recipe: string().optional(),
-    dietKinds: array(string()).optional(),
+    dietKindsExclude: array(string()).optional(),
     tags: array(z.enum(['nogluten', 'lactose-free'])).optional(),
     preparation_time: z.enum([
       '5m-less',

@@ -13,7 +13,7 @@ const payload = {
         mealTypesKind: zod_1.z.enum(['mainCourse', 'soup', 'drink']),
         description: (0, zod_1.string)().optional(),
         recipe: (0, zod_1.string)().optional(),
-        dietKinds: (0, zod_1.array)((0, zod_1.string)()).optional(),
+        dietKindsExclude: (0, zod_1.array)((0, zod_1.string)()).optional(),
         tags: (0, zod_1.array)(zod_1.z.enum(['nogluten', 'lactose-free'])).optional(),
         preparation_time: zod_1.z.enum([
             '5m-less',

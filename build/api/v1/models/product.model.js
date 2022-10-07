@@ -23,7 +23,8 @@ const ProductSchema = new Schema({
     description: { type: String },
     subGroupId: { type: String },
     season: { type: String },
-    dietKindsExclude: [{ type: String }],
+    dietKindsExclude: [{ type: mongoose_1.default.Schema.Types.String, ref: 'DietKind' }],
+    tags: [{ type: String }],
     measureUnit: { type: String, required: true },
     //macrohydrates
     protein: {

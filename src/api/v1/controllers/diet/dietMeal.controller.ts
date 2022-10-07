@@ -153,6 +153,7 @@ export async function getAllDietMealsController(
   req: Request<GetDietDayMealsInput['params']>,
   res: Response
 ) {
+  // const currentDietKind = req.dietKind
   const dietMeals = await getDietMeals({});
 
   if (!dietMeals) {
@@ -170,10 +171,12 @@ export async function getAllDietMealsController(
         (mealEstablishment) =>
           mealEstablishment._id === dietMeal.establishmentMealId
       );
+      //sprawdzić czy rodzaj diety jest taki sam jak rodzaj obecnej diety
       const diet = await getDiet({ _id: dietMeal.dietId });
       const dietEstablishment = await getDietEstablishment({
         _id: diet?.establishmentId,
       });
+      // const dietKind = dietEstablishment?.dietKind === currentDietKind
       const mealDinners = await getDietDinners({ dietMealId: dietMeal._id });
 
       const dinners = await Promise.all(

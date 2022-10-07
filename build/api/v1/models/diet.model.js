@@ -12,6 +12,10 @@ const DietSchema = new Schema({
     dayStart: { type: Date },
     dayEnd: { type: Date },
     folder: { type: String },
+    clientId: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: 'Client',
+    },
     establishmentId: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: 'DietEstablishment',

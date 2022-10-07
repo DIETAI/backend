@@ -14,7 +14,9 @@ const DinnerSchema = new Schema<IDinnerDocument>(
     description: { type: String },
     recipe: { type: String },
     preparation_time: { type: String },
-    dietKinds: [{ type: String }],
+    dietKindsExclude: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'DietKind' },
+    ],
     tags: [{ type: String }],
   },
   {

@@ -9,6 +9,9 @@ const payload = {
             required_error: 'Name is required',
         }),
         folder: (0, zod_1.string)().optional(),
+        clientId: (0, zod_1.string)({
+            required_error: 'Client is required',
+        }),
         establishmentId: (0, zod_1.string)({
             required_error: 'Establishment is required',
         }),

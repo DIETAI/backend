@@ -211,7 +211,13 @@ function getDietQueryController(req, res) {
                         dinner });
                     return Object.assign(Object.assign({}, dietDinner), { dinnerPortion: dinnerObj });
                 })));
-                const mealObj = Object.assign(Object.assign({}, dietMeal), { dinners });
+                // if (!dinners) {
+                //   return {
+                //     ...dietMeal,
+                //     dinners: [],
+                //   };
+                // }
+                const mealObj = Object.assign(Object.assign({}, dietMeal), { dinners: [...dinners].sort((a, b) => a.order - b.order) });
                 return mealObj;
             })));
             return Object.assign(Object.assign({}, dietDay), { meals: [...meals].sort((a, b) => a.order - b.order) });

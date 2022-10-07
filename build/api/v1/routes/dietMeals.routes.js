@@ -14,6 +14,7 @@ const schema_middleware_1 = __importDefault(require("../middleware/schema.middle
 const router = express_1.default.Router();
 router.get('/:dietMealId', [requireUser_1.default, (0, schema_middleware_1.default)(dietMeal_schema_1.getDietDayMealSchema)], dietMeal_controller_1.getDietMealController);
 router.get('/day/:dietDayId', [requireUser_1.default, (0, schema_middleware_1.default)(dietMeal_schema_1.getDietDayMealsSchema)], dietMeal_controller_1.getDietMealsController);
+router.get('/', dietMeal_controller_1.getAllDietMealsController);
 router.post('/', [requireUser_1.default, (0, schema_middleware_1.default)(dietMeal_schema_1.createDietDayMealSchema)], dietMeal_controller_1.createDietMealController);
 router.put('/:dietMealId', [requireUser_1.default, (0, schema_middleware_1.default)(dietMeal_schema_1.updateDietDayMealSchema)], dietMeal_controller_1.updateDietMealController);
 router.delete('/:dietMealId', [requireUser_1.default, (0, schema_middleware_1.default)(dietMeal_schema_1.deleteDietDayMealSchema)], dietMeal_controller_1.deleteDietMealController);

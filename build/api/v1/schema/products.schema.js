@@ -18,6 +18,7 @@ const payload = {
         measureUnit: zod_1.z.enum(['g', 'l']),
         season: zod_1.z.enum(['zima', 'wiosna', 'lato', 'jesień']).optional(),
         dietKindsExclude: (0, zod_1.array)((0, zod_1.string)()).optional(),
+        tags: (0, zod_1.array)((0, zod_1.string)()).optional(),
         //macrohydrates
         protein: (0, zod_1.object)({
             gram: (0, zod_1.number)({

@@ -10,7 +10,7 @@ const DietEstablishmentSchema = new Schema<IDietEstablishmentDocument>(
     name: { type: String, required: true },
     folder: { type: String },
     description: { type: String },
-    dietKind: { type: String },
+    dietKind: { type: mongoose.Schema.Types.ObjectId, ref: 'DietKind' },
     measurementId: { type: mongoose.Schema.Types.ObjectId, ref: 'Measurement' },
     clientMeasurementCpm: { type: Boolean, required: true },
     kcal: { type: Number, required: true },

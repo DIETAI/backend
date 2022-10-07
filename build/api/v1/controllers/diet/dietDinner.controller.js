@@ -9,11 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteDietDinnerController = exports.getDietDinnersQueryController = exports.getDietDinnersByPortionIdController = exports.getDietDinnersController = exports.getDietDinnerController = exports.updateDietDinnerController = exports.createDietDinnerController = void 0;
+exports.deleteDietDinnerController = exports.getDietDinnersQueryController = exports.getDietDinnersByPortionIdController = exports.getDietDinnersByDayIdController = exports.getDietDinnersController = exports.getAllDietDinnersController = exports.getAllDietDinnersToMealRecommendController = exports.getDietDinnerController = exports.updateDietDinnerController = exports.createDietDinnerController = void 0;
 const dietDinner_service_1 = require("../../services/diet/dietDinner.service");
 const diet_service_1 = require("../../services/diet/diet.service");
 const dinnerPortion_service_1 = require("../../services/dinner/dinnerPortion.service");
+const dinnerProduct_service_1 = require("../../services/dinner/dinnerProduct.service");
+const dinner_service_1 = require("../../services/dinner/dinner.service");
 const events_1 = require("./events");
+const dietMeal_service_1 = require("../../services/diet/dietMeal.service");
+const dietDay_service_1 = require("../../services/diet/dietDay.service");
 function createDietDinnerController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
@@ -78,6 +82,7 @@ function updateDietDinnerController(req, res) {
         const updatedDietDinner = yield (0, dietDinner_service_1.getAndUpdateDietDinner)({ _id: dietDinnerId }, update, {
             new: true,
         });
+        events_1.dietEmitter.emit('dietDinner::created', 200, dietDinner);
         return res.send(updatedDietDinner);
     });
 }
@@ -99,6 +104,97 @@ function getDietDinnerController(req, res) {
     });
 }
 exports.getDietDinnerController = getDietDinnerController;
+function getAllDietDinnersToMealRecommendController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // const userId = res.locals.user._id;
+        // const mealId = req.params.dietMealId;
+        const dietDinners = yield (0, dietDinner_service_1.getDietDinners)({});
+        if (!dietDinners) {
+            return res.sendStatus(404);
+        }
+        const dietDinnersQuery = yield Promise.all(dietDinners.map((dietDinner) => __awaiter(this, void 0, void 0, function* () {
+            const diet = yield (0, diet_service_1.getDiet)({ _id: dietDinner.dietId });
+            const dinnerPortion = yield (0, dinnerPortion_service_1.getDinnerPortion)({
+                _id: dietDinner.dinnerPortionId,
+            });
+            const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion === null || dinnerPortion === void 0 ? void 0 : dinnerPortion.dinnerId });
+            const dinnerProducts = yield (0, dinnerProduct_service_1.getDinnerProducts)({ dinnerId: dinner === null || dinner === void 0 ? void 0 : dinner._id });
+            const meal = yield (0, dietMeal_service_1.getDietMeal)({ _id: dietDinner.dietMealId });
+            const day = yield (0, dietDay_service_1.getDietDay)({ _id: meal === null || meal === void 0 ? void 0 : meal.dayId });
+            return {
+                _id: dietDinner._id,
+                userId: dietDinner.user,
+                diet: {
+                    _id: diet === null || diet === void 0 ? void 0 : diet._id,
+                    name: diet === null || diet === void 0 ? void 0 : diet.name,
+                    clientId: diet === null || diet === void 0 ? void 0 : diet.clientId,
+                    clientPreferencesGroup: 1,
+                },
+                dinner: {
+                    _id: dinner === null || dinner === void 0 ? void 0 : dinner._id,
+                    name: dinner === null || dinner === void 0 ? void 0 : dinner.name,
+                    products: dinnerProducts.map((dinnerProduct) => dinnerProduct._id),
+                    likedProductsPoints: 0,
+                },
+                day: {
+                    _id: day === null || day === void 0 ? void 0 : day._id,
+                    name: day === null || day === void 0 ? void 0 : day.name,
+                },
+                meal: {
+                    _id: meal === null || meal === void 0 ? void 0 : meal._id,
+                    name: meal === null || meal === void 0 ? void 0 : meal.name,
+                    type: meal === null || meal === void 0 ? void 0 : meal.type,
+                },
+            };
+        })));
+        // const sortedDinners = [...dietDinnersQuery].sort((a, b) => a.order - b.order);
+        return res.send(dietDinnersQuery);
+    });
+}
+exports.getAllDietDinnersToMealRecommendController = getAllDietDinnersToMealRecommendController;
+function getAllDietDinnersController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // const userId = res.locals.user._id;
+        // const mealId = req.params.dietMealId;
+        const dietDinners = yield (0, dietDinner_service_1.getDietDinners)({});
+        if (!dietDinners) {
+            return res.sendStatus(404);
+        }
+        const dietDinnersQuery = yield Promise.all(dietDinners.map((dietDinner) => __awaiter(this, void 0, void 0, function* () {
+            const diet = yield (0, diet_service_1.getDiet)({ _id: dietDinner.dietId });
+            const dinnerPortion = yield (0, dinnerPortion_service_1.getDinnerPortion)({
+                _id: dietDinner.dinnerPortionId,
+            });
+            const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion === null || dinnerPortion === void 0 ? void 0 : dinnerPortion.dinnerId });
+            const dinnerProducts = yield (0, dinnerProduct_service_1.getDinnerProducts)({ dinnerId: dinner === null || dinner === void 0 ? void 0 : dinner._id });
+            const meal = yield (0, dietMeal_service_1.getDietMeal)({ _id: dietDinner.dietMealId });
+            return {
+                _id: dietDinner._id,
+                userId: dietDinner.user,
+                diet: {
+                    _id: diet === null || diet === void 0 ? void 0 : diet._id,
+                    name: diet === null || diet === void 0 ? void 0 : diet.name,
+                    clientId: diet === null || diet === void 0 ? void 0 : diet.clientId,
+                    clientPreferencesGroup: 1,
+                },
+                dinner: {
+                    _id: dinner === null || dinner === void 0 ? void 0 : dinner._id,
+                    name: dinner === null || dinner === void 0 ? void 0 : dinner.name,
+                    products: dinnerProducts.map((dinnerProduct) => dinnerProduct._id),
+                    likedProductsPoints: 0,
+                },
+                meal: {
+                    _id: meal === null || meal === void 0 ? void 0 : meal._id,
+                    name: meal === null || meal === void 0 ? void 0 : meal.name,
+                    type: meal === null || meal === void 0 ? void 0 : meal.type,
+                },
+            };
+        })));
+        // const sortedDinners = [...dietDinnersQuery].sort((a, b) => a.order - b.order);
+        return res.send(dietDinnersQuery);
+    });
+}
+exports.getAllDietDinnersController = getAllDietDinnersController;
 function getDietDinnersController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
@@ -115,6 +211,33 @@ function getDietDinnersController(req, res) {
     });
 }
 exports.getDietDinnersController = getDietDinnersController;
+function getDietDinnersByDayIdController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const userId = res.locals.user._id;
+        const dayId = req.params.dayId;
+        const dietDinners = yield (0, dietDinner_service_1.getDietDinners)({
+            user: userId,
+            dayId: dayId,
+        });
+        if (!dietDinners) {
+            return res.sendStatus(404);
+        }
+        const dietDinnersQuery = yield Promise.all(dietDinners.map((dietDinner) => __awaiter(this, void 0, void 0, function* () {
+            const diet = yield (0, diet_service_1.getDiet)({ _id: dietDinner.dietId });
+            const dinnerPortion = yield (0, dinnerPortion_service_1.getDinnerPortion)({
+                _id: dietDinner.dinnerPortionId,
+            });
+            const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion === null || dinnerPortion === void 0 ? void 0 : dinnerPortion.dinnerId });
+            const meal = yield (0, dietMeal_service_1.getDietMeal)({ _id: dietDinner.dietMealId });
+            return Object.assign(Object.assign({}, dietDinner), { diet,
+                dinner,
+                meal });
+        })));
+        const sortedDinners = [...dietDinnersQuery].sort((a, b) => a.order - b.order);
+        return res.send(sortedDinners);
+    });
+}
+exports.getDietDinnersByDayIdController = getDietDinnersByDayIdController;
 function getDietDinnersByPortionIdController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
@@ -171,6 +294,7 @@ function deleteDietDinnerController(req, res) {
             return res.sendStatus(403);
         }
         yield (0, dietDinner_service_1.deleteDietDinner)({ _id: dietDinnerId });
+        events_1.dietEmitter.emit('dietDinner::deleted', 200, dietDinner);
         return res.sendStatus(200);
     });
 }

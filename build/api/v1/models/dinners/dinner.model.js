@@ -15,7 +15,9 @@ const DinnerSchema = new Schema({
     description: { type: String },
     recipe: { type: String },
     preparation_time: { type: String },
-    dietKinds: [{ type: String }],
+    dietKindsExclude: [
+        { type: mongoose_1.default.Schema.Types.ObjectId, ref: 'DietKind' },
+    ],
     tags: [{ type: String }],
 }, {
     timestamps: true,

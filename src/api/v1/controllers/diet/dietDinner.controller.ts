@@ -29,6 +29,7 @@ import { getProduct } from '../../services/products.service';
 import { getDinner } from '../../services/dinner/dinner.service';
 import { dietEmitter } from './events';
 import { getDietMeal } from '../../services/diet/dietMeal.service';
+import { getDietDay } from '../../services/diet/dietDay.service';
 
 export async function createDietDinnerController(
   req: Request<{}, {}, CreateDietDinnerInput['body']>,
@@ -144,6 +145,63 @@ export async function getDietDinnerController(
   }
 
   return res.send(dietDinner);
+}
+
+export async function getAllDietDinnersToMealRecommendController(
+  req: Request<GetDietDinnersInput['params']>,
+  res: Response
+) {
+  // const userId = res.locals.user._id;
+  // const mealId = req.params.dietMealId;
+
+  const dietDinners = await getDietDinners({});
+
+  if (!dietDinners) {
+    return res.sendStatus(404);
+  }
+
+  const dietDinnersQuery = await Promise.all(
+    dietDinners.map(async (dietDinner) => {
+      const diet = await getDiet({ _id: dietDinner.dietId });
+      const dinnerPortion = await getDinnerPortion({
+        _id: dietDinner.dinnerPortionId,
+      });
+      const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
+      const dinnerProducts = await getDinnerProducts({ dinnerId: dinner?._id });
+      const meal = await getDietMeal({ _id: dietDinner.dietMealId });
+      const day = await getDietDay({ _id: meal?.dayId });
+
+      return {
+        _id: dietDinner._id,
+        userId: dietDinner.user,
+        diet: {
+          _id: diet?._id,
+          name: diet?.name,
+          clientId: diet?.clientId,
+          clientPreferencesGroup: 1,
+        },
+        dinner: {
+          _id: dinner?._id,
+          name: dinner?.name,
+          products: dinnerProducts.map((dinnerProduct) => dinnerProduct._id),
+          likedProductsPoints: 0,
+        },
+        day: {
+          _id: day?._id,
+          name: day?.name,
+        },
+        meal: {
+          _id: meal?._id,
+          name: meal?.name,
+          type: meal?.type,
+        },
+      };
+    })
+  );
+
+  // const sortedDinners = [...dietDinnersQuery].sort((a, b) => a.order - b.order);
+
+  return res.send(dietDinnersQuery);
 }
 
 export async function getAllDietDinnersController(

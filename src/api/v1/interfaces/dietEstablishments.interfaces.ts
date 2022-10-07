@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { IUserDocument } from './user.interfaces';
 import { IMeasurementDocument } from './measurement.interfaces';
 import { IClientDocument } from './client.interfaces';
+import { IDietKindDocument } from './dietKind/dietKind.interfaces';
 
 export interface IDietEstablishmentMeal {
   _id: string;
@@ -44,7 +45,7 @@ export interface IDietEstablishmentInput {
   name: string;
   folder?: string;
   description?: string;
-  dietKind?: string;
+  dietKind?: IDietKindDocument['_id'];
   measurementId?: IMeasurementDocument['_id'];
   client: IClientDocument['_id'];
   clientMeasurementCpm: boolean;

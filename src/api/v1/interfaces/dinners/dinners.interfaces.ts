@@ -38,7 +38,7 @@ export interface IDinnerInput {
   mealTypesKind: 'soup' | 'mainCourse' | 'drink';
   description?: string;
   recipe?: string;
-  dietKinds?: string[];
+  dietKindsExclude?: string[];
   tags?: ('nogluten' | 'lactose-free')[];
   preparation_time: IPreparationTime;
 }
