@@ -1,19 +1,175 @@
+import { databaseResponseTimeHistogram } from '../../../utils/metrics';
+import { getDiet } from '../../diet/diet.service';
+import { getDietMeal } from '../../diet/dietMeal.service';
+import { getDietEstablishment } from '../../dietEstablishment.service';
+import { IDinnerDocument } from '../../../interfaces/dinners/dinners.interfaces';
+import { IDinnerPortionDocument } from '../../../interfaces/dinners/dinnerPortions.interfaces';
+
 //functions
 import { mealRecommend } from './mealRecommend/mealRecommend';
+import { getMealDinnersPortionsMacro } from './portionsMacro/getDinnerPortionsMacro';
+import {
+  cartesianDinners,
+  ICartesianResult,
+} from './cartesianDinners/cartesianDinners';
+import { selectGroups } from './selectGroups';
+import { getDinnerPortion } from '../../dinner/dinnerPortion.service';
+import { getDinner } from '../../dinner/dinner.service';
 
 interface IMealGenerateArgs {
-  mealDayId: string;
+  mealId: string;
 }
 
-export const mealGenerate = async ({ mealDayId }: IMealGenerateArgs) => {
-  const recommendMeals = await mealRecommend({ mealDayId });
+export const mealGenerate = async ({ mealId }: IMealGenerateArgs) => {
+  console.log('start generowania posiłku');
+  const metricsLabels = {
+    operation: 'mealGenerate',
+  };
+  const timer = databaseResponseTimeHistogram.startTimer();
 
-  if (!recommendMeals || recommendMeals.length < 1) return; //random dietMeal
-  const recommendMeal = recommendMeals[0];
+  try {
+    const meal = await getDietMeal({ _id: mealId });
+    //correct
 
-  //mealDinnersMacroPortion
-  //mealDinnersCartesianGroups
-  //mealDinnersSelectGroups
+    if (!meal) {
+      return;
+    }
 
-  return recommendMeal;
+    const recommendMeal = await mealRecommend({
+      mealDayId: meal.dayId,
+      mealType: meal.type,
+    });
+
+    if (!recommendMeal) return; //random dietMeal
+
+    console.log(
+      `Wybrano posiłek poprzez: ${recommendMeal.dayMealGenerateType}`
+    );
+
+    const mealDinnersPortionsMacro = await Promise.all(
+      recommendMeal.dayMealDinners.map(async (dinner) => {
+        const dinnerMacroPortion = await getMealDinnersPortionsMacro(dinner);
+
+        return dinnerMacroPortion;
+      })
+    );
+
+    if (!mealDinnersPortionsMacro) return;
+
+    const mealDinners = mealDinnersPortionsMacro.flatMap((mealDinner) => {
+      return mealDinner.dinnerProductsPortions;
+    });
+    // złączenie wszystkich produktów w posiłku (odróżnienie za pomocą dinnerId)
+
+    const diet = await getDiet({ _id: meal.dietId });
+
+    if (!diet) return;
+
+    const dietEstablishment = await getDietEstablishment({
+      _id: diet.establishmentId,
+    });
+
+    if (!dietEstablishment) return;
+
+    const mealEstablishment = dietEstablishment.meals.find(
+      ({ _id }) => _id === meal.establishmentMealId
+    );
+
+    if (!mealEstablishment) return;
+
+    console.time('cartesianProduct');
+    //    // połączone porcje wszystkich dań posiłków np (danie główne i danie uzupełniające)
+
+    const maxCartesianGroups = mealDinners.length < 6 ? 50000 : 100;
+
+    // //zabezpieczenie przed brakiem grup (zmiana procenta)
+    const cartesianResultGroups = [];
+
+    for (let currentProcent = 2, l = 10; currentProcent < l; currentProcent++) {
+      const dinnersCartesianGroups = cartesianDinners(
+        mealEstablishment,
+        dietEstablishment,
+        maxCartesianGroups,
+        currentProcent,
+        ...mealDinners
+      );
+
+      if (dinnersCartesianGroups.length > 0) {
+        console.log(`Procent odchylenia grup: ${currentProcent}`);
+        cartesianResultGroups.push(...dinnersCartesianGroups);
+        break;
+      }
+    }
+
+    // const currentProcent = 5;
+    // const dinnersCartesianGroups = cartesianDinners(
+    //   mealEstablishment,
+    //   dietEstablishment,
+    //   maxCartesianGroups,
+    //   currentProcent,
+    //   ...mealDinners
+    // );
+
+    console.timeEnd('cartesianProduct');
+
+    const selectedDinnersGroups = selectGroups(cartesianResultGroups);
+
+    console.log('Wybrano grupy');
+
+    // console.log(selectedDinnersGroups.main);
+
+    const selectedMealDinners = await Promise.all(
+      recommendMeal.dayMealDinners.map(async (dietDinner) => {
+        const dinnerPortion = (await getDinnerPortion({
+          _id: dietDinner.dinnerPortionId,
+        })) as IDinnerPortionDocument;
+        const dinner = (await getDinner({
+          _id: dinnerPortion.dinnerId,
+        })) as IDinnerDocument;
+
+        const dinnerId = dinner._id.toString();
+
+        const dinnerObj = {
+          _id: dietDinner._id,
+          dinnerId: dinner._id,
+          dinnerName: dinner.name,
+          dinnerProducts: selectedDinnersGroups.main.group.products.filter(
+            (dinnerProduct) => dinnerProduct.dinnerId == dinnerId
+          ),
+        };
+
+        return dinnerObj;
+      })
+    );
+
+    const generatedMealObj = {
+      dietMeal: {
+        _id: meal._id,
+        dayId: meal.dayId,
+        dietId: meal.dietId,
+      },
+      selectedMealGroup: {
+        type: selectedDinnersGroups.main.type,
+        name: selectedDinnersGroups.main.name,
+        description: selectedDinnersGroups.main.description,
+        macroTotalCount: selectedDinnersGroups.main.group.macroTotalCount,
+        missingProcentCount:
+          selectedDinnersGroups.main.group.missingProcentCount,
+      },
+      mealDinners: selectedMealDinners,
+      totalGroups: cartesianResultGroups.length,
+    };
+    //mealDinnersCartesianGroups
+    //mealDinnersSelectGroups
+
+    timer({ ...metricsLabels, success: 'true' });
+    return {
+      recommendMeal,
+      selectedDinnersGroups,
+      generatedMealObj,
+    };
+  } catch (e) {
+    timer({ ...metricsLabels, success: 'false' });
+    throw e;
+  }
 };

@@ -1,4 +1,10 @@
 import axios from 'axios';
+import { forEach } from 'lodash';
+import { IDietMealDocument } from '../../../../interfaces/diet/dietMeal.interfaces';
+import { IDietDinnerDocument } from '../../../../interfaces/diet/dietDinner.interfaces';
+import { getDietDinners } from '../../../diet/dietDinner.service';
+import { getDietMeal, getDietMeals } from '../../../diet/dietMeal.service';
+import { getAllDietMealsController } from '../../../../controllers/diet/dietMeal.controller';
 
 // interface IRecommendDietDinnerArg {
 //   _id: string;
@@ -23,42 +29,106 @@ import axios from 'axios';
 //   mealType: string;
 // }
 
-interface IRecommendDietMealData {
-  distance: number;
-  recommendMealId: string;
+interface IRecommendDietDayData {
+  dayDistance: number;
+  dayId: string;
 }
 
-export const mealRecommend = async ({ mealDayId }: { mealDayId: string }) => {
+interface IRecommendDietDayArgs {
+  mealDayId: string;
+  mealType: IDietMealDocument['type'];
+}
+
+export interface IMealRecommend {
+  dayMealId: string;
+  dayMealDinners: IDietDinnerDocument[];
+  dayDistance?: number;
+  dayMealGenerateType: 'recommend' | 'random';
+  dayId: string;
+}
+
+export const mealRecommend = async ({
+  mealDayId,
+  mealType,
+}: IRecommendDietDayArgs) => {
   try {
-    const recommendMealsRes = await axios.post<IRecommendDietMealData[]>(
-      'https://diet-ai-recommend-server.herokuapp.com/mvp-recommend-dinners',
-      mealDayId
+    const recommendDietDaysRes = await axios.post<IRecommendDietDayData[]>(
+      'https://diet-ai-recommend-server.herokuapp.com/mvp-recommend-days',
+      { currentDayId: mealDayId }
     );
 
-    console.log({ recommendMealsRes });
+    // const recommendDietDaysRes = { data: [] as IRecommendDietDayData[] };
 
-    return recommendMealsRes.data;
+    //zwraca rekomendowany dzień
+    if (!recommendDietDaysRes || recommendDietDaysRes.data.length < 1) {
+      throw 'Brak rekomendowanych dni';
+    }
+
+    console.log({ recommendDietDaysRes });
+
+    const recommendMeals = await Promise.all(
+      recommendDietDaysRes.data.map(async (day) => {
+        const dayMeal = await getDietMeal({
+          dayId: day.dayId,
+          type: mealType,
+        });
+        const dayMealDinners = await getDietDinners({
+          dietMealId: dayMeal?._id,
+        });
+
+        const recommendMealObj: IMealRecommend = {
+          ...day,
+          dayMealId: dayMeal?._id,
+          dayMealDinners,
+          dayMealGenerateType: 'recommend',
+        };
+        return recommendMealObj;
+      })
+    );
+
+    const recommendMeal = recommendMeals.find(
+      (meal) => meal.dayMealDinners.length > 0
+    );
+
+    console.log({ recommendMeals, recommendMeal });
+
+    if (!recommendMeal) throw 'Rekomendowany posiłek nie zawiera potraw';
+
+    return recommendMeal;
   } catch (e) {
-    return;
+    console.log(`Błąd podczas rekomendacji posiłku`);
+    const allDietMeals = await getDietMeals({});
+
+    const allDietMealsValidDinners: IDietMealDocument[] = [];
+
+    const allDietMealsWithDinners = await Promise.all(
+      allDietMeals.map(async (dietMeal) => {
+        const mealDinners = await getDietDinners({ dietMealId: dietMeal._id });
+        if (mealDinners.length > 0) {
+          allDietMealsValidDinners.push(dietMeal);
+        }
+      })
+    );
+    const filteredDietMealsByType = allDietMealsValidDinners.filter(
+      (dietMeal) => dietMeal.type === mealType
+    );
+
+    const randomDietMeal =
+      filteredDietMealsByType[
+        Math.floor(Math.random() * filteredDietMealsByType.length)
+      ];
+
+    const dayMealDinners = await getDietDinners({
+      dietMealId: randomDietMeal._id,
+    });
+
+    const randomMealObj: IMealRecommend = {
+      dayMealId: randomDietMeal._id,
+      dayMealDinners,
+      dayId: randomDietMeal.dayId,
+      dayMealGenerateType: 'random',
+    };
+
+    return randomMealObj;
   }
-
-  //przesłanie do algorytmu mealDayId => wybranie wszystkich dietDinners gdzie dietDinner.dayId === mealDayId
-
-  // const allDietDinners: IRecommendDietDinnerArg[] = dietDinners.map(
-  //   (dietDinner) => ({
-  //     _id: dietDinner._id,
-  //     userId: dietDinner.user,
-  //     'diet._id': dietDinner.dietId + 'sed', //nie może być takie same id diety jak już dodanych dietDinners
-  //     'diet.name': dietDinner.diet.name,
-  //     'diet.clientId': dietDinner.diet.clientId,
-  //     'diet.clientPreferencesGroup': 1,
-  //     'dinner._id': dietDinner.dinner._id,
-  //     'dinner.name': dietDinner.dinner.name,
-  //     'dinner.products': ['dadqdqd', 'dqdwq'],
-  //     'dinner.likedProductsPoints': 0,
-  //     'meal._id': dietDinner.dietMealId,
-  //     'meal.name': dietDinner.meal.name,
-  //     'meal.type': dietDinner.meal.type,
-  //   })
-  // );
 };

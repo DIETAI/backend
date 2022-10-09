@@ -14,32 +14,56 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mealRecommend = void 0;
 const axios_1 = __importDefault(require("axios"));
-const mealRecommend = ({ mealDayId }) => __awaiter(void 0, void 0, void 0, function* () {
+const dietDinner_service_1 = require("../../../diet/dietDinner.service");
+const dietMeal_service_1 = require("../../../diet/dietMeal.service");
+const mealRecommend = ({ mealDayId, mealType, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const recommendMealsRes = yield axios_1.default.post('https://diet-ai-recommend-server.herokuapp.com/mvp-recommend-dinners', mealDayId);
-        console.log({ recommendMealsRes });
-        return recommendMealsRes.data;
+        const recommendDietDaysRes = yield axios_1.default.post('https://diet-ai-recommend-server.herokuapp.com/mvp-recommend-days', { currentDayId: mealDayId });
+        // const recommendDietDaysRes = { data: [] as IRecommendDietDayData[] };
+        //zwraca rekomendowany dzień
+        if (!recommendDietDaysRes || recommendDietDaysRes.data.length < 1) {
+            throw 'Brak rekomendowanych dni';
+        }
+        console.log({ recommendDietDaysRes });
+        const recommendMeals = yield Promise.all(recommendDietDaysRes.data.map((day) => __awaiter(void 0, void 0, void 0, function* () {
+            const dayMeal = yield (0, dietMeal_service_1.getDietMeal)({
+                dayId: day.dayId,
+                type: mealType,
+            });
+            const dayMealDinners = yield (0, dietDinner_service_1.getDietDinners)({
+                dietMealId: dayMeal === null || dayMeal === void 0 ? void 0 : dayMeal._id,
+            });
+            const recommendMealObj = Object.assign(Object.assign({}, day), { dayMealId: dayMeal === null || dayMeal === void 0 ? void 0 : dayMeal._id, dayMealDinners, dayMealGenerateType: 'recommend' });
+            return recommendMealObj;
+        })));
+        const recommendMeal = recommendMeals.find((meal) => meal.dayMealDinners.length > 0);
+        console.log({ recommendMeals, recommendMeal });
+        if (!recommendMeal)
+            throw 'Rekomendowany posiłek nie zawiera potraw';
+        return recommendMeal;
     }
     catch (e) {
-        return;
+        console.log(`Błąd podczas rekomendacji posiłku`);
+        const allDietMeals = yield (0, dietMeal_service_1.getDietMeals)({});
+        const allDietMealsValidDinners = [];
+        const allDietMealsWithDinners = yield Promise.all(allDietMeals.map((dietMeal) => __awaiter(void 0, void 0, void 0, function* () {
+            const mealDinners = yield (0, dietDinner_service_1.getDietDinners)({ dietMealId: dietMeal._id });
+            if (mealDinners.length > 0) {
+                allDietMealsValidDinners.push(dietMeal);
+            }
+        })));
+        const filteredDietMealsByType = allDietMealsValidDinners.filter((dietMeal) => dietMeal.type === mealType);
+        const randomDietMeal = filteredDietMealsByType[Math.floor(Math.random() * filteredDietMealsByType.length)];
+        const dayMealDinners = yield (0, dietDinner_service_1.getDietDinners)({
+            dietMealId: randomDietMeal._id,
+        });
+        const randomMealObj = {
+            dayMealId: randomDietMeal._id,
+            dayMealDinners,
+            dayId: randomDietMeal.dayId,
+            dayMealGenerateType: 'random',
+        };
+        return randomMealObj;
     }
-    //przesłanie do algorytmu mealDayId => wybranie wszystkich dietDinners gdzie dietDinner.dayId === mealDayId
-    // const allDietDinners: IRecommendDietDinnerArg[] = dietDinners.map(
-    //   (dietDinner) => ({
-    //     _id: dietDinner._id,
-    //     userId: dietDinner.user,
-    //     'diet._id': dietDinner.dietId + 'sed', //nie może być takie same id diety jak już dodanych dietDinners
-    //     'diet.name': dietDinner.diet.name,
-    //     'diet.clientId': dietDinner.diet.clientId,
-    //     'diet.clientPreferencesGroup': 1,
-    //     'dinner._id': dietDinner.dinner._id,
-    //     'dinner.name': dietDinner.dinner.name,
-    //     'dinner.products': ['dadqdqd', 'dqdwq'],
-    //     'dinner.likedProductsPoints': 0,
-    //     'meal._id': dietDinner.dietMealId,
-    //     'meal.name': dietDinner.meal.name,
-    //     'meal.type': dietDinner.meal.type,
-    //   })
-    // );
 });
 exports.mealRecommend = mealRecommend;
