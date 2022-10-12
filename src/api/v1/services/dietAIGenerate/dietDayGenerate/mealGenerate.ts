@@ -56,6 +56,7 @@ export interface IDietGenerateMeal {
   name: string;
   type: IDietMealDocument['type'];
   generatedType: 'new' | 'added' | 'addedChangePortion'; //or added or addedChangePortion,
+  randomType: IMealRecommend['dayMealGenerateType'];
   totalGroups?: number;
   selectedGroup?: {
     type: string;
@@ -67,23 +68,6 @@ export interface IDietGenerateMeal {
   total: IDietMealDocument['total']; //albo dodane już meal total albo przerobić generatedMacroTotalCount
   generatedDinners?: IGenerateDinner[];
   addedMealObj?: IDietMealDocument; //or undefined when new,
-}
-
-export interface IDietGenerateDay {
-  _id: string;
-  total: {
-    kcal: number;
-    protein: {
-      gram: number;
-    };
-    fat: {
-      gram: number;
-    };
-    carbohydrates: {
-      gram: number;
-    };
-  };
-  meals: IDietGenerateMeal[];
 }
 
 interface IMealRecommendWithGeneratedType extends IMealRecommend {
@@ -310,16 +294,14 @@ export const mealsGenerate = async ({
       mealName: meal.mealName,
       generatedType: meal.generatedType,
       randomType: meal.randomType,
-      mealType: dayRecommendMeals.filter(
-        (randomMeal) => randomMeal.dayMealId === meal.mealId
-      )[0].dayMealType,
+      mealType: meal.mealsType,
       groups: selectGroups(meal.groups),
     }));
 
     const generatedMeals: IDietGenerateMeal[] = await Promise.all(
       selectedDinners.map(async (meal) => {
         const randomMeal = dayRecommendMeals.filter(
-          (randomMeal) => randomMeal.dayMealId === meal.mealId
+          (randomMeal) => randomMeal.dayMealId == meal.mealId.toString()
         )[0];
 
         const mealDinners = await Promise.all(
@@ -336,7 +318,7 @@ export const mealsGenerate = async ({
               dinnerId: dinner._id,
               dinnerName: dinner.name,
               dinnerImage: dinner.image,
-              dinnerProducts: meal.groups.main.group.products.filter(
+              dinnerProducts: meal.groups.main?.group?.products.filter(
                 ({ dinnerId }) => dinnerId == dinner._id.toString()
               ),
               total: {
@@ -388,6 +370,7 @@ export const mealsGenerate = async ({
           name: meal.mealName,
           type: meal.mealType,
           generatedType: meal.generatedType, //edytować meal.generatedType
+          randomType: meal.randomType,
           totalGroups: dinnersCartesianGroups.find(
             (cartesianGroup) => cartesianGroup.mealsType === meal.mealType
           )?.groups.length,
@@ -429,9 +412,9 @@ export const mealsGenerate = async ({
       })
     );
 
-    console.log({ dayRecommendMeals, mealsDinnersPortionsMacro });
+    console.log({ dayRecommendMeals });
     timer({ ...metricsLabels, success: 'true' });
-    return { dayRecommendMeals, generatedMeals };
+    return generatedMeals;
   } catch (e) {
     console.log(e);
     timer({ ...metricsLabels, success: 'false' });

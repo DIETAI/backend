@@ -4,6 +4,7 @@ import { getDietMeal, getDietMeals } from '../../diet/dietMeal.service';
 import { getDietEstablishment } from '../../dietEstablishment.service';
 import { IDinnerDocument } from '../../../interfaces/dinners/dinners.interfaces';
 import { IDinnerPortionDocument } from '../../../interfaces/dinners/dinnerPortions.interfaces';
+import { IDietGenerateMeal } from './mealGenerate';
 
 //functions
 import { mealsGenerate } from './mealGenerate';
@@ -34,6 +35,23 @@ interface IDayGenerateArgs {
     | 'newMeals';
 }
 
+export interface IDietGenerateDay {
+  _id: string;
+  total: {
+    kcal: number;
+    protein: {
+      gram: number;
+    };
+    fat: {
+      gram: number;
+    };
+    carbohydrates: {
+      gram: number;
+    };
+  };
+  meals: IDietGenerateMeal[];
+}
+
 export interface IMealToRecommend extends IDietMealInput {
   _id: string;
   generatedType: 'new' | 'added' | 'addedChangePortion';
@@ -50,7 +68,7 @@ export const dietDayGenerate = async ({
   };
   const timer = databaseResponseTimeHistogram.startTimer();
 
-  const generatedAllDayMeals = [];
+  // const generatedAllDayMeals = [];
 
   try {
     const addedDayMeals = await getDietMeals({ dayId: currentDayId });
@@ -102,183 +120,200 @@ export const dietDayGenerate = async ({
         currentDayId,
       });
 
+      if (!generatedDayMeals) return;
+
       console.log({ generatedDayMeals });
 
-      generatedAllDayMeals.push(generatedDayMeals);
+      const dietDayGenerateObj: IDietGenerateDay = {
+        _id: currentDayId,
+        total: {
+          kcal: roundValue(
+            generatedDayMeals.reduce(
+              (acc, field) => acc + Number(field.total.kcal),
+              0
+            )
+          ),
+          protein: {
+            gram: roundValue(
+              generatedDayMeals.reduce(
+                (acc, field) => acc + Number(field.total.protein.gram),
+                0
+              )
+            ),
+          },
+          fat: {
+            gram: roundValue(
+              generatedDayMeals.reduce(
+                (acc, field) => acc + Number(field.total.fat.gram),
+                0
+              )
+            ),
+          },
+          carbohydrates: {
+            gram: roundValue(
+              generatedDayMeals.reduce(
+                (acc, field) => acc + Number(field.total.carbohydrates.gram),
+                0
+              )
+            ),
+          },
+        },
+        meals: generatedDayMeals,
+      };
 
-      //   const dietDayGenerateObj: IDietGenerateDay = {
-      //     _id: currentDayId,
-      //     total: {
-      //       kcal: roundValue(
-      //         generatedMeals.reduce(
-      //           (acc, field) => acc + Number(field.total.kcal),
-      //           0
-      //         )
-      //       ),
-      //       protein: {
-      //         gram: roundValue(
-      //           generatedMeals.reduce(
-      //             (acc, field) => acc + Number(field.total.protein.gram),
-      //             0
-      //           )
-      //         ),
-      //       },
-      //       fat: {
-      //         gram: roundValue(
-      //           generatedMeals.reduce(
-      //             (acc, field) => acc + Number(field.total.fat.gram),
-      //             0
-      //           )
-      //         ),
-      //       },
-      //       carbohydrates: {
-      //         gram: roundValue(
-      //           generatedMeals.reduce(
-      //             (acc, field) => acc + Number(field.total.carbohydrates.gram),
-      //             0
-      //           )
-      //         ),
-      //       },
-      //     },
-      //     meals: generatedMeals,
-      //   };
-
-      //   generatedDays.push(dietDayGenerateObj);
+      return dietDayGenerateObj;
     }
 
-    // if (generateMealsSettings === "newMeals") {
-    //   const mealsToRandom: IMealToRandom[] = sortedCheckMeals.map((meal) => ({
-    //     ...meal,
-    //     generatedType: "new",
-    //   }));
+    if (generateMealsSettings === 'newMeals') {
+      const mealsToRecommend: IMealToRecommend[] = sortedCheckMeals.map(
+        (meal) => {
+          return {
+            ...meal,
+            generatedType: 'new',
+          };
+        }
+      ); //correct
 
-    //   const generatedMeals = generateMeals({
-    //     mealsToGenerate: mealsToRandom,
-    //     availableMealsToRandom: availableDietMealsToRandom,
-    //     currentDayId,
-    //     allDietMeals,
-    //   });
+      const generatedDayMeals = await mealsGenerate({
+        mealsToRecommend,
+        currentDayId,
+      });
 
-    //   const dietDayGenerateObj: IDietGenerateDay = {
-    //     _id: currentDayId,
-    //     total: {
-    //       kcal: roundValue(
-    //         generatedMeals.reduce(
-    //           (acc, field) => acc + Number(field.total.kcal),
-    //           0
-    //         )
-    //       ),
-    //       protein: {
-    //         gram: roundValue(
-    //           generatedMeals.reduce(
-    //             (acc, field) => acc + Number(field.total.protein.gram),
-    //             0
-    //           )
-    //         ),
-    //       },
-    //       fat: {
-    //         gram: roundValue(
-    //           generatedMeals.reduce(
-    //             (acc, field) => acc + Number(field.total.fat.gram),
-    //             0
-    //           )
-    //         ),
-    //       },
-    //       carbohydrates: {
-    //         gram: roundValue(
-    //           generatedMeals.reduce(
-    //             (acc, field) => acc + Number(field.total.carbohydrates.gram),
-    //             0
-    //           )
-    //         ),
-    //       },
-    //     },
-    //     meals: generatedMeals,
-    //   };
+      if (!generatedDayMeals) return;
 
-    //   generatedDays.push(dietDayGenerateObj);
-    // }
+      const dietDayGenerateObj: IDietGenerateDay = {
+        _id: currentDayId,
+        total: {
+          kcal: roundValue(
+            generatedDayMeals.reduce(
+              (acc, field) => acc + Number(field.total.kcal),
+              0
+            )
+          ),
+          protein: {
+            gram: roundValue(
+              generatedDayMeals.reduce(
+                (acc, field) => acc + Number(field.total.protein.gram),
+                0
+              )
+            ),
+          },
+          fat: {
+            gram: roundValue(
+              generatedDayMeals.reduce(
+                (acc, field) => acc + Number(field.total.fat.gram),
+                0
+              )
+            ),
+          },
+          carbohydrates: {
+            gram: roundValue(
+              generatedDayMeals.reduce(
+                (acc, field) => acc + Number(field.total.carbohydrates.gram),
+                0
+              )
+            ),
+          },
+        },
+        meals: generatedDayMeals,
+      };
 
-    // if (generateMealsSettings === "saveAddedMeals") {
-    //   //nie wybiera posiłków z potrawami - poprawić
-    //   const savedMeals = sortedCheckMeals.filter(
-    //     (meal) => meal.dinners.length >= 1
-    //   );
-    //   const filterMealsToRandom = sortedCheckMeals.filter(
-    //     (meal) => meal.dinners.length < 1
-    //   );
+      return dietDayGenerateObj;
+    }
 
-    //   console.log({ savedMeals, filterMealsToRandom });
+    if (generateMealsSettings === 'saveAddedMeals') {
+      //nie wybiera posiłków z potrawami - poprawić
 
-    //   const mealsToRandom: IMealToRandom[] = filterMealsToRandom.map(
-    //     (meal) => ({
-    //       ...meal,
-    //       generatedType: "new",
-    //     })
-    //   );
+      const sortedCheckMealsWithDinners = await Promise.all(
+        sortedCheckMeals.map(async (dietMeal) => {
+          const mealDinners = await getDietDinners({
+            dietMealId: dietMeal._id,
+          });
 
-    //   const generatedMeals = generateMeals({
-    //     mealsToGenerate: mealsToRandom,
-    //     availableMealsToRandom: availableDietMealsToRandom,
-    //     currentDayId,
-    //     allDietMeals,
-    //   });
+          return {
+            ...dietMeal,
+            dietMealDinnersLength: mealDinners.length || 0,
+          };
+        })
+      );
 
-    //   const savedMealsCheck: IDietGenerateMeal[] = savedMeals.map((meal) => ({
-    //     _id: meal._id,
-    //     name: meal.name,
-    //     type: meal.type,
-    //     generatedType: "added",
-    //     total: meal.total,
-    //     selectedGroup: undefined,
-    //     generatedDinners: [],
-    //     addedMealObj: meal,
-    //   }));
+      const savedMeals = sortedCheckMealsWithDinners.filter(
+        (meal) => meal.dietMealDinnersLength >= 1
+      );
+      const filterMealsToRandom = sortedCheckMealsWithDinners.filter(
+        (meal) => meal.dietMealDinnersLength < 1
+      ); //as IDietMealDocument
 
-    //   const allMeals = savedMealsCheck.concat(generatedMeals);
+      console.log({ savedMeals, filterMealsToRandom });
 
-    //   console.log({ allMeals });
+      const mealsToRecommend: IMealToRecommend[] = filterMealsToRandom.map(
+        (meal) => ({
+          ...meal,
+          generatedType: 'new',
+        })
+      ); //correct
 
-    //   const dietDayGenerateObj: IDietGenerateDay = {
-    //     _id: currentDayId,
-    //     total: {
-    //       kcal: roundValue(
-    //         allMeals.reduce((acc, field) => acc + Number(field.total.kcal), 0)
-    //       ),
-    //       protein: {
-    //         gram: roundValue(
-    //           allMeals.reduce(
-    //             (acc, field) => acc + Number(field.total.protein.gram),
-    //             0
-    //           )
-    //         ),
-    //       },
-    //       fat: {
-    //         gram: roundValue(
-    //           allMeals.reduce(
-    //             (acc, field) => acc + Number(field.total.fat.gram),
-    //             0
-    //           )
-    //         ),
-    //       },
-    //       carbohydrates: {
-    //         gram: roundValue(
-    //           allMeals.reduce(
-    //             (acc, field) => acc + Number(field.total.carbohydrates.gram),
-    //             0
-    //           )
-    //         ),
-    //       },
-    //     },
-    //     meals: allMeals,
-    //   };
+      //przy losowaniu zwrócić uwagę na generatedType
+      //if addedChangePortion => nie losować posiłku tylko zostawić a następnie dostosować ilość
+      const generatedDayMeals = await mealsGenerate({
+        mealsToRecommend,
+        currentDayId,
+      });
 
-    // }
+      if (!generatedDayMeals) return;
+
+      const savedMealsCheck: IDietGenerateMeal[] = savedMeals.map((meal) => ({
+        _id: meal._id,
+        name: meal.name,
+        type: meal.type,
+        generatedType: 'added',
+        randomType: 'random',
+        total: meal.total,
+        selectedGroup: undefined,
+        generatedDinners: [],
+        addedMealObj: meal as any,
+      }));
+
+      const allMeals = savedMealsCheck.concat(generatedDayMeals);
+
+      const dietDayGenerateObj: IDietGenerateDay = {
+        _id: currentDayId,
+        total: {
+          kcal: roundValue(
+            allMeals.reduce((acc, field) => acc + Number(field.total.kcal), 0)
+          ),
+          protein: {
+            gram: roundValue(
+              allMeals.reduce(
+                (acc, field) => acc + Number(field.total.protein.gram),
+                0
+              )
+            ),
+          },
+          fat: {
+            gram: roundValue(
+              allMeals.reduce(
+                (acc, field) => acc + Number(field.total.fat.gram),
+                0
+              )
+            ),
+          },
+          carbohydrates: {
+            gram: roundValue(
+              allMeals.reduce(
+                (acc, field) => acc + Number(field.total.carbohydrates.gram),
+                0
+              )
+            ),
+          },
+        },
+        meals: allMeals,
+      };
+
+      return dietDayGenerateObj;
+    }
 
     timer({ ...metricsLabels, success: 'true' });
-    return {
-      generatedAllDayMeals,
-    };
   } catch (e) {
     timer({ ...metricsLabels, success: 'false' });
     throw e;
