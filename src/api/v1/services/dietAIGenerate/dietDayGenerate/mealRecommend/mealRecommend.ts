@@ -34,28 +34,50 @@ interface IRecommendDietDayData {
   dayId: string;
 }
 
+export interface IMealRecommend {
+  dayMealId: string;
+  dayMealType: IDietMealDocument['type'];
+  dayMealDinners: IDietDinnerDocument[];
+  dayDistance?: number;
+  dayMealGenerateType?: 'recommend' | 'random';
+  dayId: string;
+}
+
+//dietDinner
+export interface ICurrentDayRecommendDinner {
+  _id: string;
+  userId: string;
+  'diet._id': string;
+  'diet.name': string;
+  'diet.clientId': string;
+  'diet.clientPreferencesGroup': number;
+  'dinner._id': string;
+  'dinner.name': string;
+  'dinner.products': [];
+  'dinner.likedProductsPoints': number;
+  'day._id': string;
+  'day.name': string;
+  'meal._id': string;
+  'meal.name': string;
+  'meal.type': IDietMealDocument['type'];
+}
+
 interface IRecommendDietDayArgs {
   mealDayId: string;
   mealType: IDietMealDocument['type'];
-}
-
-export interface IMealRecommend {
-  dayMealId: string;
-  dayMealDinners: IDietDinnerDocument[];
-  dayDistance?: number;
-  dayMealGenerateType: 'recommend' | 'random';
-  dayId: string;
+  currentDayRecommendDinners: ICurrentDayRecommendDinner[];
 }
 
 export const mealRecommend = async ({
   mealDayId,
   mealType,
+  currentDayRecommendDinners,
 }: IRecommendDietDayArgs) => {
   try {
     //w generowaniu diety przekazanie już wygenerowanych posiłków
     const recommendDietDaysRes = await axios.post<IRecommendDietDayData[]>(
-      'https://diet-ai-recommend-server.herokuapp.com/mvp-recommend-days',
-      { currentDayId: mealDayId }
+      'https://diet-ai-recommend-server.herokuapp.com/mvp-recommend-days-to-diet',
+      { currentDayRecommendDinners: currentDayRecommendDinners }
     );
 
     // const recommendDietDaysRes = { data: [] as IRecommendDietDayData[] };
@@ -69,17 +91,18 @@ export const mealRecommend = async ({
 
     const recommendMeals = await Promise.all(
       recommendDietDaysRes.data.map(async (day) => {
-        const dayMeal = await getDietMeal({
+        const dayMeal = (await getDietMeal({
           dayId: day.dayId,
           type: mealType,
-        });
+        })) as IDietMealDocument;
         const dayMealDinners = await getDietDinners({
           dietMealId: dayMeal?._id,
         });
 
         const recommendMealObj: IMealRecommend = {
           ...day,
-          dayMealId: dayMeal?._id,
+          dayMealId: dayMeal._id,
+          dayMealType: dayMeal.type,
           dayMealDinners,
           dayMealGenerateType: 'recommend',
         };
@@ -125,10 +148,13 @@ export const mealRecommend = async ({
 
     const randomMealObj: IMealRecommend = {
       dayMealId: randomDietMeal._id,
+      dayMealType: randomDietMeal.type,
       dayMealDinners,
       dayId: randomDietMeal.dayId,
       dayMealGenerateType: 'random',
     };
+
+    console.log({ randomMealObj });
 
     return randomMealObj;
   }

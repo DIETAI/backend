@@ -16,10 +16,10 @@ exports.mealRecommend = void 0;
 const axios_1 = __importDefault(require("axios"));
 const dietDinner_service_1 = require("../../../diet/dietDinner.service");
 const dietMeal_service_1 = require("../../../diet/dietMeal.service");
-const mealRecommend = ({ mealDayId, mealType, }) => __awaiter(void 0, void 0, void 0, function* () {
+const mealRecommend = ({ mealDayId, mealType, currentDayRecommendDinners, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //w generowaniu diety przekazanie już wygenerowanych posiłków
-        const recommendDietDaysRes = yield axios_1.default.post('https://diet-ai-recommend-server.herokuapp.com/mvp-recommend-days', { currentDayId: mealDayId });
+        const recommendDietDaysRes = yield axios_1.default.post('https://diet-ai-recommend-server.herokuapp.com/mvp-recommend-days-to-diet', { currentDayRecommendDinners: currentDayRecommendDinners });
         // const recommendDietDaysRes = { data: [] as IRecommendDietDayData[] };
         //zwraca rekomendowany dzień
         if (!recommendDietDaysRes || recommendDietDaysRes.data.length < 1) {
@@ -27,14 +27,14 @@ const mealRecommend = ({ mealDayId, mealType, }) => __awaiter(void 0, void 0, vo
         }
         console.log({ recommendDietDaysRes });
         const recommendMeals = yield Promise.all(recommendDietDaysRes.data.map((day) => __awaiter(void 0, void 0, void 0, function* () {
-            const dayMeal = yield (0, dietMeal_service_1.getDietMeal)({
+            const dayMeal = (yield (0, dietMeal_service_1.getDietMeal)({
                 dayId: day.dayId,
                 type: mealType,
-            });
+            }));
             const dayMealDinners = yield (0, dietDinner_service_1.getDietDinners)({
                 dietMealId: dayMeal === null || dayMeal === void 0 ? void 0 : dayMeal._id,
             });
-            const recommendMealObj = Object.assign(Object.assign({}, day), { dayMealId: dayMeal === null || dayMeal === void 0 ? void 0 : dayMeal._id, dayMealDinners, dayMealGenerateType: 'recommend' });
+            const recommendMealObj = Object.assign(Object.assign({}, day), { dayMealId: dayMeal._id, dayMealType: dayMeal.type, dayMealDinners, dayMealGenerateType: 'recommend' });
             return recommendMealObj;
         })));
         const recommendMeal = recommendMeals.find((meal) => meal.dayMealDinners.length > 0);
@@ -60,10 +60,12 @@ const mealRecommend = ({ mealDayId, mealType, }) => __awaiter(void 0, void 0, vo
         });
         const randomMealObj = {
             dayMealId: randomDietMeal._id,
+            dayMealType: randomDietMeal.type,
             dayMealDinners,
             dayId: randomDietMeal.dayId,
             dayMealGenerateType: 'random',
         };
+        console.log({ randomMealObj });
         return randomMealObj;
     }
 });
