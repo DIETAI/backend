@@ -213,12 +213,12 @@ export const mealsGenerate = async ({
         }
       );
 
-      console.log({ allMealDinnerProductsWithPortions });
+      // console.log({ allMealDinnerProductsWithPortions });
 
       const concatMealDinnersPortions =
         allMealDinnerProductsWithPortions.flatMap((mealDinners) => mealDinners);
 
-      console.log({ concatMealDinnersPortions });
+      // console.log({ concatMealDinnersPortions });
 
       //złączenie wszystkich produktów w posiłku (odróżnienie za pomocą dinnerId)
       //concatMealDinners => algorytm kartezjański
@@ -248,14 +248,25 @@ export const mealsGenerate = async ({
         const meal = (await getDietMeal({
           _id: mealDinner.dayMealId,
         })) as IDietMealDocument;
+        const currentDayMeal = (await getDietMeal({
+          dayId: currentDayId,
+          type: meal.type,
+        })) as IDietMealDocument; //znajduje meal danego dnia
         const mealEstablishment = dietEstablishment.meals.find(
-          ({ _id }) => _id === meal.establishmentMealId
-        ) as IDietEstablishmentDocument['meals'][0];
+          ({ _id }) => _id === currentDayMeal.establishmentMealId
+        ) as IDietEstablishmentDocument['meals'][0]; //błąd
+
+        console.log({
+          mealEstablishmentId: currentDayMeal.establishmentMealId, //inCorrect
+          dietEstablishmentMealsId: dietEstablishment.meals.map(
+            (mealE) => mealE._id //correct
+          ),
+        });
 
         const cartesianResultGroups = [];
 
         for (
-          let currentProcent = 2, l = 10;
+          let currentProcent = 2, l = 15;
           currentProcent < l;
           currentProcent++
         ) {
@@ -282,6 +293,8 @@ export const mealsGenerate = async ({
           mealEstablishment: mealEstablishment,
           groups: cartesianResultGroups,
         };
+
+        console.log({ groupsLength: cartesianResultGroups.length });
 
         return cartesianGroup;
       })
@@ -312,6 +325,8 @@ export const mealsGenerate = async ({
             const dinner = (await getDinner({
               _id: dinnerPortion.dinnerId,
             })) as IDinnerDocument;
+
+            console.log({ mainGroup: meal.groups.main });
 
             const mealDinnerObj = {
               _id: dietDinner._id,

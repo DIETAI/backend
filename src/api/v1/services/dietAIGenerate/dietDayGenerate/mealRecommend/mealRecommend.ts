@@ -87,7 +87,7 @@ export const mealRecommend = async ({
       throw 'Brak rekomendowanych dni';
     }
 
-    console.log({ recommendDietDaysRes });
+    // console.log({ recommendDietDaysRes });
 
     const recommendMeals = await Promise.all(
       recommendDietDaysRes.data.map(async (day) => {
