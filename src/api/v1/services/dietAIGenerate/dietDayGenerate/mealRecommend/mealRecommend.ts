@@ -118,6 +118,8 @@ export const mealRecommend = async ({
 
     if (!recommendMeal) throw 'Rekomendowany posiłek nie zawiera potraw';
 
+    console.log('Rekomendacja udała się');
+
     return recommendMeal;
   } catch (e) {
     console.log(`Błąd podczas rekomendacji posiłku`);

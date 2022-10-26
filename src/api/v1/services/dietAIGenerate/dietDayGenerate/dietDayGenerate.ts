@@ -22,6 +22,8 @@ import {
   IDietMealInput,
 } from '../../../interfaces/diet/dietMeal.interfaces';
 import { getDietDinners } from '../../diet/dietDinner.service';
+import { getDietDay } from '../../diet/dietDay.service';
+import { IDietDayDocument } from '../../../interfaces/diet/dietDay.interfaces';
 
 interface IDayGenerateArgs {
   currentDayId: string;
@@ -37,6 +39,7 @@ interface IDayGenerateArgs {
 
 export interface IDietGenerateDay {
   _id: string;
+  order: number;
   total: {
     kcal: number;
     protein: {
@@ -71,6 +74,10 @@ export const dietDayGenerate = async ({
   // const generatedAllDayMeals = [];
 
   try {
+    const currentDay = await getDietDay({ _id: currentDayId });
+
+    if (!currentDay) return;
+
     const addedDayMeals = await getDietMeals({ dayId: currentDayId });
 
     //z dodanych posiłków do dnia wybranie tylko tych które zaznaczono do wygenerowania
@@ -126,6 +133,7 @@ export const dietDayGenerate = async ({
 
       const dietDayGenerateObj: IDietGenerateDay = {
         _id: currentDayId,
+        order: currentDay.order,
         total: {
           kcal: roundValue(
             generatedDayMeals.reduce(
@@ -183,6 +191,7 @@ export const dietDayGenerate = async ({
 
       const dietDayGenerateObj: IDietGenerateDay = {
         _id: currentDayId,
+        order: currentDay.order,
         total: {
           kcal: roundValue(
             generatedDayMeals.reduce(
@@ -278,6 +287,7 @@ export const dietDayGenerate = async ({
 
       const dietDayGenerateObj: IDietGenerateDay = {
         _id: currentDayId,
+        order: currentDay.order,
         total: {
           kcal: roundValue(
             allMeals.reduce((acc, field) => acc + Number(field.total.kcal), 0)

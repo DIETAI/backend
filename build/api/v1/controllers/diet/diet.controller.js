@@ -19,6 +19,7 @@ const dinner_service_1 = require("../../services/dinner/dinner.service");
 const dinnerPortion_service_1 = require("../../services/dinner/dinnerPortion.service");
 const dinnerProduct_service_1 = require("../../services/dinner/dinnerProduct.service");
 const products_service_1 = require("../../services/products.service");
+const asset_service_1 = require("../../services/asset.service");
 function createDietController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
@@ -196,6 +197,9 @@ function getDietQueryController(req, res) {
                         _id: dietDinner.dinnerPortionId,
                     });
                     const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion === null || dinnerPortion === void 0 ? void 0 : dinnerPortion.dinnerId });
+                    const dinnerImageObj = (dinner === null || dinner === void 0 ? void 0 : dinner.image)
+                        ? yield (0, asset_service_1.getAsset)({ _id: dinner.image })
+                        : undefined;
                     if (!dinnerPortion)
                         return;
                     const dinnerProducts = yield Promise.all(dinnerPortion.dinnerProducts.map((dietDinnerProduct) => __awaiter(this, void 0, void 0, function* () {
@@ -207,8 +211,7 @@ function getDietQueryController(req, res) {
                         });
                         return Object.assign(Object.assign({}, dietDinnerProduct), { dinnerProduct: Object.assign(Object.assign({}, dinnerProduct), { product }) });
                     })));
-                    const dinnerObj = Object.assign(Object.assign({}, dinnerPortion), { dinnerProducts,
-                        dinner });
+                    const dinnerObj = Object.assign(Object.assign({}, dinnerPortion), { dinnerProducts, dinner: Object.assign(Object.assign({}, dinner), { imageObj: dinnerImageObj }) });
                     return Object.assign(Object.assign({}, dietDinner), { dinnerPortion: dinnerObj });
                 })));
                 // if (!dinners) {

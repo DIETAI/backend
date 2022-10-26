@@ -43,6 +43,7 @@ import { getDinner, getDinners } from '../../services/dinner/dinner.service';
 import { getDinnerPortion } from '../../services/dinner/dinnerPortion.service';
 import { getDinnerProduct } from '../../services/dinner/dinnerProduct.service';
 import { getProduct } from '../../services/products.service';
+import { getAsset } from '../../services/asset.service';
 
 export async function createDietController(
   req: Request<{}, {}, CreateDietInput['body']>,
@@ -266,6 +267,9 @@ export async function getDietQueryController(
                 _id: dietDinner.dinnerPortionId,
               });
               const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
+              const dinnerImageObj = dinner?.image
+                ? await getAsset({ _id: dinner.image })
+                : undefined;
 
               if (!dinnerPortion) return;
 
@@ -291,7 +295,10 @@ export async function getDietQueryController(
               const dinnerObj = {
                 ...dinnerPortion,
                 dinnerProducts,
-                dinner,
+                dinner: {
+                  ...dinner,
+                  imageObj: dinnerImageObj,
+                },
               };
 
               return {

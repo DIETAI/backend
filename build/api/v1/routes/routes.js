@@ -24,6 +24,7 @@ const subscriptionPlans_routes_1 = __importDefault(require("./subscriptionPlans.
 const transaction_routes_1 = __importDefault(require("./transaction.routes"));
 const client_routes_1 = __importDefault(require("./client.routes"));
 const dietGenerate_routes_1 = __importDefault(require("./dietGenerate.routes"));
+const dietDinnerPortionGenerate_routes_1 = __importDefault(require("./dietDinnerPortionGenerate.routes"));
 const routes = (app) => {
     app.use('/api/v1/user', user_routes_1.default);
     app.use('/api/v1/sessions', session_routes_1.default);
@@ -37,6 +38,7 @@ const routes = (app) => {
     app.use('/api/v1/dietDays', dietDays_routes_1.default);
     app.use('/api/v1/dietMeals', dietMeals_routes_1.default);
     app.use('/api/v1/dietMealsRecommend', dietMealsRecommend_routes_1.default);
+    app.use('/api/v1/dietDinnerPortionGenerate', dietDinnerPortionGenerate_routes_1.default);
     app.use('/api/v1/dietGenerate', dietGenerate_routes_1.default);
     app.use('/api/v1/dietDinners', dietDinners_routes_1.default);
     app.use('/api/v1/dinners', dinner_routes_1.default);

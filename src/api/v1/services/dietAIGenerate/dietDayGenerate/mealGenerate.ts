@@ -256,17 +256,17 @@ export const mealsGenerate = async ({
           ({ _id }) => _id === currentDayMeal.establishmentMealId
         ) as IDietEstablishmentDocument['meals'][0]; //błąd
 
-        console.log({
-          mealEstablishmentId: currentDayMeal.establishmentMealId, //inCorrect
-          dietEstablishmentMealsId: dietEstablishment.meals.map(
-            (mealE) => mealE._id //correct
-          ),
-        });
+        // console.log({
+        //   mealEstablishmentId: currentDayMeal.establishmentMealId, //inCorrect
+        //   dietEstablishmentMealsId: dietEstablishment.meals.map(
+        //     (mealE) => mealE._id //correct
+        //   ),
+        // });
 
         const cartesianResultGroups = [];
 
         for (
-          let currentProcent = 2, l = 15;
+          let currentProcent = 2, l = 100;
           currentProcent < l;
           currentProcent++
         ) {
@@ -282,6 +282,10 @@ export const mealsGenerate = async ({
             cartesianResultGroups.push(...dinnersCartesianGroups);
             break;
           }
+
+          if (currentProcent === l - 1) {
+            console.log({ mealName: meal.name, procent: currentProcent });
+          }
         }
 
         const cartesianGroup = {
@@ -294,7 +298,10 @@ export const mealsGenerate = async ({
           groups: cartesianResultGroups,
         };
 
-        console.log({ groupsLength: cartesianResultGroups.length });
+        console.log({
+          groupsLength: cartesianResultGroups.length,
+          mealName: meal.name,
+        });
 
         return cartesianGroup;
       })

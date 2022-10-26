@@ -25,7 +25,7 @@ const mealRecommend = ({ mealDayId, mealType, currentDayRecommendDinners, }) => 
         if (!recommendDietDaysRes || recommendDietDaysRes.data.length < 1) {
             throw 'Brak rekomendowanych dni';
         }
-        console.log({ recommendDietDaysRes });
+        // console.log({ recommendDietDaysRes });
         const recommendMeals = yield Promise.all(recommendDietDaysRes.data.map((day) => __awaiter(void 0, void 0, void 0, function* () {
             const dayMeal = (yield (0, dietMeal_service_1.getDietMeal)({
                 dayId: day.dayId,
@@ -41,6 +41,7 @@ const mealRecommend = ({ mealDayId, mealType, currentDayRecommendDinners, }) => 
         console.log({ recommendMeals, recommendMeal });
         if (!recommendMeal)
             throw 'Rekomendowany posiłek nie zawiera potraw';
+        console.log('Rekomendacja udała się');
         return recommendMeal;
     }
     catch (e) {

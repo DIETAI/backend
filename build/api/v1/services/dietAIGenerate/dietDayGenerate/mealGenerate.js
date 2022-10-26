@@ -113,9 +113,9 @@ const mealsGenerate = ({ mealsToRecommend, currentDayId, }) => __awaiter(void 0,
                 const portions = dinnerMacroPortion.dinnerProductsPortions;
                 return portions;
             });
-            console.log({ allMealDinnerProductsWithPortions });
+            // console.log({ allMealDinnerProductsWithPortions });
             const concatMealDinnersPortions = allMealDinnerProductsWithPortions.flatMap((mealDinners) => mealDinners);
-            console.log({ concatMealDinnersPortions });
+            // console.log({ concatMealDinnersPortions });
             //złączenie wszystkich produktów w posiłku (odróżnienie za pomocą dinnerId)
             //concatMealDinners => algorytm kartezjański
             return Object.assign(Object.assign({}, meal), { concatMealDinnersPortions });
@@ -135,15 +135,28 @@ const mealsGenerate = ({ mealsToRecommend, currentDayId, }) => __awaiter(void 0,
             const meal = (yield (0, dietMeal_service_1.getDietMeal)({
                 _id: mealDinner.dayMealId,
             }));
-            const mealEstablishment = dietEstablishment.meals.find(({ _id }) => _id === meal.establishmentMealId);
+            const currentDayMeal = (yield (0, dietMeal_service_1.getDietMeal)({
+                dayId: currentDayId,
+                type: meal.type,
+            })); //znajduje meal danego dnia
+            const mealEstablishment = dietEstablishment.meals.find(({ _id }) => _id === currentDayMeal.establishmentMealId); //błąd
+            // console.log({
+            //   mealEstablishmentId: currentDayMeal.establishmentMealId, //inCorrect
+            //   dietEstablishmentMealsId: dietEstablishment.meals.map(
+            //     (mealE) => mealE._id //correct
+            //   ),
+            // });
             const cartesianResultGroups = [];
-            for (let currentProcent = 2, l = 10; currentProcent < l; currentProcent++) {
+            for (let currentProcent = 2, l = 100; currentProcent < l; currentProcent++) {
                 const dinnersCartesianGroups = (0, cartesianDinners_1.cartesianDinners)(currentProcent, mealEstablishment, //get establishment
                 dietEstablishment, ...mealDinner.concatMealDinnersPortions);
                 if (dinnersCartesianGroups.length > 0) {
                     console.log(`Procent odchylenia grup: ${currentProcent}`);
                     cartesianResultGroups.push(...dinnersCartesianGroups);
                     break;
+                }
+                if (currentProcent === l - 1) {
+                    console.log({ mealName: meal.name, procent: currentProcent });
                 }
             }
             const cartesianGroup = {
@@ -155,6 +168,10 @@ const mealsGenerate = ({ mealsToRecommend, currentDayId, }) => __awaiter(void 0,
                 mealEstablishment: mealEstablishment,
                 groups: cartesianResultGroups,
             };
+            console.log({
+                groupsLength: cartesianResultGroups.length,
+                mealName: meal.name,
+            });
             return cartesianGroup;
         })));
         console.timeEnd('cartesianProduct');
@@ -163,25 +180,27 @@ const mealsGenerate = ({ mealsToRecommend, currentDayId, }) => __awaiter(void 0,
             mealName: meal.mealName,
             generatedType: meal.generatedType,
             randomType: meal.randomType,
-            mealType: dayRecommendMeals.filter((randomMeal) => randomMeal.dayMealId === meal.mealId)[0].dayMealType,
+            mealType: meal.mealsType,
             groups: (0, selectGroups_1.selectGroups)(meal.groups),
         }));
         const generatedMeals = yield Promise.all(selectedDinners.map((meal) => __awaiter(void 0, void 0, void 0, function* () {
             var _a, _b, _c, _d, _e, _f, _g;
-            const randomMeal = dayRecommendMeals.filter((randomMeal) => randomMeal.dayMealId === meal.mealId)[0];
+            const randomMeal = dayRecommendMeals.filter((randomMeal) => randomMeal.dayMealId == meal.mealId.toString())[0];
             const mealDinners = yield Promise.all(randomMeal.dayMealDinners.map((dietDinner) => __awaiter(void 0, void 0, void 0, function* () {
+                var _h, _j;
                 const dinnerPortion = (yield (0, dinnerPortion_service_1.getDinnerPortion)({
                     _id: dietDinner.dinnerPortionId,
                 }));
                 const dinner = (yield (0, dinner_service_1.getDinner)({
                     _id: dinnerPortion.dinnerId,
                 }));
+                console.log({ mainGroup: meal.groups.main });
                 const mealDinnerObj = {
                     _id: dietDinner._id,
                     dinnerId: dinner._id,
                     dinnerName: dinner.name,
                     dinnerImage: dinner.image,
-                    dinnerProducts: meal.groups.main.group.products.filter(({ dinnerId }) => dinnerId == dinner._id.toString()),
+                    dinnerProducts: (_j = (_h = meal.groups.main) === null || _h === void 0 ? void 0 : _h.group) === null || _j === void 0 ? void 0 : _j.products.filter(({ dinnerId }) => dinnerId == dinner._id.toString()),
                     total: {
                         kcal: roundValue(meal.groups.main.group.products.reduce((acc, field) => acc + Number(field.portionKcal), 0)),
                         protein: {
@@ -206,6 +225,7 @@ const mealsGenerate = ({ mealsToRecommend, currentDayId, }) => __awaiter(void 0,
                 name: meal.mealName,
                 type: meal.mealType,
                 generatedType: meal.generatedType,
+                randomType: meal.randomType,
                 totalGroups: (_a = dinnersCartesianGroups.find((cartesianGroup) => cartesianGroup.mealsType === meal.mealType)) === null || _a === void 0 ? void 0 : _a.groups.length,
                 selectedGroup: {
                     type: meal.groups.main.type,
@@ -241,9 +261,9 @@ const mealsGenerate = ({ mealsToRecommend, currentDayId, }) => __awaiter(void 0,
             };
             return mealObj;
         })));
-        console.log({ dayRecommendMeals, mealsDinnersPortionsMacro });
+        console.log({ dayRecommendMeals });
         timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
-        return { dayRecommendMeals, generatedMeals };
+        return generatedMeals;
     }
     catch (e) {
         console.log(e);
