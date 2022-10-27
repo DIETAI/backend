@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mealGenerateController = void 0;
 const mealGenerate_1 = require("../../services/dietAIGenerate/mealGenerate/mealGenerate");
+//meal generate
 function mealGenerateController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;

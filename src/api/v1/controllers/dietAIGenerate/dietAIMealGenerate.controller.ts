@@ -4,6 +4,7 @@ import { GenerateMealInput } from '../../schema/dietAIGenerate/dietAIMealGenerat
 
 import { mealGenerate } from '../../services/dietAIGenerate/mealGenerate/mealGenerate';
 
+//meal generate
 export async function mealGenerateController(
   req: Request<{}, {}, GenerateMealInput['body']>,
   res: Response

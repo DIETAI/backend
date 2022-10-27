@@ -31,7 +31,6 @@
     "prom-client": "^14.0.1",
     "response-time": "^2.3.2",
     "stripe": "^9.11.0",
-    "wasm-pack": "^0.10.3",
     "zod": "^3.14.4"
   },
   "devDependencies": {
