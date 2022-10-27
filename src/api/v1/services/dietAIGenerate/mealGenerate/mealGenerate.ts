@@ -6,7 +6,7 @@ import { IDinnerDocument } from '../../../interfaces/dinners/dinners.interfaces'
 import { IDinnerPortionDocument } from '../../../interfaces/dinners/dinnerPortions.interfaces';
 
 //functions
-import { mealRecommend } from './mealRecommend/mealRecommend';
+import { IMealRecommend, mealRecommend } from './mealRecommend/mealRecommend';
 import { getMealDinnersPortionsMacro } from './portionsMacro/getDinnerPortionsMacro';
 import {
   cartesianDinners,
@@ -15,12 +15,14 @@ import {
 import { selectGroups } from './selectGroups';
 import { getDinnerPortion } from '../../dinner/dinnerPortion.service';
 import { getDinner } from '../../dinner/dinner.service';
+import { getDietDinners } from '../../diet/dietDinner.service';
 
 interface IMealGenerateArgs {
   mealId: string;
+  mealGenerateOption: "changeAmountAddedMealDinners" | "newMeal";
 }
 
-export const mealGenerate = async ({ mealId }: IMealGenerateArgs) => {
+export const mealGenerate = async ({ mealId, mealGenerateOption }: IMealGenerateArgs) => {
   console.log('start generowania posiłku');
   const metricsLabels = {
     operation: 'mealGenerate',
@@ -35,12 +37,36 @@ export const mealGenerate = async ({ mealId }: IMealGenerateArgs) => {
       return;
     }
 
-    const recommendMeal = await mealRecommend({
-      mealDayId: meal.dayId,
-      mealType: meal.type,
-    });
 
-    if (!recommendMeal) return; //random dietMeal
+    let recommendMeal
+
+    if(mealGenerateOption === "changeAmountAddedMealDinners"){
+      const mealDinners = await getDietDinners({dietMealId: mealId})
+      const mealObj : IMealRecommend = {
+        dayMealId: mealId,
+        dayMealDinners: mealDinners,
+        dayId: meal.dayId
+      }
+
+      recommendMeal = {...mealObj, mealGenerateOption}
+
+     
+    }else {
+      const recommendedMeal = await mealRecommend({
+        mealDayId: meal.dayId,
+        mealType: meal.type,
+      });
+
+      if (!recommendedMeal) return; //random dietMeal
+
+      recommendMeal = {...recommendedMeal, mealGenerateOption};
+
+      console.log(recommendMeal)
+
+
+    }
+  
+    // if(!recommendMeal || recommendMeal.dayMealId) return;
 
     console.log(
       `Wybrano posiłek poprzez: ${recommendMeal.dayMealGenerateType}`
@@ -156,6 +182,7 @@ export const mealGenerate = async ({ mealId }: IMealGenerateArgs) => {
         missingProcentCount:
           selectedDinnersGroups.main.group.missingProcentCount,
       },
+      mealGenerateOption,
       mealDinners: selectedMealDinners,
       totalGroups: cartesianResultGroups.length,
     };

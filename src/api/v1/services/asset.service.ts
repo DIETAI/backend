@@ -37,7 +37,8 @@ export async function getAsset(
   } catch (e) {
     timer({ ...metricsLabels, success: 'false' });
 
-    throw e;
+    // throw e;
+    return false
   }
 }
 

@@ -43,7 +43,7 @@ export interface IMealRecommend {
   dayMealId: string;
   dayMealDinners: IDietDinnerDocument[];
   dayDistance?: number;
-  dayMealGenerateType: 'recommend' | 'random';
+  dayMealGenerateType?: 'recommend' | 'random';
   dayId: string;
 }
 

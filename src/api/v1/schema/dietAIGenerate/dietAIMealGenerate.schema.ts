@@ -4,6 +4,10 @@ const payload = {
   body: object({
     //basicInfo
     mealId: string({ required_error: 'Meal id is required' }),
+    mealGenerateOption: z.enum([
+      'changeAmountAddedMealDinners',
+      'newMeal',
+    ]),
   }),
 };
 
