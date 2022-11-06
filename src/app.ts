@@ -22,7 +22,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.ORIGIN || 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000',
+      'https://diet-ai-vaq5g.ondigitalocean.app',
+    ],
+    // origin: process.env.ORIGIN || 'http://localhost:3000',
     credentials: true,
   })
 );

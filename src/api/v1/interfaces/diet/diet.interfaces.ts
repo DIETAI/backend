@@ -8,7 +8,7 @@ export interface IDietInput {
   user: IUserDocument['_id'];
   name: string;
   folder?: string;
-  daysAmount: number;
+  daysAmount?: number;
   dayStart?: Date;
   dayEnd?: Date;
   clientId: IClientDocument['_id'];

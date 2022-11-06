@@ -71,13 +71,15 @@ export async function createDietController(
   }
 
   //create diet days
-  const diet_days = Array.from(Array(diet.daysAmount).keys());
+  // const diet_days = Array.from(Array(diet.daysAmount).keys());
+  const dietDays = body.days;
 
   const newDietDays = await Promise.all(
-    diet_days.map(async (key) => {
+    dietDays.map(async (dietDay) => {
       const newDietDay = await createDietDay({
-        name: `Day ${key}`,
-        order: key + 1,
+        name: `Day ${dietDay.order}`,
+        order: dietDay.order,
+        date: dietDay.date,
         dietId: diet._id,
         user: userId,
         establishmentId: diet.establishmentId,

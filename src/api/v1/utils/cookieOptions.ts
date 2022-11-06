@@ -3,7 +3,10 @@ import { CookieOptions } from 'express';
 export const accessTokenCookieOptions: CookieOptions = {
   maxAge: 900000, // 15 mins
   httpOnly: true,
-  domain: 'localhost',
+  domain:
+    process.env.NODE_ENV === 'development'
+      ? 'localhost'
+      : 'https://diet-ai-vaq5g.ondigitalocean.app',
   path: '/',
   sameSite: 'strict',
   secure: false,

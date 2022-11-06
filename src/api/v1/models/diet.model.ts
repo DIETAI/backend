@@ -7,7 +7,7 @@ const DietSchema = new Schema<IDietDocument>(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     name: { type: String, required: true },
-    daysAmount: { type: Number, required: true },
+    daysAmount: { type: Number },
     dayStart: { type: Date },
     dayEnd: { type: Date },
     folder: { type: String },

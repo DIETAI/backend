@@ -13,11 +13,24 @@ const payload = {
     establishmentId: string({
       required_error: 'Establishment is required',
     }),
-    daysAmount: number({
-      required_error: 'Days amount is required',
-    }),
-    dayStart: date().optional(),
-    dayEnd: date().optional(),
+    days: array(
+      object({
+        order: number({ required_error: 'Wymagany indeks dnia' }),
+        date: z
+          .string()
+          .transform((date) => new Date(date))
+          .optional(),
+      })
+    ).min(1, 'Brak dni w diecie'),
+    daysAmount: number().optional(),
+    dayStart: z
+      .string()
+      .transform((date) => new Date(date))
+      .optional(),
+    dayEnd: z
+      .string()
+      .transform((date) => new Date(date))
+      .optional(),
   }),
 };
 
