@@ -184,6 +184,12 @@ export async function getAllDietMealsController(
           const dinnerPortion = await getDinnerPortion({
             _id: mealDinner.dinnerPortionId,
           });
+
+          if (!dinnerPortion)
+            return {
+              ...mealDinner,
+            };
+
           const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
           const dinnerProducts = await getDinnerProducts({
             dinnerId: dinner?._id,

@@ -4,7 +4,9 @@ exports.refreshTokenCookieOptions = exports.accessTokenCookieOptions = void 0;
 exports.accessTokenCookieOptions = {
     maxAge: 900000,
     httpOnly: true,
-    domain: 'localhost',
+    domain: process.env.NODE_ENV === 'development'
+        ? 'localhost'
+        : 'https://diet-ai-vaq5g.ondigitalocean.app',
     path: '/',
     sameSite: 'strict',
     secure: false,

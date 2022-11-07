@@ -117,7 +117,9 @@ function getAllDietDinnersToMealRecommendController(req, res) {
             const dinnerPortion = yield (0, dinnerPortion_service_1.getDinnerPortion)({
                 _id: dietDinner.dinnerPortionId,
             });
-            const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion === null || dinnerPortion === void 0 ? void 0 : dinnerPortion.dinnerId });
+            if (!dinnerPortion)
+                return;
+            const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion.dinnerId });
             const dinnerProducts = yield (0, dinnerProduct_service_1.getDinnerProducts)({ dinnerId: dinner === null || dinner === void 0 ? void 0 : dinner._id });
             const meal = yield (0, dietMeal_service_1.getDietMeal)({ _id: dietDinner.dietMealId });
             const day = yield (0, dietDay_service_1.getDietDay)({ _id: meal === null || meal === void 0 ? void 0 : meal.dayId });
@@ -165,7 +167,9 @@ function getAllDietDinnersController(req, res) {
             const dinnerPortion = yield (0, dinnerPortion_service_1.getDinnerPortion)({
                 _id: dietDinner.dinnerPortionId,
             });
-            const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion === null || dinnerPortion === void 0 ? void 0 : dinnerPortion.dinnerId });
+            if (!dinnerPortion)
+                return;
+            const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion.dinnerId });
             const dinnerProducts = yield (0, dinnerProduct_service_1.getDinnerProducts)({ dinnerId: dinner === null || dinner === void 0 ? void 0 : dinner._id });
             const meal = yield (0, dietMeal_service_1.getDietMeal)({ _id: dietDinner.dietMealId });
             return {
@@ -227,12 +231,17 @@ function getDietDinnersByDayIdController(req, res) {
             const dinnerPortion = yield (0, dinnerPortion_service_1.getDinnerPortion)({
                 _id: dietDinner.dinnerPortionId,
             });
-            const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion === null || dinnerPortion === void 0 ? void 0 : dinnerPortion.dinnerId });
+            if (!dinnerPortion)
+                return Object.assign(Object.assign({}, dietDinner), { diet });
+            const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion.dinnerId });
             const meal = yield (0, dietMeal_service_1.getDietMeal)({ _id: dietDinner.dietMealId });
             return Object.assign(Object.assign({}, dietDinner), { diet,
                 dinner,
                 meal });
         })));
+        if (!dietDinnersQuery) {
+            return res.sendStatus(404);
+        }
         const sortedDinners = [...dietDinnersQuery].sort((a, b) => a.order - b.order);
         return res.send(sortedDinners);
     });

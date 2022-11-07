@@ -126,6 +126,8 @@ function getAllDietMealsController(req, res) {
                 const dinnerPortion = yield (0, dinnerPortion_service_1.getDinnerPortion)({
                     _id: mealDinner.dinnerPortionId,
                 });
+                if (!dinnerPortion)
+                    return Object.assign({}, mealDinner);
                 const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion === null || dinnerPortion === void 0 ? void 0 : dinnerPortion.dinnerId });
                 const dinnerProducts = yield (0, dinnerProduct_service_1.getDinnerProducts)({
                     dinnerId: dinner === null || dinner === void 0 ? void 0 : dinner._id,

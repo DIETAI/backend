@@ -62,11 +62,11 @@ const mealsGenerate = ({ mealsToRecommend, currentDayId, }) => __awaiter(void 0,
                 else {
                     const flatDayDinners = dayRecommendMeals.flatMap(({ dayMealDinners }) => dayMealDinners);
                     const currentDayRecommendDinners = yield Promise.all(flatDayDinners.map((dietDinner) => __awaiter(void 0, void 0, void 0, function* () {
-                        const dinnerPortion = yield (0, dinnerPortion_service_1.getDinnerPortion)({
+                        const dinnerPortion = (yield (0, dinnerPortion_service_1.getDinnerPortion)({
                             _id: dietDinner.dinnerPortionId,
-                        });
+                        }));
                         const dinner = (yield (0, dinner_service_1.getDinner)({
-                            _id: dinnerPortion === null || dinnerPortion === void 0 ? void 0 : dinnerPortion.dinnerId,
+                            _id: dinnerPortion.dinnerId,
                         }));
                         //dayMealDietDinners
                         const dietDinnerToRecommend = {

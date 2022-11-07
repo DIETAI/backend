@@ -268,12 +268,13 @@ export async function getDietQueryController(
               const dinnerPortion = await getDinnerPortion({
                 _id: dietDinner.dinnerPortionId,
               });
-              const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
+
+              if (!dinnerPortion) return;
+
+              const dinner = await getDinner({ _id: dinnerPortion.dinnerId });
               const dinnerImageObj = dinner?.image
                 ? await getAsset({ _id: dinner.image })
                 : undefined;
-
-              if (!dinnerPortion) return;
 
               const dinnerProducts = await Promise.all(
                 dinnerPortion.dinnerProducts.map(async (dietDinnerProduct) => {

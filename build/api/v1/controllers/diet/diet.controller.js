@@ -36,11 +36,13 @@ function createDietController(req, res) {
             return res.sendStatus(404);
         }
         //create diet days
-        const diet_days = Array.from(Array(diet.daysAmount).keys());
-        const newDietDays = yield Promise.all(diet_days.map((key) => __awaiter(this, void 0, void 0, function* () {
+        // const diet_days = Array.from(Array(diet.daysAmount).keys());
+        const dietDays = body.days;
+        const newDietDays = yield Promise.all(dietDays.map((dietDay) => __awaiter(this, void 0, void 0, function* () {
             const newDietDay = yield (0, dietDay_service_1.createDietDay)({
-                name: `Day ${key}`,
-                order: key + 1,
+                name: `Day ${dietDay.order}`,
+                order: dietDay.order,
+                date: dietDay.date,
                 dietId: diet._id,
                 user: userId,
                 establishmentId: diet.establishmentId,
@@ -196,12 +198,12 @@ function getDietQueryController(req, res) {
                     const dinnerPortion = yield (0, dinnerPortion_service_1.getDinnerPortion)({
                         _id: dietDinner.dinnerPortionId,
                     });
-                    const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion === null || dinnerPortion === void 0 ? void 0 : dinnerPortion.dinnerId });
+                    if (!dinnerPortion)
+                        return;
+                    const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion.dinnerId });
                     const dinnerImageObj = (dinner === null || dinner === void 0 ? void 0 : dinner.image)
                         ? yield (0, asset_service_1.getAsset)({ _id: dinner.image })
                         : undefined;
-                    if (!dinnerPortion)
-                        return;
                     const dinnerProducts = yield Promise.all(dinnerPortion.dinnerProducts.map((dietDinnerProduct) => __awaiter(this, void 0, void 0, function* () {
                         const dinnerProduct = yield (0, dinnerProduct_service_1.getDinnerProduct)({
                             _id: dietDinnerProduct.dinnerProductId,

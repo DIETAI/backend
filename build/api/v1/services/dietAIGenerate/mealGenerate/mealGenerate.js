@@ -21,7 +21,8 @@ const cartesianDinners_1 = require("./cartesianDinners/cartesianDinners");
 const selectGroups_1 = require("./selectGroups");
 const dinnerPortion_service_1 = require("../../dinner/dinnerPortion.service");
 const dinner_service_1 = require("../../dinner/dinner.service");
-const mealGenerate = ({ mealId }) => __awaiter(void 0, void 0, void 0, function* () {
+const dietDinner_service_1 = require("../../diet/dietDinner.service");
+const mealGenerate = ({ mealId, mealGenerateOption }) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('start generowania posiłku');
     const metricsLabels = {
         operation: 'mealGenerate',
@@ -33,12 +34,27 @@ const mealGenerate = ({ mealId }) => __awaiter(void 0, void 0, void 0, function*
         if (!meal) {
             return;
         }
-        const recommendMeal = yield (0, mealRecommend_1.mealRecommend)({
-            mealDayId: meal.dayId,
-            mealType: meal.type,
-        });
-        if (!recommendMeal)
-            return; //random dietMeal
+        let recommendMeal;
+        if (mealGenerateOption === "changeAmountAddedMealDinners") {
+            const mealDinners = yield (0, dietDinner_service_1.getDietDinners)({ dietMealId: mealId });
+            const mealObj = {
+                dayMealId: mealId,
+                dayMealDinners: mealDinners,
+                dayId: meal.dayId
+            };
+            recommendMeal = Object.assign(Object.assign({}, mealObj), { mealGenerateOption });
+        }
+        else {
+            const recommendedMeal = yield (0, mealRecommend_1.mealRecommend)({
+                mealDayId: meal.dayId,
+                mealType: meal.type,
+            });
+            if (!recommendedMeal)
+                return; //random dietMeal
+            recommendMeal = Object.assign(Object.assign({}, recommendedMeal), { mealGenerateOption });
+            console.log(recommendMeal);
+        }
+        // if(!recommendMeal || recommendMeal.dayMealId) return;
         console.log(`Wybrano posiłek poprzez: ${recommendMeal.dayMealGenerateType}`);
         const mealDinnersPortionsMacro = yield Promise.all(recommendMeal.dayMealDinners.map((dinner) => __awaiter(void 0, void 0, void 0, function* () {
             const dinnerMacroPortion = yield (0, getDinnerPortionsMacro_1.getMealDinnersPortionsMacro)(dinner);
@@ -115,6 +131,7 @@ const mealGenerate = ({ mealId }) => __awaiter(void 0, void 0, void 0, function*
                 macroTotalCount: selectedDinnersGroups.main.group.macroTotalCount,
                 missingProcentCount: selectedDinnersGroups.main.group.missingProcentCount,
             },
+            mealGenerateOption,
             mealDinners: selectedMealDinners,
             totalGroups: cartesianResultGroups.length,
         };

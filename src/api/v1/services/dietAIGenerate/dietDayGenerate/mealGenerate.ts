@@ -131,11 +131,12 @@ export const mealsGenerate = async ({
 
           const currentDayRecommendDinners = await Promise.all(
             flatDayDinners.map(async (dietDinner) => {
-              const dinnerPortion = await getDinnerPortion({
+              const dinnerPortion = (await getDinnerPortion({
                 _id: dietDinner.dinnerPortionId,
-              });
+              })) as IDinnerPortionDocument;
+
               const dinner = (await getDinner({
-                _id: dinnerPortion?.dinnerId,
+                _id: dinnerPortion.dinnerId,
               })) as IDinnerDocument;
 
               //dayMealDietDinners

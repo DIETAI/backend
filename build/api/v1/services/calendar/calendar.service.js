@@ -12,17 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAsset = exports.getAndUpdateAsset = exports.getAssets = exports.getAsset = exports.createAsset = void 0;
-const asset_model_1 = __importDefault(require("../models/asset.model"));
-const metrics_1 = require("../utils/metrics");
-function createAsset(input) {
+exports.deleteCalendarNote = exports.getAndUpdateCalendarNote = exports.getCalendarNotes = exports.getCalendarNote = exports.createCalendarNote = void 0;
+const calendar_model_1 = __importDefault(require("../../models/calendar/calendar.model"));
+const metrics_1 = require("../../utils/metrics");
+function createCalendarNote(input) {
     return __awaiter(this, void 0, void 0, function* () {
         const metricsLabels = {
-            operation: 'createAsset',
+            operation: 'createCalendar',
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const result = yield asset_model_1.default.create(input);
+            const result = yield calendar_model_1.default.create(input);
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }
@@ -32,34 +32,15 @@ function createAsset(input) {
         }
     });
 }
-exports.createAsset = createAsset;
-function getAsset(query, options = { lean: true }) {
+exports.createCalendarNote = createCalendarNote;
+function getCalendarNote(query, options = { lean: true }) {
     return __awaiter(this, void 0, void 0, function* () {
         const metricsLabels = {
-            operation: 'getAsset',
+            operation: 'getCalendar',
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const result = yield asset_model_1.default.findOne(query, {}, options);
-            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
-            return result;
-        }
-        catch (e) {
-            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'false' }));
-            // throw e;
-            return false;
-        }
-    });
-}
-exports.getAsset = getAsset;
-function getAssets(query, options = { lean: true }) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const metricsLabels = {
-            operation: 'getAssets',
-        };
-        const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
-        try {
-            const result = yield asset_model_1.default.find(query, {}, options);
+            const result = yield calendar_model_1.default.findOne(query, {}, options);
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }
@@ -69,16 +50,34 @@ function getAssets(query, options = { lean: true }) {
         }
     });
 }
-exports.getAssets = getAssets;
-function getAndUpdateAsset(query, update, options) {
+exports.getCalendarNote = getCalendarNote;
+function getCalendarNotes(query, options = { lean: true }) {
     return __awaiter(this, void 0, void 0, function* () {
-        return asset_model_1.default.findOneAndUpdate(query, update, options);
+        const metricsLabels = {
+            operation: 'getCalendarNotes',
+        };
+        const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
+        try {
+            const result = yield calendar_model_1.default.find(query, {}, options);
+            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
+            return result;
+        }
+        catch (e) {
+            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'false' }));
+            throw e;
+        }
     });
 }
-exports.getAndUpdateAsset = getAndUpdateAsset;
-function deleteAsset(query) {
+exports.getCalendarNotes = getCalendarNotes;
+function getAndUpdateCalendarNote(query, update, options) {
     return __awaiter(this, void 0, void 0, function* () {
-        return asset_model_1.default.deleteOne(query);
+        return calendar_model_1.default.findOneAndUpdate(query, update, options);
     });
 }
-exports.deleteAsset = deleteAsset;
+exports.getAndUpdateCalendarNote = getAndUpdateCalendarNote;
+function deleteCalendarNote(query) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return calendar_model_1.default.deleteOne(query);
+    });
+}
+exports.deleteCalendarNote = deleteCalendarNote;

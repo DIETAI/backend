@@ -166,7 +166,9 @@ export async function getAllDietDinnersToMealRecommendController(
       const dinnerPortion = await getDinnerPortion({
         _id: dietDinner.dinnerPortionId,
       });
-      const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
+
+      if (!dinnerPortion) return;
+      const dinner = await getDinner({ _id: dinnerPortion.dinnerId });
       const dinnerProducts = await getDinnerProducts({ dinnerId: dinner?._id });
       const meal = await getDietMeal({ _id: dietDinner.dietMealId });
       const day = await getDietDay({ _id: meal?.dayId });
@@ -223,7 +225,9 @@ export async function getAllDietDinnersController(
       const dinnerPortion = await getDinnerPortion({
         _id: dietDinner.dinnerPortionId,
       });
-      const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
+
+      if (!dinnerPortion) return;
+      const dinner = await getDinner({ _id: dinnerPortion.dinnerId });
       const dinnerProducts = await getDinnerProducts({ dinnerId: dinner?._id });
       const meal = await getDietMeal({ _id: dietDinner.dietMealId });
 
@@ -299,7 +303,14 @@ export async function getDietDinnersByDayIdController(
       const dinnerPortion = await getDinnerPortion({
         _id: dietDinner.dinnerPortionId,
       });
-      const dinner = await getDinner({ _id: dinnerPortion?.dinnerId });
+
+      if (!dinnerPortion)
+        return {
+          ...dietDinner,
+          diet,
+        };
+
+      const dinner = await getDinner({ _id: dinnerPortion.dinnerId });
       const meal = await getDietMeal({ _id: dietDinner.dietMealId });
 
       return {
@@ -310,6 +321,10 @@ export async function getDietDinnersByDayIdController(
       };
     })
   );
+
+  if (!dietDinnersQuery) {
+    return res.sendStatus(404);
+  }
 
   const sortedDinners = [...dietDinnersQuery].sort((a, b) => a.order - b.order);
 

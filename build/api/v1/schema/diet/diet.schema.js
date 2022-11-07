@@ -15,11 +15,22 @@ const payload = {
         establishmentId: (0, zod_1.string)({
             required_error: 'Establishment is required',
         }),
-        daysAmount: (0, zod_1.number)({
-            required_error: 'Days amount is required',
-        }),
-        dayStart: (0, zod_1.date)().optional(),
-        dayEnd: (0, zod_1.date)().optional(),
+        days: (0, zod_1.array)((0, zod_1.object)({
+            order: (0, zod_1.number)({ required_error: 'Wymagany indeks dnia' }),
+            date: zod_1.z
+                .string()
+                .transform((date) => new Date(date))
+                .optional(),
+        })).min(1, 'Brak dni w diecie'),
+        daysAmount: (0, zod_1.number)().optional(),
+        dayStart: zod_1.z
+            .string()
+            .transform((date) => new Date(date))
+            .optional(),
+        dayEnd: zod_1.z
+            .string()
+            .transform((date) => new Date(date))
+            .optional(),
     }),
 };
 const params = {
