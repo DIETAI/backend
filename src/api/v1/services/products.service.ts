@@ -39,8 +39,8 @@ export async function getProduct(
     return result;
   } catch (e) {
     timer({ ...metricsLabels, success: 'false' });
-
-    throw e;
+    return null;
+    // throw e;
   }
 }
 

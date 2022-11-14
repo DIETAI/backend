@@ -38,7 +38,7 @@ export async function getAsset(
     timer({ ...metricsLabels, success: 'false' });
 
     // throw e;
-    return false
+    return null;
   }
 }
 

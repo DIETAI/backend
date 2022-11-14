@@ -48,6 +48,13 @@ const params = {
   }),
 };
 
+const query = {
+  query: object({
+    page: string().optional(),
+    itemsCount: string().optional(),
+  }),
+};
+
 export const createDinnerSchema = object({
   ...payload,
 });
@@ -64,8 +71,12 @@ export const deleteDinnerSchema = object({
 export const getDinnerSchema = object({
   ...params,
 });
+export const getDinnersSchema = object({
+  ...query,
+});
 
 export type CreateDinnerInput = TypeOf<typeof createDinnerSchema>;
 export type UpdateDinnerInput = TypeOf<typeof updateDinnerSchema>;
 export type GetDinnerInput = TypeOf<typeof getDinnerSchema>;
+export type GetDinnersInput = TypeOf<typeof getDinnersSchema>;
 export type DeleteDinnerInput = TypeOf<typeof deleteDinnerSchema>;

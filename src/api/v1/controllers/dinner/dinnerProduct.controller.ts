@@ -30,6 +30,7 @@ import { IProductDocument } from '../../interfaces/products.interfaces';
 
 //events
 import { dinnerEmitter } from './events';
+import { getAsset } from '../../services/asset.service';
 
 export async function createDinnerProductController(
   req: Request<{}, {}, CreateDinnerProductInput['body']>,
@@ -290,9 +291,14 @@ export async function getDinnerProductsQueryController(
     dinnerProducts.map(async (dinnerProduct) => {
       const product = await getProduct({ _id: dinnerProduct.productId });
 
+      const productAsset = await getAsset({ _id: product?.image });
+
       return {
         ...dinnerProduct,
-        product,
+        product: {
+          ...product,
+          imageURL: productAsset?.imageURL,
+        },
       };
     })
   );

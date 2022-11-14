@@ -1,10 +1,13 @@
 import { Request, Response } from 'express';
+import DinnerModel from '../../models/dinners/dinner.model';
 import {
   CreateDinnerInput,
   UpdateDinnerInput,
   DeleteDinnerInput,
   GetDinnerInput,
+  GetDinnersInput,
 } from '../../schema/dinners/dinner.schema';
+import { getAsset } from '../../services/asset.service';
 import {
   createDinner,
   deleteDinner,
@@ -85,11 +88,84 @@ export async function getDinnerController(
     return res.sendStatus(403);
   }
 
-  return res.send(dinner);
+  const dinnerAsset = await getAsset({ _id: dinner.image });
+
+  const dinnerGalleryAssets =
+    dinner.gallery && dinner.gallery.length > 0
+      ? await Promise.all(
+          dinner.gallery?.map(async (galleryAsset) => {
+            const dinnerAsset = await getAsset({ _id: galleryAsset });
+            return dinnerAsset;
+          })
+        )
+      : [];
+
+  if (!dinnerAsset) {
+    return res.send({
+      ...dinner,
+      imageObj: undefined,
+      galleryArr: dinnerGalleryAssets,
+    });
+  }
+
+  return res.send({
+    ...dinner,
+    imageObj: dinnerAsset,
+    galleryArr: dinnerGalleryAssets,
+  });
 }
 
-export async function getDinnersController(req: Request, res: Response) {
+export async function getDinnersController(
+  req: Request<{}, {}, {}, GetDinnersInput['query']>,
+  res: Response
+) {
   const userId = res.locals.user._id;
+  const queryPage = req.query.page;
+  const itemsCount = req.query.itemsCount;
+
+  if (queryPage && itemsCount) {
+    const page = parseInt(queryPage);
+    const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
+
+    const countPromise = DinnerModel.estimatedDocumentCount();
+    const dinnersPromise = DinnerModel.find({ user: userId })
+      .limit(parseInt(itemsCount))
+      .skip(skip);
+
+    const [count, dinners] = await Promise.all([countPromise, dinnersPromise]);
+
+    const dinnersQuery = await Promise.all(
+      dinners.map(async (dinnerDocument) => {
+        const dinner = dinnerDocument.toObject();
+        if (!dinner.image) {
+          return { ...dinner, imageObj: undefined };
+        }
+
+        const dinnerAsset = await getAsset({ _id: dinner.image });
+
+        if (!dinnerAsset) {
+          return { ...dinner, imageObj: undefined };
+        }
+
+        return { ...dinner, imageObj: dinnerAsset };
+      })
+    );
+
+    const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
+
+    if (!count || !dinners) {
+      return res.sendStatus(404);
+    }
+
+    return res.send({
+      pagination: {
+        count,
+        pageCount,
+      },
+      dinners: dinnersQuery,
+    });
+  }
+
   const dinners = await getDinners({ user: userId });
 
   if (!dinners) {

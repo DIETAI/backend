@@ -21,6 +21,7 @@ import transactionRoutes from './transaction.routes';
 import clientRoutes from './client.routes';
 import dietGenerateRoutes from './dietGenerate.routes';
 import dietDinnerPortionGenerateRoutes from './dietDinnerPortionGenerate.routes';
+import calendarNotesRoutes from './calendarNotes.routes';
 
 const routes = (app: Express) => {
   app.use('/api/v1/user', userRoutes);
@@ -45,6 +46,7 @@ const routes = (app: Express) => {
   app.use('/api/v1/subscriptionPlans', subscriptionPlanRoutes);
   app.use('/api/v1/transactions', transactionRoutes);
   app.use('/api/v1/clients', clientRoutes);
+  app.use('/api/v1/calendarNotes', calendarNotesRoutes);
 };
 
 export default routes;

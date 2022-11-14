@@ -6,7 +6,7 @@ export const accessTokenCookieOptions: CookieOptions = {
   domain:
     process.env.NODE_ENV === 'development'
       ? 'localhost'
-      : 'diet-ai-vaq5g.ondigitalocean',
+      : 'diet-ai-vaq5g.ondigitalocean.app',
   path: '/',
   sameSite: 'strict',
   secure: false,
