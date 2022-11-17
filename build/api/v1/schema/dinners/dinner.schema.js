@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDinnerSchema = exports.deleteDinnerSchema = exports.updateDinnerSchema = exports.createDinnerSchema = void 0;
+exports.getDinnersSchema = exports.getDinnerSchema = exports.deleteDinnerSchema = exports.updateDinnerSchema = exports.createDinnerSchema = void 0;
 const zod_1 = require("zod");
 const payload = {
     body: (0, zod_1.object)({
@@ -46,7 +46,14 @@ const params = {
         }),
     }),
 };
+const query = {
+    query: (0, zod_1.object)({
+        page: (0, zod_1.string)().optional(),
+        itemsCount: (0, zod_1.string)().optional(),
+    }),
+};
 exports.createDinnerSchema = (0, zod_1.object)(Object.assign({}, payload));
 exports.updateDinnerSchema = (0, zod_1.object)(Object.assign(Object.assign({}, payload), params));
 exports.deleteDinnerSchema = (0, zod_1.object)(Object.assign({}, params));
 exports.getDinnerSchema = (0, zod_1.object)(Object.assign({}, params));
+exports.getDinnersSchema = (0, zod_1.object)(Object.assign({}, query));

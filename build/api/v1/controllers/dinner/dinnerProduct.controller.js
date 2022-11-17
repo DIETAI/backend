@@ -15,6 +15,7 @@ const dinnerPortion_service_1 = require("../../services/dinner/dinnerPortion.ser
 const products_service_1 = require("../../services/products.service");
 //events
 const events_1 = require("./events");
+const asset_service_1 = require("../../services/asset.service");
 function createDinnerProductController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
@@ -209,7 +210,8 @@ function getDinnerProductsQueryController(req, res) {
         }
         const dinnerProductsQuery = yield Promise.all(dinnerProducts.map((dinnerProduct) => __awaiter(this, void 0, void 0, function* () {
             const product = yield (0, products_service_1.getProduct)({ _id: dinnerProduct.productId });
-            return Object.assign(Object.assign({}, dinnerProduct), { product });
+            const productAsset = yield (0, asset_service_1.getAsset)({ _id: product === null || product === void 0 ? void 0 : product.image });
+            return Object.assign(Object.assign({}, dinnerProduct), { product: Object.assign(Object.assign({}, product), { imageURL: productAsset === null || productAsset === void 0 ? void 0 : productAsset.imageURL }) });
         })));
         if (!dinnerProductsQuery) {
             return res.sendStatus(404);

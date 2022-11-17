@@ -8,8 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteDinnerController = exports.getDinnersController = exports.getDinnerController = exports.updateDinnerController = exports.createDinnerController = void 0;
+const dinner_model_1 = __importDefault(require("../../models/dinners/dinner.model"));
+const asset_service_1 = require("../../services/asset.service");
 const dinner_service_1 = require("../../services/dinner/dinner.service");
 const dinnerPortion_service_1 = require("../../services/dinner/dinnerPortion.service");
 const dinnerProduct_service_1 = require("../../services/dinner/dinnerProduct.service");
@@ -46,6 +51,7 @@ function updateDinnerController(req, res) {
 }
 exports.updateDinnerController = updateDinnerController;
 function getDinnerController(req, res) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
         const dinnerId = req.params.dinnerId;
@@ -58,13 +64,56 @@ function getDinnerController(req, res) {
         if (String(dinner.user) !== userId) {
             return res.sendStatus(403);
         }
-        return res.send(dinner);
+        const dinnerAsset = yield (0, asset_service_1.getAsset)({ _id: dinner.image });
+        const dinnerGalleryAssets = dinner.gallery && dinner.gallery.length > 0
+            ? yield Promise.all((_a = dinner.gallery) === null || _a === void 0 ? void 0 : _a.map((galleryAsset) => __awaiter(this, void 0, void 0, function* () {
+                const dinnerAsset = yield (0, asset_service_1.getAsset)({ _id: galleryAsset });
+                return dinnerAsset;
+            })))
+            : [];
+        if (!dinnerAsset) {
+            return res.send(Object.assign(Object.assign({}, dinner), { imageObj: undefined, galleryArr: dinnerGalleryAssets }));
+        }
+        return res.send(Object.assign(Object.assign({}, dinner), { imageObj: dinnerAsset, galleryArr: dinnerGalleryAssets }));
     });
 }
 exports.getDinnerController = getDinnerController;
 function getDinnersController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
+        const queryPage = req.query.page;
+        const itemsCount = req.query.itemsCount;
+        if (queryPage && itemsCount) {
+            const page = parseInt(queryPage);
+            const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
+            const countPromise = dinner_model_1.default.estimatedDocumentCount();
+            const dinnersPromise = dinner_model_1.default.find({ user: userId })
+                .limit(parseInt(itemsCount))
+                .skip(skip);
+            const [count, dinners] = yield Promise.all([countPromise, dinnersPromise]);
+            const dinnersQuery = yield Promise.all(dinners.map((dinnerDocument) => __awaiter(this, void 0, void 0, function* () {
+                const dinner = dinnerDocument.toObject();
+                if (!dinner.image) {
+                    return Object.assign(Object.assign({}, dinner), { imageObj: undefined });
+                }
+                const dinnerAsset = yield (0, asset_service_1.getAsset)({ _id: dinner.image });
+                if (!dinnerAsset) {
+                    return Object.assign(Object.assign({}, dinner), { imageObj: undefined });
+                }
+                return Object.assign(Object.assign({}, dinner), { imageObj: dinnerAsset });
+            })));
+            const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
+            if (!count || !dinners) {
+                return res.sendStatus(404);
+            }
+            return res.send({
+                pagination: {
+                    count,
+                    pageCount,
+                },
+                dinners: dinnersQuery,
+            });
+        }
         const dinners = yield (0, dinner_service_1.getDinners)({ user: userId });
         if (!dinners) {
             return res.sendStatus(404);

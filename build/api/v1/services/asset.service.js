@@ -47,7 +47,7 @@ function getAsset(query, options = { lean: true }) {
         catch (e) {
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'false' }));
             // throw e;
-            return false;
+            return null;
         }
     });
 }

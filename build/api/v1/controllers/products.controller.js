@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProductController = exports.getProductsController = exports.getAllProductsController = exports.getProductController = exports.updateProductController = exports.createProductController = void 0;
 const products_service_1 = require("../services/products.service");
 const product_model_1 = __importDefault(require("../models/product.model"));
+const asset_service_1 = require("../services/asset.service");
 function createProductController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
@@ -55,10 +56,12 @@ function getProductController(req, res) {
         if (!product) {
             return res.sendStatus(404);
         }
+        const productImage = yield (0, asset_service_1.getAsset)({ _id: product.image });
         if (String(product.user) !== userId) {
             return res.sendStatus(403);
         }
-        return res.send(product);
+        const productObj = Object.assign(Object.assign({}, product), { imageURL: productImage ? productImage.imageURL : undefined });
+        return res.send(productObj);
     });
 }
 exports.getProductController = getProductController;
@@ -90,6 +93,17 @@ function getProductsController(req, res) {
                 countPromise,
                 productsPromise,
             ]);
+            const productsQuery = yield Promise.all(products.map((productDocument) => __awaiter(this, void 0, void 0, function* () {
+                const product = productDocument.toObject();
+                if (!product.image) {
+                    return Object.assign(Object.assign({}, product), { imageURL: undefined });
+                }
+                const productAsset = yield (0, asset_service_1.getAsset)({ _id: product.image });
+                if (!productAsset) {
+                    return Object.assign(Object.assign({}, product), { imageURL: undefined });
+                }
+                return Object.assign(Object.assign({}, product), { imageURL: productAsset.imageURL });
+            })));
             const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
             if (!count || !products) {
                 return res.sendStatus(404);
@@ -99,7 +113,7 @@ function getProductsController(req, res) {
                     count,
                     pageCount,
                 },
-                products,
+                products: productsQuery,
             });
         }
         const products = yield (0, products_service_1.getUserProducts)({ user: userId });

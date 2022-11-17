@@ -6,6 +6,7 @@ import {
   GetDinnerPortionInput,
   GetDinnerPortionsInput,
 } from '../../schema/dinners/dinnerPortions.schema';
+import { getAsset } from '../../services/asset.service';
 import {
   createDinnerPortion,
   deleteDinnerPortion,
@@ -150,11 +151,16 @@ export async function getDinnerPortionsQueryController(
             _id: dinnerProduct?.productId,
           });
 
+          const productAsset = await getAsset({ _id: product?.image });
+
           return {
             ...dinnerPortionProduct,
             dinnerProduct: {
               ...dinnerProduct,
-              product,
+              product: {
+                ...product,
+                imageURL: productAsset?.imageURL,
+              },
             },
           };
         })

@@ -7,6 +7,7 @@ import {
   GetClientInput,
   GetClientsInput,
 } from '../schema/client.schema';
+import { getAsset } from '../services/asset.service';
 import {
   createClient,
   deleteClient,
@@ -70,7 +71,14 @@ export async function getClientController(
     return res.sendStatus(403);
   }
 
-  return res.send(client);
+  const clientImage = await getAsset({ _id: client.image });
+
+  const clientObj = {
+    ...client,
+    imageURL: clientImage ? clientImage.imageURL : undefined,
+  };
+
+  return res.send(clientObj);
 }
 
 export async function getClientsController(
