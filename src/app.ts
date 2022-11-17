@@ -25,6 +25,7 @@ app.use(
     origin: [
       'http://localhost:3000',
       'https://diet-ai-vaq5g.ondigitalocean.app',
+      'https://dashboard.dietai.mederak.com',
     ],
     // origin: process.env.ORIGIN || 'http://localhost:3000',
     credentials: true,
