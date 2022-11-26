@@ -6,8 +6,8 @@ export const accessTokenCookieOptions: CookieOptions = {
   // domain: process.env.NODE_ENV === 'development' ? 'localhost' : 'mederak.com',
   // domain: 'localhost',
   path: '/',
-  sameSite: 'strict',
-  // sameSite: 'none',
+  // sameSite: 'strict',
+  sameSite: 'none',
   // secure: false,
   secure: true,
 };
