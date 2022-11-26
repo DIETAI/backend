@@ -8,7 +8,8 @@ export const accessTokenCookieOptions: CookieOptions = {
   path: '/',
   // sameSite: 'strict',
   sameSite: 'none',
-  secure: false,
+  // secure: false,
+  secure: true,
 };
 
 export const refreshTokenCookieOptions: CookieOptions = {
