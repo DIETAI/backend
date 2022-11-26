@@ -3,10 +3,7 @@ import { CookieOptions } from 'express';
 export const accessTokenCookieOptions: CookieOptions = {
   maxAge: 900000, // 15 mins
   httpOnly: true,
-  domain:
-    process.env.NODE_ENV === 'development'
-      ? 'localhost'
-      : '*.dietai.mederak.com',
+  domain: process.env.NODE_ENV === 'development' ? 'localhost' : 'mederak.com',
   // domain: 'localhost',
   path: '/',
   // sameSite: 'strict',
