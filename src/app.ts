@@ -61,9 +61,11 @@ app.use(
   })
 );
 
+const environment = process.env.NODE_ENV;
+
 app.listen(port, async () => {
   logger.info(`App is running at http://localhost:${port}`);
-
+  console.log({ processENV: environment });
   await connect();
 
   routes(app);
