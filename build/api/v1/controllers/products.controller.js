@@ -93,6 +93,7 @@ function getProductsController(req, res) {
                 countPromise,
                 productsPromise,
             ]);
+            console.log({ productCounts: count });
             const productsQuery = yield Promise.all(products.map((productDocument) => __awaiter(this, void 0, void 0, function* () {
                 const product = productDocument.toObject();
                 if (!product.image) {
@@ -105,6 +106,7 @@ function getProductsController(req, res) {
                 return Object.assign(Object.assign({}, product), { imageURL: productAsset.imageURL });
             })));
             const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
+            console.log({ productsPageCount: pageCount });
             if (!count || !products) {
                 return res.sendStatus(404);
             }

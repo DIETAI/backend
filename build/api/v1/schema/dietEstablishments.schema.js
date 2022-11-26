@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDietEstablishmentSchema = exports.deleteDietEstablishmentSchema = exports.updateDietEstablishmentSchema = exports.createDietEstablishmentSchema = void 0;
+exports.getDietEstablishmentsSchema = exports.getDietEstablishmentSchema = exports.deleteDietEstablishmentSchema = exports.updateDietEstablishmentSchema = exports.createDietEstablishmentSchema = void 0;
 const zod_1 = require("zod");
 const payload = {
     body: (0, zod_1.object)({
@@ -385,7 +385,14 @@ const params = {
         }),
     }),
 };
+const query = {
+    query: (0, zod_1.object)({
+        page: (0, zod_1.string)().optional(),
+        itemsCount: (0, zod_1.string)().optional(),
+    }),
+};
 exports.createDietEstablishmentSchema = (0, zod_1.object)(Object.assign({}, payload));
 exports.updateDietEstablishmentSchema = (0, zod_1.object)(Object.assign(Object.assign({}, payload), params));
 exports.deleteDietEstablishmentSchema = (0, zod_1.object)(Object.assign({}, params));
 exports.getDietEstablishmentSchema = (0, zod_1.object)(Object.assign({}, params));
+exports.getDietEstablishmentsSchema = (0, zod_1.object)(Object.assign({}, query));

@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteDinnerPortionController = exports.getDinnerPortionsQueryController = exports.getDinnerPortionsController = exports.getDinnerPortionController = exports.updateDinnerPortionController = exports.createDinnerPortionController = void 0;
+const asset_service_1 = require("../../services/asset.service");
 const dinnerPortion_service_1 = require("../../services/dinner/dinnerPortion.service");
 const dinnerProduct_service_1 = require("../../services/dinner/dinnerProduct.service");
 const products_service_1 = require("../../services/products.service");
@@ -104,7 +105,8 @@ function getDinnerPortionsQueryController(req, res) {
                 const product = yield (0, products_service_1.getProduct)({
                     _id: dinnerProduct === null || dinnerProduct === void 0 ? void 0 : dinnerProduct.productId,
                 });
-                return Object.assign(Object.assign({}, dinnerPortionProduct), { dinnerProduct: Object.assign(Object.assign({}, dinnerProduct), { product }) });
+                const productAsset = yield (0, asset_service_1.getAsset)({ _id: product === null || product === void 0 ? void 0 : product.image });
+                return Object.assign(Object.assign({}, dinnerPortionProduct), { dinnerProduct: Object.assign(Object.assign({}, dinnerProduct), { product: Object.assign(Object.assign({}, product), { imageURL: productAsset === null || productAsset === void 0 ? void 0 : productAsset.imageURL }) }) });
             })));
             const dinnerPortionQueryObj = Object.assign(Object.assign({}, dinnerPortion), { dinnerProducts });
             return dinnerPortionQueryObj;

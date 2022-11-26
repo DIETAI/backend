@@ -103,7 +103,8 @@ function getDinnersController(req, res) {
                 return Object.assign(Object.assign({}, dinner), { imageObj: dinnerAsset });
             })));
             const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
-            if (!count || !dinners) {
+            console.log({ dinnerCounts: count, dinnersLength: dinnersQuery.length });
+            if (!count || !dinnersQuery) {
                 return res.sendStatus(404);
             }
             return res.send({

@@ -4,9 +4,8 @@ exports.refreshTokenCookieOptions = exports.accessTokenCookieOptions = void 0;
 exports.accessTokenCookieOptions = {
     maxAge: 900000,
     httpOnly: true,
-    domain: process.env.NODE_ENV === 'development'
-        ? 'localhost'
-        : 'diet-ai-vaq5g.ondigitalocean.app',
+    // domain: process.env.NODE_ENV === 'development' ? 'localhost' : 'mederak.com',
+    domain: 'mederak.com, localhost',
     path: '/',
     sameSite: 'strict',
     secure: false,

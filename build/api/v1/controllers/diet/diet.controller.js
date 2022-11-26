@@ -8,6 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteDietController = exports.getDietsController = exports.getDietQueryController = exports.getDietController = exports.updateDietController = exports.createDietController = void 0;
 const diet_service_1 = require("../../services/diet/diet.service");
@@ -20,6 +23,7 @@ const dinnerPortion_service_1 = require("../../services/dinner/dinnerPortion.ser
 const dinnerProduct_service_1 = require("../../services/dinner/dinnerProduct.service");
 const products_service_1 = require("../../services/products.service");
 const asset_service_1 = require("../../services/asset.service");
+const diet_model_1 = __importDefault(require("../../models/diet.model"));
 function createDietController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
@@ -235,6 +239,28 @@ exports.getDietQueryController = getDietQueryController;
 function getDietsController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
+        const queryPage = req.query.page;
+        const itemsCount = req.query.itemsCount;
+        if (queryPage && itemsCount) {
+            const page = parseInt(queryPage);
+            const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
+            const countPromise = diet_model_1.default.estimatedDocumentCount();
+            const dietsPromise = diet_model_1.default.find({ user: userId })
+                .limit(parseInt(itemsCount))
+                .skip(skip);
+            const [count, diets] = yield Promise.all([countPromise, dietsPromise]);
+            const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
+            if (!count || !diets) {
+                return res.sendStatus(404);
+            }
+            return res.send({
+                pagination: {
+                    count,
+                    pageCount,
+                },
+                diets,
+            });
+        }
         const diets = yield (0, diet_service_1.getDiets)({ user: userId });
         if (!diets) {
             return res.sendStatus(404);
@@ -243,6 +269,14 @@ function getDietsController(req, res) {
     });
 }
 exports.getDietsController = getDietsController;
+// export async function getDietsController(req: Request, res: Response) {
+//   const userId = res.locals.user._id;
+//   const diets = await getDiets({ user: userId });
+//   if (!diets) {
+//     return res.sendStatus(404);
+//   }
+//   return res.send(diets);
+// }
 function deleteDietController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;

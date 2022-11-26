@@ -25,6 +25,9 @@ import calendarNotesRoutes from './calendarNotes.routes';
 import invoicesRoutes from './account/invoice.routes';
 
 const routes = (app: Express) => {
+  app.use('/', (req, res) => {
+    res.status(200).json('OK');
+  });
   app.use('/api/v1/user', userRoutes);
   app.use('/api/v1/sessions', sessionRoutes);
   // app.use('/api/v1/roles', roleRoutes);

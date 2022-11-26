@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserController = exports.createUserController = void 0;
+exports.updateUserController = exports.getUserController = exports.createUserController = void 0;
 const user_v1_service_1 = require("../services/user-v1.service");
 const session_service_1 = require("../services/session.service");
 const jwt_utils_1 = require("../utils/jwt.utils");
@@ -74,3 +74,21 @@ function getUserController(req, res) {
     });
 }
 exports.getUserController = getUserController;
+function updateUserController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const update = req.body;
+        const userId = res.locals.user._id;
+        const user = (yield (0, user_v1_service_1.getUser)({ uid: userId }));
+        if (!user) {
+            return res.sendStatus(404);
+        }
+        const userData = user.toObject();
+        const newUserData = Object.assign(Object.assign({}, userData), { photoURL: update.photoURL, name: update.name, lastName: update.lastName, fullName: update.fullName });
+        console.log({ newUserData });
+        const updatedUser = yield (0, user_v1_service_1.getAndUpdateUser)({ _id: userId }, newUserData, {
+            new: true,
+        });
+        return res.send(updatedUser);
+    });
+}
+exports.updateUserController = updateUserController;

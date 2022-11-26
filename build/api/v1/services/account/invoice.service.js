@@ -12,18 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateEmail = exports.getAndUpdateUser = exports.getUser = exports.createUser = void 0;
-const user_model_1 = __importDefault(require("../models/user.model"));
-const metrics_1 = require("../utils/metrics");
-const role_model_1 = __importDefault(require("../models/role.model"));
-function createUser(input) {
+exports.deleteInvoice = exports.getAndUpdateInvoice = exports.getInvoices = exports.getInvoice = exports.createInvoice = void 0;
+const invoice_model_1 = __importDefault(require("../../models/account/invoice.model"));
+const metrics_1 = require("../../utils/metrics");
+function createInvoice(input) {
     return __awaiter(this, void 0, void 0, function* () {
         const metricsLabels = {
-            operation: 'createUser',
+            operation: 'createInvoice',
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const result = yield user_model_1.default.create(input);
+            const result = yield invoice_model_1.default.create(input);
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }
@@ -33,45 +32,15 @@ function createUser(input) {
         }
     });
 }
-exports.createUser = createUser;
-function getUser(query) {
+exports.createInvoice = createInvoice;
+function getInvoice(query, options = { lean: true }) {
     return __awaiter(this, void 0, void 0, function* () {
         const metricsLabels = {
-            operation: 'getUser',
+            operation: 'getInvoice',
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const user = yield user_model_1.default.findOne(query);
-            if (!(user === null || user === void 0 ? void 0 : user.role)) {
-                timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
-                return user;
-            }
-            const userRole = yield role_model_1.default.findOne(user.role);
-            if (!userRole) {
-                timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
-                return user;
-            }
-            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
-            return Object.assign(Object.assign({}, user), { role: {
-                    id: userRole._id,
-                    name: userRole.type,
-                } });
-        }
-        catch (e) {
-            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'false' }));
-            throw e;
-        }
-    });
-}
-exports.getUser = getUser;
-function getAndUpdateUser(query, update, options) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const metricsLabels = {
-            operation: 'updateUser',
-        };
-        const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
-        try {
-            const result = yield user_model_1.default.findOneAndUpdate(query, update, options);
+            const result = yield invoice_model_1.default.findOne(query, {}, options);
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }
@@ -81,14 +50,34 @@ function getAndUpdateUser(query, update, options) {
         }
     });
 }
-exports.getAndUpdateUser = getAndUpdateUser;
-function validateEmail(email) {
+exports.getInvoice = getInvoice;
+function getInvoices(query, options = { lean: true }) {
     return __awaiter(this, void 0, void 0, function* () {
-        const existingUser = yield user_model_1.default.findOne({ email });
-        if (existingUser) {
-            return true;
+        const metricsLabels = {
+            operation: 'getInvoices',
+        };
+        const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
+        try {
+            const result = yield invoice_model_1.default.find(query, {}, options);
+            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
+            return result;
         }
-        return false;
+        catch (e) {
+            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'false' }));
+            throw e;
+        }
     });
 }
-exports.validateEmail = validateEmail;
+exports.getInvoices = getInvoices;
+function getAndUpdateInvoice(query, update, options) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return invoice_model_1.default.findOneAndUpdate(query, update, options);
+    });
+}
+exports.getAndUpdateInvoice = getAndUpdateInvoice;
+function deleteInvoice(query) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return invoice_model_1.default.deleteOne(query);
+    });
+}
+exports.deleteInvoice = deleteInvoice;

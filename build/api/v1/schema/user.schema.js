@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUserSchema = void 0;
+exports.editUserSchema = exports.createUserSchema = void 0;
 const zod_1 = require("zod");
 exports.createUserSchema = (0, zod_1.object)({
     body: (0, zod_1.object)({
@@ -33,5 +33,19 @@ exports.createUserSchema = (0, zod_1.object)({
             required_error: 'Email is required',
         }).email('Not a valid email'),
         // emailVerified: boolean(),
+    }),
+});
+exports.editUserSchema = (0, zod_1.object)({
+    body: (0, zod_1.object)({
+        name: (0, zod_1.string)({
+            required_error: 'Name is required',
+        }),
+        lastName: (0, zod_1.string)({
+            required_error: 'LastName is required',
+        }),
+        fullName: (0, zod_1.string)({
+            required_error: 'FullName is required',
+        }),
+        photoURL: (0, zod_1.string)().optional(),
     }),
 });

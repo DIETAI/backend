@@ -13,6 +13,7 @@ const requireUser_1 = __importDefault(require("../middleware/requireUser"));
 const schema_middleware_1 = __importDefault(require("../middleware/schema.middleware"));
 const router = express_1.default.Router();
 router.get('/:dietEstablishmentId', [requireUser_1.default, (0, schema_middleware_1.default)(dietEstablishments_schema_1.getDietEstablishmentSchema)], dietEstablishment_controller_1.getDietEstablishmentController);
+router.get('/:dietEstablishmentId/query', [requireUser_1.default, (0, schema_middleware_1.default)(dietEstablishments_schema_1.getDietEstablishmentSchema)], dietEstablishment_controller_1.getDietEstablishmentQueryController);
 router.get('/', requireUser_1.default, dietEstablishment_controller_1.getDietEstablishmentsController);
 router.post('/', [requireUser_1.default, (0, schema_middleware_1.default)(dietEstablishments_schema_1.createDietEstablishmentSchema)], dietEstablishment_controller_1.createDietEstablishmentController);
 router.put('/:dietEstablishmentId', [requireUser_1.default, (0, schema_middleware_1.default)(dietEstablishments_schema_1.updateDietEstablishmentSchema)], dietEstablishment_controller_1.updateDietEstablishmentController);

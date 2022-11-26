@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMeasurementController = exports.getMeasurementsController = exports.getMeasurementController = exports.updateMeasurementController = exports.createMeasurementController = void 0;
+exports.deleteMeasurementController = exports.getMeasurementsController = exports.getMeasurementQueryController = exports.getMeasurementController = exports.updateMeasurementController = exports.createMeasurementController = void 0;
 const measurement_service_1 = require("../services/measurement.service");
 const measurement_model_1 = __importDefault(require("../models/measurement.model"));
 const client_service_1 = require("../services/client.service");
+const asset_service_1 = require("../services/asset.service");
 function createMeasurementController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
@@ -59,6 +60,31 @@ function getMeasurementController(req, res) {
     });
 }
 exports.getMeasurementController = getMeasurementController;
+function getMeasurementQueryController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const userId = res.locals.user._id;
+        const measurementId = req.params.measurementId;
+        const measurement = yield (0, measurement_service_1.getMeasurement)({ _id: measurementId });
+        if (!measurement) {
+            return res.sendStatus(404);
+        }
+        if (String(measurement.user) !== userId) {
+            return res.sendStatus(403);
+        }
+        const measurementPatient = yield (0, client_service_1.getClient)({
+            _id: measurement.client,
+        });
+        const measurementAssets = measurement.images && measurement.images.length > 0
+            ? yield Promise.all(measurement.images.map((assetId) => __awaiter(this, void 0, void 0, function* () {
+                const measurementAsset = yield (0, asset_service_1.getAsset)({ _id: assetId });
+                return measurementAsset;
+            })))
+            : [];
+        const measurementQueryObj = Object.assign(Object.assign({}, measurement), { patient: measurementPatient, imagesArr: measurementAssets });
+        return res.send(measurementQueryObj);
+    });
+}
+exports.getMeasurementQueryController = getMeasurementQueryController;
 function getMeasurementsController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
