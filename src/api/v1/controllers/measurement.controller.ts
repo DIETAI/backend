@@ -15,6 +15,7 @@ import {
 } from '../services/measurement.service';
 import MeasurementModel from '../models/measurement.model';
 import { getClient } from '../services/client.service';
+import { getAsset } from '../services/asset.service';
 
 export async function createMeasurementController(
   req: Request<{}, {}, CreateMeasurementInput['body']>,
@@ -76,6 +77,45 @@ export async function getMeasurementController(
   }
 
   return res.send(measurement);
+}
+
+export async function getMeasurementQueryController(
+  req: Request<GetMeasurementInput['params']>,
+  res: Response
+) {
+  const userId = res.locals.user._id;
+  const measurementId = req.params.measurementId;
+  const measurement = await getMeasurement({ _id: measurementId });
+
+  if (!measurement) {
+    return res.sendStatus(404);
+  }
+
+  if (String(measurement.user) !== userId) {
+    return res.sendStatus(403);
+  }
+
+  const measurementPatient = await getClient({
+    _id: measurement.client,
+  });
+
+  const measurementAssets =
+    measurement.images && measurement.images.length > 0
+      ? await Promise.all(
+          measurement.images.map(async (assetId) => {
+            const measurementAsset = await getAsset({ _id: assetId });
+            return measurementAsset;
+          })
+        )
+      : [];
+
+  const measurementQueryObj = {
+    ...measurement,
+    patient: measurementPatient,
+    imagesArr: measurementAssets,
+  };
+
+  return res.send(measurementQueryObj);
 }
 
 export async function getMeasurementsController(

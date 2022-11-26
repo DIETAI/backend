@@ -152,8 +152,9 @@ export async function getDinnersController(
     );
 
     const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
+    console.log({ dinnerCounts: count, dinnersLength: dinnersQuery.length });
 
-    if (!count || !dinners) {
+    if (!count || !dinnersQuery) {
       return res.sendStatus(404);
     }
 

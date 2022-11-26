@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { CreateUserInput } from '../schema/user.schema';
+import { CreateUserInput, EditUserInput } from '../schema/user.schema';
 import {
   createUser,
+  getAndUpdateUser,
   getUser,
   validateEmail,
 } from '../services/user-v1.service';
@@ -13,6 +14,7 @@ import {
 } from '../utils/cookieOptions';
 
 import logger from '../utils/logger';
+import { IUserDocument } from '../interfaces/user.interfaces';
 
 export async function createUserController(
   req: Request<{}, {}, CreateUserInput['body']>,
@@ -86,4 +88,35 @@ export async function getUserController(req: Request, res: Response) {
   }
 
   return res.send(user);
+}
+
+export async function updateUserController(
+  req: Request<{}, {}, EditUserInput['body']>,
+  res: Response
+) {
+  const update = req.body;
+  const userId = res.locals.user._id;
+  const user = (await getUser({ uid: userId })) as IUserDocument;
+
+  if (!user) {
+    return res.sendStatus(404);
+  }
+
+  const userData = user.toObject();
+
+  const newUserData = {
+    ...userData,
+    photoURL: update.photoURL,
+    name: update.name,
+    lastName: update.lastName,
+    fullName: update.fullName,
+  };
+
+  console.log({ newUserData });
+
+  const updatedUser = await getAndUpdateUser({ _id: userId }, newUserData, {
+    new: true,
+  });
+
+  return res.send(updatedUser);
 }

@@ -4,6 +4,7 @@ import {
   UpdateDietInput,
   DeleteDietInput,
   GetDietInput,
+  GetDietsInput,
 } from '../../schema/diet/diet.schema';
 import {
   createDiet,
@@ -44,6 +45,8 @@ import { getDinnerPortion } from '../../services/dinner/dinnerPortion.service';
 import { getDinnerProduct } from '../../services/dinner/dinnerProduct.service';
 import { getProduct } from '../../services/products.service';
 import { getAsset } from '../../services/asset.service';
+import DietDayModel from '../../models/dietDay.model';
+import DietModel from '../../models/diet.model';
 
 export async function createDietController(
   req: Request<{}, {}, CreateDietInput['body']>,
@@ -343,8 +346,40 @@ export async function getDietQueryController(
   return res.send(dietQueryObj);
 }
 
-export async function getDietsController(req: Request, res: Response) {
+export async function getDietsController(
+  req: Request<{}, {}, {}, GetDietsInput['query']>,
+  res: Response
+) {
   const userId = res.locals.user._id;
+  const queryPage = req.query.page;
+  const itemsCount = req.query.itemsCount;
+
+  if (queryPage && itemsCount) {
+    const page = parseInt(queryPage);
+    const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
+
+    const countPromise = DietModel.estimatedDocumentCount();
+    const dietsPromise = DietModel.find({ user: userId })
+      .limit(parseInt(itemsCount))
+      .skip(skip);
+
+    const [count, diets] = await Promise.all([countPromise, dietsPromise]);
+
+    const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
+
+    if (!count || !diets) {
+      return res.sendStatus(404);
+    }
+
+    return res.send({
+      pagination: {
+        count,
+        pageCount,
+      },
+      diets,
+    });
+  }
+
   const diets = await getDiets({ user: userId });
 
   if (!diets) {
@@ -353,6 +388,17 @@ export async function getDietsController(req: Request, res: Response) {
 
   return res.send(diets);
 }
+
+// export async function getDietsController(req: Request, res: Response) {
+//   const userId = res.locals.user._id;
+//   const diets = await getDiets({ user: userId });
+
+//   if (!diets) {
+//     return res.sendStatus(404);
+//   }
+
+//   return res.send(diets);
+// }
 
 export async function deleteDietController(
   req: Request<DeleteDietInput['params']>,

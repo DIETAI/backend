@@ -7,6 +7,7 @@ import {
   deleteMeasurementController,
   getMeasurementController,
   getMeasurementsController,
+  getMeasurementQueryController,
 } from '../controllers/measurement.controller';
 
 //schema
@@ -27,6 +28,12 @@ router.get(
   '/:measurementId',
   [requireUser, validateSchema(getMeasurementSchema)],
   getMeasurementController
+);
+
+router.get(
+  '/:measurementId/query',
+  [requireUser, validateSchema(getMeasurementSchema)],
+  getMeasurementQueryController
 );
 
 router.get('/', requireUser, getMeasurementsController);

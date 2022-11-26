@@ -34,4 +34,20 @@ export const createUserSchema = object({
   }),
 });
 
+export const editUserSchema = object({
+  body: object({
+    name: string({
+      required_error: 'Name is required',
+    }),
+    lastName: string({
+      required_error: 'LastName is required',
+    }),
+    fullName: string({
+      required_error: 'FullName is required',
+    }),
+    photoURL: string().optional(),
+  }),
+});
+
 export type CreateUserInput = TypeOf<typeof createUserSchema>;
+export type EditUserInput = TypeOf<typeof editUserSchema>;

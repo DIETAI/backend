@@ -122,6 +122,8 @@ export async function getProductsController(
       productsPromise,
     ]);
 
+    console.log({ productCounts: count });
+
     const productsQuery = await Promise.all(
       products.map(async (productDocument) => {
         const product = productDocument.toObject();
@@ -140,6 +142,7 @@ export async function getProductsController(
     );
 
     const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
+    console.log({ productsPageCount: pageCount });
 
     if (!count || !products) {
       return res.sendStatus(404);

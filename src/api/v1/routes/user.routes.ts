@@ -4,6 +4,7 @@ import express from 'express';
 import {
   createUserController,
   getUserController,
+  updateUserController,
 } from '../controllers/user.controller';
 
 //schema
@@ -17,6 +18,7 @@ import { roleCheck } from '../middleware/role.middleware';
 const router = express.Router();
 
 router.get('/', [requireUser], getUserController);
+router.put('/', [requireUser], updateUserController);
 router.post('/', [validateSchema(createUserSchema)], createUserController);
 
 export default router;

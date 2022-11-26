@@ -6,6 +6,7 @@ import {
   updateDietEstablishmentController,
   deleteDietEstablishmentController,
   getDietEstablishmentController,
+  getDietEstablishmentQueryController,
   getDietEstablishmentsController,
 } from '../controllers/dietEstablishment.controller';
 
@@ -27,6 +28,12 @@ router.get(
   '/:dietEstablishmentId',
   [requireUser, validateSchema(getDietEstablishmentSchema)],
   getDietEstablishmentController
+);
+
+router.get(
+  '/:dietEstablishmentId/query',
+  [requireUser, validateSchema(getDietEstablishmentSchema)],
+  getDietEstablishmentQueryController
 );
 
 router.get('/', requireUser, getDietEstablishmentsController);

@@ -1,4 +1,4 @@
-import { FilterQuery } from 'mongoose';
+import { FilterQuery, UpdateQuery, QueryOptions } from 'mongoose';
 import UserModel from '../models/user.model';
 import {
   ICreateUserInput,
@@ -55,6 +55,29 @@ export async function getUser(query: FilterQuery<IUserDocument>) {
     };
   } catch (e) {
     timer({ ...metricsLabels, success: 'false' });
+    throw e;
+  }
+}
+
+export async function getAndUpdateUser(
+  query: FilterQuery<IUserDocument>,
+  update: UpdateQuery<IUserDocument>,
+  options: QueryOptions
+) {
+  const metricsLabels = {
+    operation: 'updateUser',
+  };
+
+  const timer = databaseResponseTimeHistogram.startTimer();
+
+  try {
+    const result = await UserModel.findOneAndUpdate(query, update, options);
+
+    timer({ ...metricsLabels, success: 'true' });
+    return result;
+  } catch (e) {
+    timer({ ...metricsLabels, success: 'false' });
+
     throw e;
   }
 }

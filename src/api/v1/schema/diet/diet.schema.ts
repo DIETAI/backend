@@ -42,6 +42,13 @@ const params = {
   }),
 };
 
+const query = {
+  query: object({
+    page: string().optional(),
+    itemsCount: string().optional(),
+  }),
+};
+
 export const createDietSchema = object({
   ...payload,
 });
@@ -59,7 +66,12 @@ export const getDietSchema = object({
   ...params,
 });
 
+export const getDietsSchema = object({
+  ...query,
+});
+
 export type CreateDietInput = TypeOf<typeof createDietSchema>;
 export type UpdateDietInput = TypeOf<typeof updateDietSchema>;
 export type GetDietInput = TypeOf<typeof getDietSchema>;
+export type GetDietsInput = TypeOf<typeof getDietsSchema>;
 export type DeleteDietInput = TypeOf<typeof deleteDietSchema>;

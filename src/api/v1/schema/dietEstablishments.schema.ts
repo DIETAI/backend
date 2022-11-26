@@ -392,6 +392,13 @@ const params = {
   }),
 };
 
+const query = {
+  query: object({
+    page: string().optional(),
+    itemsCount: string().optional(),
+  }),
+};
+
 export const createDietEstablishmentSchema = object({
   ...payload,
 });
@@ -409,6 +416,10 @@ export const getDietEstablishmentSchema = object({
   ...params,
 });
 
+export const getDietEstablishmentsSchema = object({
+  ...query,
+});
+
 export type CreateDietEstablishmentInput = TypeOf<
   typeof createDietEstablishmentSchema
 >;
@@ -417,6 +428,9 @@ export type UpdateDietEstablishmentInput = TypeOf<
 >;
 export type GetDietEstablishmentInput = TypeOf<
   typeof getDietEstablishmentSchema
+>;
+export type GetDietEstablishmentsInput = TypeOf<
+  typeof getDietEstablishmentsSchema
 >;
 export type DeleteDietEstablishmentInput = TypeOf<
   typeof deleteDietEstablishmentSchema
