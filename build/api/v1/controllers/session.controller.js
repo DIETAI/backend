@@ -13,6 +13,7 @@ exports.deleteUserSessionController = exports.getUserSessionsController = export
 const session_service_1 = require("../services/session.service");
 const user_service_1 = require("../services/user.service");
 const jwt_utils_1 = require("../utils/jwt.utils");
+const cookieOptions_1 = require("../utils/cookieOptions");
 const origin = process.env.ORIGIN || 'http://localhost:3000';
 function createUserSessionController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -29,24 +30,24 @@ function createUserSessionController(req, res) {
         // create a refresh token
         const refreshToken = (0, jwt_utils_1.signJwt)(Object.assign(Object.assign({}, user), { session: session._id }), 'refreshTokenPrivateKey', { expiresIn: '1y' });
         // return access & refresh tokens
-        res.cookie('accessToken', accessToken, {
-            maxAge: 900000,
-            httpOnly: true,
-            domain: 'mederak.com',
-            path: '/',
-            sameSite: 'none',
-            secure: true,
-        });
-        res.cookie('refreshToken', refreshToken, {
-            maxAge: 3.154e10,
-            httpOnly: true,
-            domain: 'mederak.com',
-            path: '/',
-            sameSite: 'none',
-            secure: true,
-        });
-        // res.cookie('accessToken', accessToken, accessTokenCookieOptions);
-        // res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
+        // res.cookie('accessToken', accessToken, {
+        //   maxAge: 900000, // 15 mins
+        //   httpOnly: true,
+        //   domain: 'mederak.com',
+        //   path: '/',
+        //   sameSite: 'none',
+        //   secure: true,
+        // });
+        // res.cookie('refreshToken', refreshToken, {
+        //   maxAge: 3.154e10, // 1 year
+        //   httpOnly: true,
+        //   domain: 'mederak.com',
+        //   path: '/',
+        //   sameSite: 'none',
+        //   secure: true,
+        // });
+        res.cookie('accessToken', accessToken, cookieOptions_1.accessTokenCookieOptions);
+        res.cookie('refreshToken', refreshToken, cookieOptions_1.refreshTokenCookieOptions);
         return res.send({ accessToken, refreshToken });
     });
 }
@@ -66,18 +67,18 @@ function deleteUserSessionController(req, res) {
         res.cookie('accessToken', '', {
             maxAge: -900000,
             httpOnly: true,
-            domain: 'localhost',
+            domain: 'mederak.com',
             path: '/',
-            sameSite: 'strict',
-            secure: false,
+            sameSite: 'none',
+            secure: true,
         });
         res.cookie('refreshToken', '', {
             maxAge: -3.154e10,
             httpOnly: true,
-            domain: 'localhost',
+            domain: 'mederak.com',
             path: '/',
-            sameSite: 'strict',
-            secure: false,
+            sameSite: 'none',
+            secure: true,
         });
         return res.send({
             accessToken: null,

@@ -46,26 +46,26 @@ export async function createUserSessionController(req: Request, res: Response) {
   );
 
   // return access & refresh tokens
-  res.cookie('accessToken', accessToken, {
-    maxAge: 900000, // 15 mins
-    httpOnly: true,
-    domain: 'mederak.com',
-    path: '/',
-    sameSite: 'none',
-    secure: true,
-  });
+  // res.cookie('accessToken', accessToken, {
+  //   maxAge: 900000, // 15 mins
+  //   httpOnly: true,
+  //   domain: 'mederak.com',
+  //   path: '/',
+  //   sameSite: 'none',
+  //   secure: true,
+  // });
 
-  res.cookie('refreshToken', refreshToken, {
-    maxAge: 3.154e10, // 1 year
-    httpOnly: true,
-    domain: 'mederak.com',
-    path: '/',
-    sameSite: 'none',
-    secure: true,
-  });
+  // res.cookie('refreshToken', refreshToken, {
+  //   maxAge: 3.154e10, // 1 year
+  //   httpOnly: true,
+  //   domain: 'mederak.com',
+  //   path: '/',
+  //   sameSite: 'none',
+  //   secure: true,
+  // });
 
-  // res.cookie('accessToken', accessToken, accessTokenCookieOptions);
-  // res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
+  res.cookie('accessToken', accessToken, accessTokenCookieOptions);
+  res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
 
   return res.send({ accessToken, refreshToken });
 }
@@ -86,19 +86,19 @@ export async function deleteUserSessionController(req: Request, res: Response) {
   res.cookie('accessToken', '', {
     maxAge: -900000, // 15 mins
     httpOnly: true,
-    domain: 'localhost',
+    domain: 'mederak.com',
     path: '/',
-    sameSite: 'strict',
-    secure: false,
+    sameSite: 'none',
+    secure: true,
   });
 
   res.cookie('refreshToken', '', {
     maxAge: -3.154e10, // 1 year
     httpOnly: true,
-    domain: 'localhost',
+    domain: 'mederak.com',
     path: '/',
-    sameSite: 'strict',
-    secure: false,
+    sameSite: 'none',
+    secure: true,
   });
 
   return res.send({
