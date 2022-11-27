@@ -28,6 +28,9 @@ const dietDinnerPortionGenerate_routes_1 = __importDefault(require("./dietDinner
 const calendarNotes_routes_1 = __importDefault(require("./calendarNotes.routes"));
 const invoice_routes_1 = __importDefault(require("./account/invoice.routes"));
 const routes = (app) => {
+    app.use('/api/v1/healthCheck', (req, res) => {
+        res.send(200);
+    });
     app.use('/api/v1/user', user_routes_1.default);
     app.use('/api/v1/sessions', session_routes_1.default);
     // app.use('/api/v1/roles', roleRoutes);

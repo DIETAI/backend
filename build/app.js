@@ -53,8 +53,10 @@ app.use((0, response_time_1.default)((req, res, time) => {
         }, time * 1000);
     }
 }));
+const environment = process.env.NODE_ENV;
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     logger_1.default.info(`App is running at http://localhost:${port}`);
+    console.log({ processENV: environment });
     yield (0, dbConnect_1.default)();
     (0, routes_1.default)(app);
     (0, metrics_1.startMetricsServer)();

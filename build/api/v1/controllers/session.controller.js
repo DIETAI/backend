@@ -32,19 +32,21 @@ function createUserSessionController(req, res) {
         res.cookie('accessToken', accessToken, {
             maxAge: 900000,
             httpOnly: true,
-            domain: 'localhost',
+            domain: 'mederak.com',
             path: '/',
-            sameSite: 'strict',
+            sameSite: 'none',
             secure: false,
         });
         res.cookie('refreshToken', refreshToken, {
             maxAge: 3.154e10,
             httpOnly: true,
-            domain: 'localhost',
+            domain: 'mederak.com',
             path: '/',
-            sameSite: 'strict',
+            sameSite: 'none',
             secure: false,
         });
+        // res.cookie('accessToken', accessToken, accessTokenCookieOptions);
+        // res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
         return res.send({ accessToken, refreshToken });
     });
 }
