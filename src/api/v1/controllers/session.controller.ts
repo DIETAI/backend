@@ -52,7 +52,7 @@ export async function createUserSessionController(req: Request, res: Response) {
     domain: 'mederak.com',
     path: '/',
     sameSite: 'none',
-    secure: false,
+    secure: true,
   });
 
   res.cookie('refreshToken', refreshToken, {
@@ -61,7 +61,7 @@ export async function createUserSessionController(req: Request, res: Response) {
     domain: 'mederak.com',
     path: '/',
     sameSite: 'none',
-    secure: false,
+    secure: true,
   });
 
   // res.cookie('accessToken', accessToken, accessTokenCookieOptions);

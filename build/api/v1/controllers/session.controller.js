@@ -35,7 +35,7 @@ function createUserSessionController(req, res) {
             domain: 'mederak.com',
             path: '/',
             sameSite: 'none',
-            secure: false,
+            secure: true,
         });
         res.cookie('refreshToken', refreshToken, {
             maxAge: 3.154e10,
@@ -43,7 +43,7 @@ function createUserSessionController(req, res) {
             domain: 'mederak.com',
             path: '/',
             sameSite: 'none',
-            secure: false,
+            secure: true,
         });
         // res.cookie('accessToken', accessToken, accessTokenCookieOptions);
         // res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
