@@ -67,7 +67,8 @@ function deleteUserSessionController(req, res) {
         res.cookie('accessToken', '', {
             maxAge: -900000,
             httpOnly: true,
-            domain: 'mederak.com',
+            // domain: 'mederak.com',
+            domain: process.env.NODE_ENV === 'dev' ? 'localhost' : 'mederak.com',
             path: '/',
             sameSite: 'none',
             secure: true,
@@ -75,7 +76,8 @@ function deleteUserSessionController(req, res) {
         res.cookie('refreshToken', '', {
             maxAge: -3.154e10,
             httpOnly: true,
-            domain: 'mederak.com',
+            // domain: 'mederak.com',
+            domain: process.env.NODE_ENV === 'dev' ? 'localhost' : 'mederak.com',
             path: '/',
             sameSite: 'none',
             secure: true,

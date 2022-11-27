@@ -4,8 +4,8 @@ exports.refreshTokenCookieOptions = exports.accessTokenCookieOptions = void 0;
 exports.accessTokenCookieOptions = {
     maxAge: 900000,
     httpOnly: true,
-    // domain: process.env.NODE_ENV === 'dev' ? 'localhost' : 'mederak.com',
-    domain: 'mederak.com',
+    domain: process.env.NODE_ENV === 'dev' ? 'localhost' : 'mederak.com',
+    // domain: 'mederak.com',
     path: '/',
     // sameSite: 'strict',
     sameSite: 'none',
