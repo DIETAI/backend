@@ -44,8 +44,6 @@ export async function createUserController(
     // create a session
     const session = await createSession(user._id, req.get('user-agent') || '');
 
-    console.log({ session });
-
     if (!session) {
       return res.status(200).json({
         msg: 'User created but an error occurred while creating the session',
@@ -60,8 +58,6 @@ export async function createUserController(
       { expiresIn: '15m' } // 15 minutes,
     );
 
-    console.log({ accessToken });
-
     // create a refresh token
     const refreshToken = signJwt(
       { ...user, session: session._id },
@@ -69,11 +65,10 @@ export async function createUserController(
       { expiresIn: '1y' }
     );
 
-    console.log({ refreshToken });
-
     res.cookie('accessToken', accessToken, accessTokenCookieOptions);
     res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
 
+    //correct
     console.log('Udało się dodać uzytkownika');
 
     return res.send({ user, accessToken, refreshToken });

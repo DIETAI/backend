@@ -38,7 +38,6 @@ function createUserController(req, res) {
             console.log({ createdUser: user });
             // create a session
             const session = yield (0, session_service_1.createSession)(user._id, req.get('user-agent') || '');
-            console.log({ session });
             if (!session) {
                 return res.status(200).json({
                     msg: 'User created but an error occurred while creating the session',
@@ -48,12 +47,11 @@ function createUserController(req, res) {
             // create an access token
             const accessToken = (0, jwt_utils_1.signJwt)(Object.assign(Object.assign({}, user), { session: session._id }), 'accessTokenPrivateKey', { expiresIn: '15m' } // 15 minutes,
             );
-            console.log({ accessToken });
             // create a refresh token
             const refreshToken = (0, jwt_utils_1.signJwt)(Object.assign(Object.assign({}, user), { session: session._id }), 'refreshTokenPrivateKey', { expiresIn: '1y' });
-            console.log({ refreshToken });
             res.cookie('accessToken', accessToken, cookieOptions_1.accessTokenCookieOptions);
             res.cookie('refreshToken', refreshToken, cookieOptions_1.refreshTokenCookieOptions);
+            //correct
             console.log('Udało się dodać uzytkownika');
             return res.send({ user, accessToken, refreshToken });
         }
