@@ -81,6 +81,8 @@ export async function getUserController(req: Request, res: Response) {
   console.log({ userId });
   const user = await getUser({ uid: userId });
 
+  console.log({ host: req.hostname });
+
   console.log({ user });
 
   if (!user) {

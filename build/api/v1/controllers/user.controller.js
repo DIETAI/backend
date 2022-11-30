@@ -66,6 +66,7 @@ function getUserController(req, res) {
         const userId = res.locals.user._id;
         console.log({ userId });
         const user = yield (0, user_v1_service_1.getUser)({ uid: userId });
+        console.log({ host: req.hostname });
         console.log({ user });
         if (!user) {
             return res.sendStatus(404);
