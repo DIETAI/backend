@@ -54,10 +54,12 @@ function createUserController(req, res) {
             console.log({ refreshToken });
             res.cookie('accessToken', accessToken, cookieOptions_1.accessTokenCookieOptions);
             res.cookie('refreshToken', refreshToken, cookieOptions_1.refreshTokenCookieOptions);
+            console.log('Udało się dodać uzytkownika');
             return res.send({ user, accessToken, refreshToken });
         }
         catch (e) {
             logger_1.default.error(e);
+            console.log(e);
             return res.status(409).send(e.message);
         }
     });

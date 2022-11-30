@@ -74,9 +74,12 @@ export async function createUserController(
     res.cookie('accessToken', accessToken, accessTokenCookieOptions);
     res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
 
+    console.log('Udało się dodać uzytkownika');
+
     return res.send({ user, accessToken, refreshToken });
   } catch (e: any) {
     logger.error(e);
+    console.log(e);
     return res.status(409).send(e.message);
   }
 }
