@@ -9,8 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAssetController = exports.getAssetsController = exports.getAssetController = exports.updateAssetController = exports.createAssetController = void 0;
+exports.deleteAssetController = exports.getAssetsController = exports.getAssetController = exports.updateAssetController = exports.createAssetController = exports.uploadImageController = void 0;
 const asset_service_1 = require("../services/asset.service");
+function uploadImageController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const body = req.body;
+        const image = yield (0, asset_service_1.uploadImage)(Object.assign({}, body));
+        return res.send({ url: image.url, key: image.key });
+    });
+}
+exports.uploadImageController = uploadImageController;
 function createAssetController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;

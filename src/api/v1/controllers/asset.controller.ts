@@ -4,14 +4,29 @@ import {
   UpdateAssetInput,
   DeleteAssetInput,
   GetAssetInput,
+  UploadImageInput,
 } from '../schema/asset.schema';
 import {
+  uploadImage,
   createAsset,
   deleteAsset,
   getAndUpdateAsset,
   getAsset,
   getAssets,
 } from '../services/asset.service';
+
+export async function uploadImageController(
+  req: Request<{}, {}, UploadImageInput['body']>,
+  res: Response
+) {
+  const body = req.body;
+
+  const image = await uploadImage({
+    ...body,
+  });
+
+  return res.send({ url: image.url, key: image.key });
+}
 
 export async function createAssetController(
   req: Request<{}, {}, CreateAssetInput['body']>,

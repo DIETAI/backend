@@ -9,6 +9,12 @@ const payload = {
     imageURL: string({
       required_error: 'Image url is required',
     }),
+    size: number({
+      required_error: 'Size is required',
+    }),
+    key: string({
+      required_error: 'AWS_S3 object key is required',
+    }),
   }),
 };
 
@@ -19,6 +25,21 @@ const params = {
     }),
   }),
 };
+
+const uploadImagePayload = {
+  body: object({
+    name: string({
+      required_error: 'Image name is required',
+    }),
+    type: string({
+      required_error: 'Image type is required',
+    }),
+  }),
+};
+
+export const uploadImageSchema = object({
+  ...uploadImagePayload,
+});
 
 export const createAssetSchema = object({
   ...payload,
@@ -37,6 +58,7 @@ export const getAssetSchema = object({
   ...params,
 });
 
+export type UploadImageInput = TypeOf<typeof uploadImageSchema>;
 export type CreateAssetInput = TypeOf<typeof createAssetSchema>;
 export type UpdateAssetInput = TypeOf<typeof updateAssetSchema>;
 export type GetAssetInput = TypeOf<typeof getAssetSchema>;

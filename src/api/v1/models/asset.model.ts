@@ -9,6 +9,8 @@ const AssetSchema = new Schema<IAssetDocument>(
     title: { type: String, required: true },
     description: { type: String },
     imageURL: { type: String, required: true },
+    size: { type: Number, required: true },
+    key: { type: String, required: true },
   },
   {
     timestamps: true,

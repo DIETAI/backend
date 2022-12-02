@@ -7,10 +7,12 @@ import {
   deleteAssetController,
   getAssetController,
   getAssetsController,
+  uploadImageController,
 } from '../controllers/asset.controller';
 
 //schema
 import {
+  uploadImageSchema,
   createAssetSchema,
   deleteAssetSchema,
   getAssetSchema,
@@ -35,6 +37,12 @@ router.post(
   '/',
   [requireUser, validateSchema(createAssetSchema)],
   createAssetController
+);
+
+router.post(
+  '/upload',
+  [requireUser, validateSchema(uploadImageSchema)],
+  uploadImageController
 );
 
 router.put(

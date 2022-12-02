@@ -1,11 +1,18 @@
 import mongoose from 'mongoose';
 import { IUserDocument } from './user.interfaces';
 
+export interface IUploadImageInput {
+  name: string;
+  type: string;
+}
+
 export interface IAssetInput {
   user: IUserDocument['_id'];
   title: string;
   description?: string;
   imageURL: string;
+  size: number;
+  key: string;
 }
 
 export interface IAssetDocument extends IAssetInput, mongoose.Document {

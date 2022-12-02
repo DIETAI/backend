@@ -28,7 +28,7 @@ app.use(
       'https://dashboard.dietai.mederak.com',
     ],
     // origin: process.env.ORIGIN || 'http://localhost:3000',
-    // credentials: true,
+    credentials: true,
   })
 );
 
