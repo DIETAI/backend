@@ -11,9 +11,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteAssetController = exports.getAssetsController = exports.getAssetController = exports.updateAssetController = exports.createAssetController = exports.uploadImageController = void 0;
 const asset_service_1 = require("../services/asset.service");
+const roundValue = (value) => {
+    return Math.round(value * 1e2) / 1e2;
+};
+const sumImagesSize = (assets) => {
+    const imageSize = roundValue(assets.reduce((acc, asset) => acc + Number(asset.size), 0));
+    return imageSize;
+};
 function uploadImageController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const body = req.body;
+        const userId = res.locals.user._id;
+        const maxImagesSize = 2000000000; //2GB
+        const assets = yield (0, asset_service_1.getAssets)({ user: userId });
+        const allAssetsSize = sumImagesSize(assets) + body.size;
+        if (allAssetsSize > maxImagesSize) {
+            return res.sendStatus(404);
+        }
         const image = yield (0, asset_service_1.uploadImage)(Object.assign({}, body));
         return res.send({ url: image.url, key: image.key });
     });

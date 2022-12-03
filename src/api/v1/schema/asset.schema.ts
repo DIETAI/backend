@@ -34,6 +34,9 @@ const uploadImagePayload = {
     type: string({
       required_error: 'Image type is required',
     }),
+    size: number({
+      required_error: 'Image size is required',
+    }),
   }),
 };
 

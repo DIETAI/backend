@@ -34,6 +34,9 @@ const uploadImagePayload = {
         type: (0, zod_1.string)({
             required_error: 'Image type is required',
         }),
+        size: (0, zod_1.number)({
+            required_error: 'Image size is required',
+        }),
     }),
 };
 exports.uploadImageSchema = (0, zod_1.object)(Object.assign({}, uploadImagePayload));

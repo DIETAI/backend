@@ -15,11 +15,35 @@ import {
   getAssets,
 } from '../services/asset.service';
 
+import { IAssetDocument } from '../interfaces/assets.interfaces';
+
+const roundValue = (value: number) => {
+  return Math.round(value * 1e2) / 1e2;
+};
+
+const sumImagesSize = (assets: IAssetDocument[]) => {
+  const imageSize = roundValue(
+    assets.reduce((acc, asset) => acc + Number(asset.size), 0)
+  );
+
+  return imageSize;
+};
+
 export async function uploadImageController(
   req: Request<{}, {}, UploadImageInput['body']>,
   res: Response
 ) {
   const body = req.body;
+  const userId = res.locals.user._id;
+
+  const maxImagesSize = 2000000000; //2GB
+  const assets = await getAssets({ user: userId });
+
+  const allAssetsSize = sumImagesSize(assets) + body.size;
+
+  if (allAssetsSize > maxImagesSize) {
+    return res.sendStatus(404);
+  }
 
   const image = await uploadImage({
     ...body,

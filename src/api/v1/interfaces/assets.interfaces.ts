@@ -4,6 +4,7 @@ import { IUserDocument } from './user.interfaces';
 export interface IUploadImageInput {
   name: string;
   type: string;
+  size: number;
 }
 
 export interface IAssetInput {
