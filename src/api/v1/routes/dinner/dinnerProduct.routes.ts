@@ -10,6 +10,7 @@ import {
   getDinnerProductsController,
   getDinnerProductsQueryController,
   getAllDinnerProductsController,
+  getDinnerProductsToRecommendController,
 } from '../../controllers/dinner/dinnerProduct.controller';
 
 //schema
@@ -26,6 +27,9 @@ import requireUser from '../../middleware/requireUser';
 import validateSchema from '../../middleware/schema.middleware';
 
 const router = express.Router();
+
+router.get('/', getAllDinnerProductsController);
+router.get('/allToRecommend', getDinnerProductsToRecommendController);
 
 router.get(
   '/:dinnerProductId',
@@ -50,8 +54,6 @@ router.get(
   [requireUser, validateSchema(getDinnerProductsSchema)],
   getDinnerProductsQueryController
 );
-
-router.get('/', getAllDinnerProductsController);
 
 router.post(
   '/',

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteDinnerProductController = exports.getDinnerProductsQueryController = exports.getDinnerProductsController = exports.getAllDinnerProductsController = exports.getDinnerProductQueryController = exports.getDinnerProductController = exports.updateDinnerProductController = exports.createDinnerProductController = void 0;
+exports.deleteDinnerProductController = exports.getDinnerProductsQueryController = exports.getDinnerProductsToRecommendController = exports.getDinnerProductsController = exports.getAllDinnerProductsController = exports.getDinnerProductQueryController = exports.getDinnerProductController = exports.updateDinnerProductController = exports.createDinnerProductController = void 0;
 const dinnerProduct_service_1 = require("../../services/dinner/dinnerProduct.service");
 const dinnerPortion_service_1 = require("../../services/dinner/dinnerPortion.service");
 const products_service_1 = require("../../services/products.service");
@@ -197,6 +197,26 @@ function getDinnerProductsController(req, res) {
     });
 }
 exports.getDinnerProductsController = getDinnerProductsController;
+function getDinnerProductsToRecommendController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const dinnerProducts = yield (0, dinnerProduct_service_1.getDinnerProducts)({});
+        if (!dinnerProducts) {
+            return res.sendStatus(404);
+        }
+        const allDinnerProductsToRecommend = yield Promise.all(dinnerProducts.map((dinnerProduct) => __awaiter(this, void 0, void 0, function* () {
+            const product = yield (0, products_service_1.getProduct)({ _id: dinnerProduct.productId });
+            const dinnerProductToRecommend = {
+                _id: dinnerProduct._id,
+                dinnerId: dinnerProduct.dinnerId,
+                productId: dinnerProduct.productId,
+                productName: (product === null || product === void 0 ? void 0 : product.name) || '',
+            };
+            return dinnerProductToRecommend;
+        })));
+        return res.send(allDinnerProductsToRecommend);
+    });
+}
+exports.getDinnerProductsToRecommendController = getDinnerProductsToRecommendController;
 function getDinnerProductsQueryController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;

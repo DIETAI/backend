@@ -272,6 +272,34 @@ export async function getDinnerProductsController(
   return res.send(dinnerProducts);
 }
 
+export async function getDinnerProductsToRecommendController(
+  req: Request,
+  res: Response
+) {
+  const dinnerProducts = await getDinnerProducts({});
+
+  if (!dinnerProducts) {
+    return res.sendStatus(404);
+  }
+
+  const allDinnerProductsToRecommend = await Promise.all(
+    dinnerProducts.map(async (dinnerProduct) => {
+      const product = await getProduct({ _id: dinnerProduct.productId });
+
+      const dinnerProductToRecommend = {
+        _id: dinnerProduct._id,
+        dinnerId: dinnerProduct.dinnerId,
+        productId: dinnerProduct.productId,
+        productName: product?.name || '',
+      };
+
+      return dinnerProductToRecommend;
+    })
+  );
+
+  return res.send(allDinnerProductsToRecommend);
+}
+
 export async function getDinnerProductsQueryController(
   req: Request<GetDinnerProductsInput['params']>,
   res: Response
