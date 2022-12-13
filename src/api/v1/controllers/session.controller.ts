@@ -85,22 +85,12 @@ export async function deleteUserSessionController(req: Request, res: Response) {
 
   res.cookie('accessToken', '', {
     maxAge: -900000, // 15 mins
-    httpOnly: true,
-    // domain: 'mederak.com',
-    domain: process.env.NODE_ENV === 'dev' ? 'localhost' : 'mederak.com',
-    path: '/',
-    sameSite: 'none',
-    secure: true,
+    ...accessTokenCookieOptions,
   });
 
   res.cookie('refreshToken', '', {
     maxAge: -3.154e10, // 1 year
-    httpOnly: true,
-    // domain: 'mederak.com',
-    domain: process.env.NODE_ENV === 'dev' ? 'localhost' : 'mederak.com',
-    path: '/',
-    sameSite: 'none',
-    secure: true,
+    ...refreshTokenCookieOptions,
   });
 
   return res.send({
