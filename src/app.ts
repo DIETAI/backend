@@ -26,6 +26,7 @@ app.use(
       'http://localhost:3000',
       'https://dashboard.dietai.pl',
       'https://recommend-server.dietai.pl',
+      'https://dietai.pl',
     ],
     // origin: process.env.ORIGIN || 'http://localhost:3000',
     credentials: true,
