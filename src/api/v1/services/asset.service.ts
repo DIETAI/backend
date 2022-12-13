@@ -120,6 +120,46 @@ export async function uploadImage(input: IUploadImageInput) {
   }
 }
 
+export async function deleteAWSImage(assetKey: string) {
+  const metricsLabels = {
+    operation: 'deleteAWSImage',
+  };
+
+  const timer = databaseResponseTimeHistogram.startTimer();
+  //https://stackoverflow.com/questions/27753411/how-do-i-delete-an-object-on-aws-s3-using-javascript
+  // const params = {
+  //     Bucket: s3BucketName,
+  //     Key: "filename" //if any sub folder-> path/of/the/folder.ext
+  // }
+  // try {
+  // await s3.headObject(params).promise()
+  // console.log("File Found in S3")
+  // try {
+  //     await s3.deleteObject(params).promise()
+  //     console.log("file deleted Successfully")
+  // }
+  // catch (err) {
+  //      console.log("ERROR in file Deleting : " + JSON.stringify(err))
+  // }
+  // } catch (err) {
+  //     console.log("File not Found ERROR : " + err.code)
+  // }
+
+  //https://www.youtube.com/watch?v=yGYeYJpRWPM
+
+  try {
+    const deletedObject = await s3
+      .deleteObject({ Key: assetKey, Bucket: 'diet-ai' })
+      .promise();
+    timer({ ...metricsLabels, success: 'true' });
+    console.log({ deletedObject });
+    return deletedObject;
+  } catch (e) {
+    timer({ ...metricsLabels, success: 'false' });
+    throw e;
+  }
+}
+
 export async function createAsset(input: IAssetInput) {
   const metricsLabels = {
     operation: 'createAsset',

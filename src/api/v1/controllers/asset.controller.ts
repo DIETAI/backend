@@ -13,6 +13,7 @@ import {
   getAndUpdateAsset,
   getAsset,
   getAssets,
+  deleteAWSImage,
 } from '../services/asset.service';
 
 import { IAssetDocument } from '../interfaces/assets.interfaces';
@@ -146,6 +147,7 @@ export async function deleteAssetController(
     return res.sendStatus(403);
   }
 
+  await deleteAWSImage(asset.key);
   await deleteAsset({ _id: assetId });
 
   return res.sendStatus(200);

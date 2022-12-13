@@ -24,8 +24,7 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
-      'https://diet-ai-vaq5g.ondigitalocean.app',
-      'https://dashboard.dietai.mederak.com',
+      'https://dashboard.dietai.pl',
       'https://recommend-server.dietai.pl',
     ],
     // origin: process.env.ORIGIN || 'http://localhost:3000',
