@@ -5,6 +5,6 @@ import { getDietDinnersToDinnerRecommendController } from '../../controllers/die
 
 const router = express.Router();
 
-router.get('/dietDinners', getDietDinnersToDinnerRecommendController); //correct
+router.get('/dietDinners', getDietDinnersToDinnerRecommendController); //correct aws
 
 export default router;
