@@ -31,6 +31,7 @@ import { dietEmitter } from './events';
 import { getDietMeal } from '../../services/diet/dietMeal.service';
 import { getDietDay } from '../../services/diet/dietDay.service';
 import { IDinnerPortionDocument } from '../../interfaces/dinners/dinnerPortions.interfaces';
+import { IDietMealDocument } from '../../interfaces/diet/dietMeal.interfaces';
 
 export async function createDietDinnerController(
   req: Request<{}, {}, CreateDietDinnerInput['body']>,
@@ -158,6 +159,37 @@ export async function getDietDinnersToDinnerRecommendController(
   if (!dietDinners) {
     return res.sendStatus(404);
   }
+
+  // const mealType = 'lunch';
+
+  // const mapDietDinners = await Promise.all(
+  //   dietDinners.map(async (dietDinner) => {
+  //     const meal = (await getDietMeal({
+  //       _id: dietDinner.dietMealId,
+  //     })) as IDietMealDocument;
+  //     const mealDietDinners = await getDietDinners({ dietMealId: meal.id });
+  //     const dinnerPortion = (await getDinnerPortion({
+  //       _id: dietDinner.dinnerPortionId,
+  //     })) as IDinnerPortionDocument;
+  //     const dinner = await getDinner({ _id: dinnerPortion.dinnerId });
+
+  //     if (meal.type === mealType && mealDietDinners.length < 1) {
+  //       return undefined;
+  //     }
+
+  //     return {
+  //       _id: dietDinner._id,
+  //       mealId: dietDinner.dietMealId,
+  //       dayId: dietDinner.dayId,
+  //       dinnerId: dinner?._id,
+  //       dinnerName: dinner?.name,
+  //     };
+  //   })
+  // );
+
+  // const filteredDietDinners = mapDietDinners.filter(
+  //   (dietDinner) => dietDinner !== undefined
+  // ); //correct
 
   const dietDinnersToRecommend = await Promise.all(
     dietDinners.map(async (dietDinner) => {

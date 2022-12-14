@@ -15,6 +15,7 @@ import {
 
 import logger from '../utils/logger';
 import { IUserDocument } from '../interfaces/user.interfaces';
+import { verifyJwt } from '../utils/jwt.utils';
 
 export async function createUserController(
   req: Request<{}, {}, CreateUserInput['body']>,
@@ -42,36 +43,39 @@ export async function createUserController(
     console.log({ createdUser: user });
 
     // create a session
-    const session = await createSession(user._id, req.get('user-agent') || '');
+    // const session = await createSession(user._id, req.get('user-agent') || '');
 
-    if (!session) {
-      return res.status(200).json({
-        msg: 'User created but an error occurred while creating the session',
-        user,
-      });
-    }
+    // if (!session) {
+    //   return res.status(200).json({
+    //     msg: 'User created but an error occurred while creating the session',
+    //     user,
+    //   });
+    // }
 
-    // create an access token
-    const accessToken = signJwt(
-      { ...user, session: session._id },
-      'accessTokenPrivateKey',
-      { expiresIn: '15m' } // 15 minutes,
-    );
+    // // create an access token
+    // const accessToken = signJwt(
+    //   { ...user, session: session._id },
+    //   'accessTokenPrivateKey',
+    //   { expiresIn: '15m' } // 15 minutes,
+    // );
 
-    // create a refresh token
-    const refreshToken = signJwt(
-      { ...user, session: session._id },
-      'refreshTokenPrivateKey',
-      { expiresIn: '1y' }
-    );
+    // // create a refresh token
+    // const refreshToken = signJwt(
+    //   { ...user, session: session._id },
+    //   'refreshTokenPrivateKey',
+    //   { expiresIn: '1y' }
+    // );
 
-    res.cookie('accessToken', accessToken, accessTokenCookieOptions);
-    res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
+    // res.cookie('accessToken', accessToken, accessTokenCookieOptions);
+    // res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
+
+    // const { decoded, expired } = verifyJwt(accessToken, 'accessTokenPublicKey');
+    // res.locals.user = decoded;
 
     //correct
     console.log('Udało się dodać uzytkownika');
 
-    return res.send({ user, accessToken, refreshToken });
+    return res.send({ user });
   } catch (e: any) {
     logger.error(e);
     console.log(e);
@@ -82,8 +86,10 @@ export async function createUserController(
 export async function getUserController(req: Request, res: Response) {
   console.log('pobieranie danych użytkownika');
   const userId = res.locals.user._id;
+
   console.log({ userId });
-  const user = await getUser({ uid: userId });
+
+  const user = await getUser({ _id: userId });
 
   console.log({ host: req.hostname });
 
@@ -102,7 +108,7 @@ export async function updateUserController(
 ) {
   const update = req.body;
   const userId = res.locals.user._id;
-  const user = (await getUser({ uid: userId })) as IUserDocument;
+  const user = (await getUser({ _id: userId })) as IUserDocument;
 
   if (!user) {
     return res.sendStatus(404);

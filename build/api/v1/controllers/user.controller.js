@@ -14,9 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUserController = exports.getUserController = exports.createUserController = void 0;
 const user_v1_service_1 = require("../services/user-v1.service");
-const session_service_1 = require("../services/session.service");
-const jwt_utils_1 = require("../utils/jwt.utils");
-const cookieOptions_1 = require("../utils/cookieOptions");
 const logger_1 = __importDefault(require("../utils/logger"));
 function createUserController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -37,23 +34,32 @@ function createUserController(req, res) {
             }
             console.log({ createdUser: user });
             // create a session
-            const session = yield (0, session_service_1.createSession)(user._id, req.get('user-agent') || '');
-            if (!session) {
-                return res.status(200).json({
-                    msg: 'User created but an error occurred while creating the session',
-                    user,
-                });
-            }
-            // create an access token
-            const accessToken = (0, jwt_utils_1.signJwt)(Object.assign(Object.assign({}, user), { session: session._id }), 'accessTokenPrivateKey', { expiresIn: '15m' } // 15 minutes,
-            );
-            // create a refresh token
-            const refreshToken = (0, jwt_utils_1.signJwt)(Object.assign(Object.assign({}, user), { session: session._id }), 'refreshTokenPrivateKey', { expiresIn: '1y' });
-            res.cookie('accessToken', accessToken, cookieOptions_1.accessTokenCookieOptions);
-            res.cookie('refreshToken', refreshToken, cookieOptions_1.refreshTokenCookieOptions);
+            // const session = await createSession(user._id, req.get('user-agent') || '');
+            // if (!session) {
+            //   return res.status(200).json({
+            //     msg: 'User created but an error occurred while creating the session',
+            //     user,
+            //   });
+            // }
+            // // create an access token
+            // const accessToken = signJwt(
+            //   { ...user, session: session._id },
+            //   'accessTokenPrivateKey',
+            //   { expiresIn: '15m' } // 15 minutes,
+            // );
+            // // create a refresh token
+            // const refreshToken = signJwt(
+            //   { ...user, session: session._id },
+            //   'refreshTokenPrivateKey',
+            //   { expiresIn: '1y' }
+            // );
+            // res.cookie('accessToken', accessToken, accessTokenCookieOptions);
+            // res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
+            // const { decoded, expired } = verifyJwt(accessToken, 'accessTokenPublicKey');
+            // res.locals.user = decoded;
             //correct
             console.log('Udało się dodać uzytkownika');
-            return res.send({ user, accessToken, refreshToken });
+            return res.send({ user });
         }
         catch (e) {
             logger_1.default.error(e);
@@ -68,7 +74,7 @@ function getUserController(req, res) {
         console.log('pobieranie danych użytkownika');
         const userId = res.locals.user._id;
         console.log({ userId });
-        const user = yield (0, user_v1_service_1.getUser)({ uid: userId });
+        const user = yield (0, user_v1_service_1.getUser)({ _id: userId });
         console.log({ host: req.hostname });
         console.log({ user });
         if (!user) {
@@ -82,7 +88,7 @@ function updateUserController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const update = req.body;
         const userId = res.locals.user._id;
-        const user = (yield (0, user_v1_service_1.getUser)({ uid: userId }));
+        const user = (yield (0, user_v1_service_1.getUser)({ _id: userId }));
         if (!user) {
             return res.sendStatus(404);
         }

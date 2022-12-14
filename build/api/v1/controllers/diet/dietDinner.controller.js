@@ -111,6 +111,32 @@ function getDietDinnersToDinnerRecommendController(req, res) {
         if (!dietDinners) {
             return res.sendStatus(404);
         }
+        // const mealType = 'lunch';
+        // const mapDietDinners = await Promise.all(
+        //   dietDinners.map(async (dietDinner) => {
+        //     const meal = (await getDietMeal({
+        //       _id: dietDinner.dietMealId,
+        //     })) as IDietMealDocument;
+        //     const mealDietDinners = await getDietDinners({ dietMealId: meal.id });
+        //     const dinnerPortion = (await getDinnerPortion({
+        //       _id: dietDinner.dinnerPortionId,
+        //     })) as IDinnerPortionDocument;
+        //     const dinner = await getDinner({ _id: dinnerPortion.dinnerId });
+        //     if (meal.type === mealType && mealDietDinners.length < 1) {
+        //       return undefined;
+        //     }
+        //     return {
+        //       _id: dietDinner._id,
+        //       mealId: dietDinner.dietMealId,
+        //       dayId: dietDinner.dayId,
+        //       dinnerId: dinner?._id,
+        //       dinnerName: dinner?.name,
+        //     };
+        //   })
+        // );
+        // const filteredDietDinners = mapDietDinners.filter(
+        //   (dietDinner) => dietDinner !== undefined
+        // ); //correct
         const dietDinnersToRecommend = yield Promise.all(dietDinners.map((dietDinner) => __awaiter(this, void 0, void 0, function* () {
             const dinnerPortion = (yield (0, dinnerPortion_service_1.getDinnerPortion)({
                 _id: dietDinner.dinnerPortionId,
