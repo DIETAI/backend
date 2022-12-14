@@ -23,6 +23,7 @@ import dietGenerateRoutes from './dietGenerate.routes';
 import dietDinnerPortionGenerateRoutes from './dietDinnerPortionGenerate.routes';
 import calendarNotesRoutes from './calendarNotes.routes';
 import invoicesRoutes from './account/invoice.routes';
+import recommendRoutes from './recommend/recommend.routes';
 
 const routes = (app: Express) => {
   app.use('/api/v1/healthCheck', (req, res) => {
@@ -52,6 +53,7 @@ const routes = (app: Express) => {
   app.use('/api/v1/clients', clientRoutes);
   app.use('/api/v1/calendarNotes', calendarNotesRoutes);
   app.use('/api/v1/invoices', invoicesRoutes);
+  app.use('/api/v1/recommend', recommendRoutes);
 };
 
 export default routes;

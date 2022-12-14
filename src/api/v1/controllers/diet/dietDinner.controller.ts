@@ -30,6 +30,7 @@ import { getDinner } from '../../services/dinner/dinner.service';
 import { dietEmitter } from './events';
 import { getDietMeal } from '../../services/diet/dietMeal.service';
 import { getDietDay } from '../../services/diet/dietDay.service';
+import { IDinnerPortionDocument } from '../../interfaces/dinners/dinnerPortions.interfaces';
 
 export async function createDietDinnerController(
   req: Request<{}, {}, CreateDietDinnerInput['body']>,
@@ -145,6 +146,36 @@ export async function getDietDinnerController(
   }
 
   return res.send(dietDinner);
+}
+
+//aws
+export async function getDietDinnersToDinnerRecommendController(
+  req: Request,
+  res: Response
+) {
+  const dietDinners = await getDietDinners({});
+
+  if (!dietDinners) {
+    return res.sendStatus(404);
+  }
+
+  const dietDinnersToRecommend = await Promise.all(
+    dietDinners.map(async (dietDinner) => {
+      const dinnerPortion = (await getDinnerPortion({
+        _id: dietDinner.dinnerPortionId,
+      })) as IDinnerPortionDocument;
+      const dinner = await getDinner({ _id: dinnerPortion.dinnerId });
+
+      return {
+        _id: dietDinner._id,
+        mealId: dietDinner.dietMealId,
+        dinnerId: dinner?._id,
+        dinnerName: dinner?.name,
+      };
+    })
+  );
+
+  return res.send(dietDinnersToRecommend);
 }
 
 export async function getAllDietDinnersToMealRecommendController(

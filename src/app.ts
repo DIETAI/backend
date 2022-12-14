@@ -35,7 +35,6 @@ app.use(
 );
 
 app.use(cookieParser());
-
 // app.use(express.raw({ type: '*/*' }));
 // app.use(express.json())
 app.use(
