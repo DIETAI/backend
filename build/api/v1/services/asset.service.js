@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAsset = exports.getAndUpdateAsset = exports.getAssets = exports.getAsset = exports.createAsset = exports.uploadImage = void 0;
+exports.deleteAsset = exports.getAndUpdateAsset = exports.getAssets = exports.getAsset = exports.createAsset = exports.deleteAWSImage = exports.uploadImage = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const util_1 = require("util");
 const asset_model_1 = __importDefault(require("../models/asset.model"));
@@ -113,6 +113,46 @@ function uploadImage(input) {
     });
 }
 exports.uploadImage = uploadImage;
+function deleteAWSImage(assetKey) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const metricsLabels = {
+            operation: 'deleteAWSImage',
+        };
+        const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
+        //https://stackoverflow.com/questions/27753411/how-do-i-delete-an-object-on-aws-s3-using-javascript
+        // const params = {
+        //     Bucket: s3BucketName,
+        //     Key: "filename" //if any sub folder-> path/of/the/folder.ext
+        // }
+        // try {
+        // await s3.headObject(params).promise()
+        // console.log("File Found in S3")
+        // try {
+        //     await s3.deleteObject(params).promise()
+        //     console.log("file deleted Successfully")
+        // }
+        // catch (err) {
+        //      console.log("ERROR in file Deleting : " + JSON.stringify(err))
+        // }
+        // } catch (err) {
+        //     console.log("File not Found ERROR : " + err.code)
+        // }
+        //https://www.youtube.com/watch?v=yGYeYJpRWPM
+        try {
+            const deletedObject = yield s3
+                .deleteObject({ Key: assetKey, Bucket: 'diet-ai' })
+                .promise();
+            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
+            console.log({ deletedObject });
+            return deletedObject;
+        }
+        catch (e) {
+            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'false' }));
+            throw e;
+        }
+    });
+}
+exports.deleteAWSImage = deleteAWSImage;
 function createAsset(input) {
     return __awaiter(this, void 0, void 0, function* () {
         const metricsLabels = {

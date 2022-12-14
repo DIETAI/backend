@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteDietDinnerController = exports.getDietDinnersQueryController = exports.getDietDinnersByPortionIdController = exports.getDietDinnersByDayIdController = exports.getDietDinnersController = exports.getAllDietDinnersController = exports.getAllDietDinnersToMealRecommendController = exports.getDietDinnerController = exports.updateDietDinnerController = exports.createDietDinnerController = void 0;
+exports.deleteDietDinnerController = exports.getDietDinnersQueryController = exports.getDietDinnersByPortionIdController = exports.getDietDinnersByDayIdController = exports.getDietDinnersController = exports.getAllDietDinnersController = exports.getAllDietDinnersToMealRecommendController = exports.getDietDinnersToDinnerRecommendController = exports.getDietDinnerController = exports.updateDietDinnerController = exports.createDietDinnerController = void 0;
 const dietDinner_service_1 = require("../../services/diet/dietDinner.service");
 const diet_service_1 = require("../../services/diet/diet.service");
 const dinnerPortion_service_1 = require("../../services/dinner/dinnerPortion.service");
@@ -104,6 +104,29 @@ function getDietDinnerController(req, res) {
     });
 }
 exports.getDietDinnerController = getDietDinnerController;
+//aws
+function getDietDinnersToDinnerRecommendController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const dietDinners = yield (0, dietDinner_service_1.getDietDinners)({});
+        if (!dietDinners) {
+            return res.sendStatus(404);
+        }
+        const dietDinnersToRecommend = yield Promise.all(dietDinners.map((dietDinner) => __awaiter(this, void 0, void 0, function* () {
+            const dinnerPortion = (yield (0, dinnerPortion_service_1.getDinnerPortion)({
+                _id: dietDinner.dinnerPortionId,
+            }));
+            const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion.dinnerId });
+            return {
+                _id: dietDinner._id,
+                mealId: dietDinner.dietMealId,
+                dinnerId: dinner === null || dinner === void 0 ? void 0 : dinner._id,
+                dinnerName: dinner === null || dinner === void 0 ? void 0 : dinner.name,
+            };
+        })));
+        return res.send(dietDinnersToRecommend);
+    });
+}
+exports.getDietDinnersToDinnerRecommendController = getDietDinnersToDinnerRecommendController;
 function getAllDietDinnersToMealRecommendController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         // const userId = res.locals.user._id;

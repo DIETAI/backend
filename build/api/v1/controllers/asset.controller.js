@@ -104,6 +104,7 @@ function deleteAssetController(req, res) {
         if (String(asset.user) !== userId) {
             return res.sendStatus(403);
         }
+        yield (0, asset_service_1.deleteAWSImage)(asset.key);
         yield (0, asset_service_1.deleteAsset)({ _id: assetId });
         return res.sendStatus(200);
     });

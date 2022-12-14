@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const jwt_utils_1 = require("../utils/jwt.utils");
 const session_service_1 = require("../services/session.service");
+const cookieOptions_1 = require("../utils/cookieOptions");
 const deserializeUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const accessToken = (0, lodash_1.get)(req, 'cookies.accessToken') ||
         (0, lodash_1.get)(req, 'headers.authorization', '').replace(/^Bearer\s/, '');
@@ -35,14 +36,7 @@ const deserializeUser = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
             return next();
         }
         res.setHeader('x-access-token', newAccessToken);
-        res.cookie('accessToken', newAccessToken, {
-            maxAge: 900000,
-            httpOnly: true,
-            domain: 'localhost',
-            path: '/',
-            sameSite: 'strict',
-            secure: false, //app.get("env") === "development" ? false : true,
-        });
+        res.cookie('accessToken', newAccessToken, cookieOptions_1.accessTokenCookieOptions);
         const result = (0, jwt_utils_1.verifyJwt)(newAccessToken, 'accessTokenPublicKey');
         res.locals.user = result.decoded;
         return next();

@@ -64,24 +64,8 @@ function deleteUserSessionController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const sessionId = res.locals.user.session;
         yield (0, session_service_1.updateSession)({ _id: sessionId }, { valid: false });
-        res.cookie('accessToken', '', {
-            maxAge: -900000,
-            httpOnly: true,
-            // domain: 'mederak.com',
-            domain: process.env.NODE_ENV === 'dev' ? 'localhost' : 'mederak.com',
-            path: '/',
-            sameSite: 'none',
-            secure: true,
-        });
-        res.cookie('refreshToken', '', {
-            maxAge: -3.154e10,
-            httpOnly: true,
-            // domain: 'mederak.com',
-            domain: process.env.NODE_ENV === 'dev' ? 'localhost' : 'mederak.com',
-            path: '/',
-            sameSite: 'none',
-            secure: true,
-        });
+        res.cookie('accessToken', '', Object.assign({ maxAge: -900000 }, cookieOptions_1.accessTokenCookieOptions));
+        res.cookie('refreshToken', '', Object.assign({ maxAge: -3.154e10 }, cookieOptions_1.refreshTokenCookieOptions));
         return res.send({
             accessToken: null,
             refreshToken: null,
