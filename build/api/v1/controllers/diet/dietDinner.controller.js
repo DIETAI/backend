@@ -119,6 +119,7 @@ function getDietDinnersToDinnerRecommendController(req, res) {
             return {
                 _id: dietDinner._id,
                 mealId: dietDinner.dietMealId,
+                dayId: dietDinner.dayId,
                 dinnerId: dinner === null || dinner === void 0 ? void 0 : dinner._id,
                 dinnerName: dinner === null || dinner === void 0 ? void 0 : dinner.name,
             };

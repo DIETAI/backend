@@ -169,6 +169,7 @@ export async function getDietDinnersToDinnerRecommendController(
       return {
         _id: dietDinner._id,
         mealId: dietDinner.dietMealId,
+        dayId: dietDinner.dayId,
         dinnerId: dinner?._id,
         dinnerName: dinner?.name,
       };
