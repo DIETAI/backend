@@ -29,6 +29,9 @@ const routes = (app: Express) => {
   app.use('/api/v1/healthCheck', (req, res) => {
     res.send(200);
   });
+  app.use('/api/v1/healthCheck2', (req, res) => {
+    res.status(200).json({ msg: 'aplikacja działa poprawnie' });
+  });
   app.use('/api/v1/user', userRoutes);
   app.use('/api/v1/sessions', sessionRoutes);
   // app.use('/api/v1/roles', roleRoutes);
