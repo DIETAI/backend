@@ -197,10 +197,12 @@ export async function getDietDinnersToDinnerRecommendController(
         _id: dietDinner.dinnerPortionId,
       })) as IDinnerPortionDocument;
       const dinner = await getDinner({ _id: dinnerPortion.dinnerId });
+      const meal = await getDietMeal({ _id: dietDinner.dietMealId });
 
       return {
         _id: dietDinner._id,
         mealId: dietDinner.dietMealId,
+        mealType: meal?.type,
         dayId: dietDinner.dayId,
         dinnerId: dinner?._id,
         dinnerName: dinner?.name,

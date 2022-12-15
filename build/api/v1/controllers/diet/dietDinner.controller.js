@@ -142,9 +142,11 @@ function getDietDinnersToDinnerRecommendController(req, res) {
                 _id: dietDinner.dinnerPortionId,
             }));
             const dinner = yield (0, dinner_service_1.getDinner)({ _id: dinnerPortion.dinnerId });
+            const meal = yield (0, dietMeal_service_1.getDietMeal)({ _id: dietDinner.dietMealId });
             return {
                 _id: dietDinner._id,
                 mealId: dietDinner.dietMealId,
+                mealType: meal === null || meal === void 0 ? void 0 : meal.type,
                 dayId: dietDinner.dayId,
                 dinnerId: dinner === null || dinner === void 0 ? void 0 : dinner._id,
                 dinnerName: dinner === null || dinner === void 0 ? void 0 : dinner.name,
