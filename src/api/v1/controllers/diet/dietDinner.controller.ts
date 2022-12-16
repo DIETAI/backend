@@ -28,8 +28,11 @@ import {
 import { getProduct } from '../../services/products.service';
 import { getDinner } from '../../services/dinner/dinner.service';
 import { dietEmitter } from './events';
-import { getDietMeal } from '../../services/diet/dietMeal.service';
-import { getDietDay } from '../../services/diet/dietDay.service';
+import {
+  getDietMeal,
+  getDietMeals,
+} from '../../services/diet/dietMeal.service';
+import { getDietDay, getDietDays } from '../../services/diet/dietDay.service';
 import { IDinnerPortionDocument } from '../../interfaces/dinners/dinnerPortions.interfaces';
 import { IDietMealDocument } from '../../interfaces/diet/dietMeal.interfaces';
 
@@ -160,36 +163,21 @@ export async function getDietDinnersToDinnerRecommendController(
     return res.sendStatus(404);
   }
 
-  // const mealType = 'lunch';
+  // const mealType = 'snack';
 
-  // const mapDietDinners = await Promise.all(
-  //   dietDinners.map(async (dietDinner) => {
-  //     const meal = (await getDietMeal({
-  //       _id: dietDinner.dietMealId,
-  //     })) as IDietMealDocument;
-  //     const mealDietDinners = await getDietDinners({ dietMealId: meal.id });
-  //     const dinnerPortion = (await getDinnerPortion({
-  //       _id: dietDinner.dinnerPortionId,
-  //     })) as IDinnerPortionDocument;
-  //     const dinner = await getDinner({ _id: dinnerPortion.dinnerId });
+  // const resultDinners = [];
 
-  //     if (meal.type === mealType && mealDietDinners.length < 1) {
-  //       return undefined;
-  //     }
+  // for (const dietDinner of dietDinners) {
+  //   const dayMeals = await getDietMeals({ dayId: dietDinner.dayId });
+  //   const searchMeal = dayMeals.find(
+  //     (dayMeal) => dayMeal.type === mealType
+  //   ) as IDietMealDocument;
+  //   const dinners = await getDietDinners({ dietMealId: searchMeal._id });
 
-  //     return {
-  //       _id: dietDinner._id,
-  //       mealId: dietDinner.dietMealId,
-  //       dayId: dietDinner.dayId,
-  //       dinnerId: dinner?._id,
-  //       dinnerName: dinner?.name,
-  //     };
-  //   })
-  // );
-
-  // const filteredDietDinners = mapDietDinners.filter(
-  //   (dietDinner) => dietDinner !== undefined
-  // ); //correct
+  //   if (dinners.length > 0) {
+  //     resultDinners.push(dietDinner);
+  //   }
+  // } //correct
 
   const dietDinnersToRecommend = await Promise.all(
     dietDinners.map(async (dietDinner) => {
@@ -208,7 +196,10 @@ export async function getDietDinnersToDinnerRecommendController(
         dinnerName: dinner?.name,
       };
     })
-  );
+  ); //brak filtrowania (wybierz tylko te dni które zawierają potrawy w np. 2 śniadaniu )
+
+  //panel admina
+  //nie trzeba filtrować tylko wybrać potrawy getDietDinners({toGenerate: true})  => po zapisaniu dnia do generowania zmienia się na true => po usunięciu wszystkich potraw z jednego posiłku => zmienia się na false
 
   return res.send(dietDinnersToRecommend);
 }

@@ -53,9 +53,8 @@ export const mealRecommend = async ({
 }: IRecommendDietDayArgs) => {
   try {
     //w generowaniu diety przekazanie już wygenerowanych posiłków
-    const recommendDietDaysRes = await axios.post<IRecommendDietDayData[]>(
-      'https://diet-ai-recommend-server.herokuapp.com/mvp-recommend-days',
-      { currentDayId: mealDayId }
+    const recommendDietDaysRes = await axios.get<IRecommendDietDayData[]>(
+      `https://recommend-server.dietai.pl/recommend-days?currentDayId=${mealDayId}`
     );
 
     // const recommendDietDaysRes = { data: [] as IRecommendDietDayData[] };

@@ -19,7 +19,7 @@ const dietMeal_service_1 = require("../../../diet/dietMeal.service");
 const mealRecommend = ({ mealDayId, mealType, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //w generowaniu diety przekazanie już wygenerowanych posiłków
-        const recommendDietDaysRes = yield axios_1.default.post('https://diet-ai-recommend-server.herokuapp.com/mvp-recommend-days', { currentDayId: mealDayId });
+        const recommendDietDaysRes = yield axios_1.default.get(`https://recommend-server.dietai.pl/recommend-days?currentDayId=${mealDayId}`);
         // const recommendDietDaysRes = { data: [] as IRecommendDietDayData[] };
         //zwraca rekomendowany dzień
         if (!recommendDietDaysRes || recommendDietDaysRes.data.length < 1) {

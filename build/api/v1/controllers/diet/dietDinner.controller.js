@@ -111,32 +111,18 @@ function getDietDinnersToDinnerRecommendController(req, res) {
         if (!dietDinners) {
             return res.sendStatus(404);
         }
-        // const mealType = 'lunch';
-        // const mapDietDinners = await Promise.all(
-        //   dietDinners.map(async (dietDinner) => {
-        //     const meal = (await getDietMeal({
-        //       _id: dietDinner.dietMealId,
-        //     })) as IDietMealDocument;
-        //     const mealDietDinners = await getDietDinners({ dietMealId: meal.id });
-        //     const dinnerPortion = (await getDinnerPortion({
-        //       _id: dietDinner.dinnerPortionId,
-        //     })) as IDinnerPortionDocument;
-        //     const dinner = await getDinner({ _id: dinnerPortion.dinnerId });
-        //     if (meal.type === mealType && mealDietDinners.length < 1) {
-        //       return undefined;
-        //     }
-        //     return {
-        //       _id: dietDinner._id,
-        //       mealId: dietDinner.dietMealId,
-        //       dayId: dietDinner.dayId,
-        //       dinnerId: dinner?._id,
-        //       dinnerName: dinner?.name,
-        //     };
-        //   })
-        // );
-        // const filteredDietDinners = mapDietDinners.filter(
-        //   (dietDinner) => dietDinner !== undefined
-        // ); //correct
+        // const mealType = 'snack';
+        // const resultDinners = [];
+        // for (const dietDinner of dietDinners) {
+        //   const dayMeals = await getDietMeals({ dayId: dietDinner.dayId });
+        //   const searchMeal = dayMeals.find(
+        //     (dayMeal) => dayMeal.type === mealType
+        //   ) as IDietMealDocument;
+        //   const dinners = await getDietDinners({ dietMealId: searchMeal._id });
+        //   if (dinners.length > 0) {
+        //     resultDinners.push(dietDinner);
+        //   }
+        // } //correct
         const dietDinnersToRecommend = yield Promise.all(dietDinners.map((dietDinner) => __awaiter(this, void 0, void 0, function* () {
             const dinnerPortion = (yield (0, dinnerPortion_service_1.getDinnerPortion)({
                 _id: dietDinner.dinnerPortionId,
@@ -151,7 +137,9 @@ function getDietDinnersToDinnerRecommendController(req, res) {
                 dinnerId: dinner === null || dinner === void 0 ? void 0 : dinner._id,
                 dinnerName: dinner === null || dinner === void 0 ? void 0 : dinner.name,
             };
-        })));
+        }))); //brak filtrowania (wybierz tylko te dni które zawierają potrawy w np. 2 śniadaniu )
+        //panel admina
+        //nie trzeba filtrować tylko wybrać potrawy getDietDinners({toGenerate: true})  => po zapisaniu dnia do generowania zmienia się na true => po usunięciu wszystkich potraw z jednego posiłku => zmienia się na false
         return res.send(dietDinnersToRecommend);
     });
 }
