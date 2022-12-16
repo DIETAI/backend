@@ -156,7 +156,8 @@ function getDietEstablishmentsController(req, res) {
             return res.sendStatus(404);
         }
         const dietEstablishmentQuery = yield Promise.all(dietEstablishments.map((dietEstablishmentDocument) => __awaiter(this, void 0, void 0, function* () {
-            const dietEstablishment = dietEstablishmentDocument.toObject();
+            // const dietEstablishment = dietEstablishmentDocument.toObject();
+            const dietEstablishment = dietEstablishmentDocument;
             const client = yield (0, client_service_1.getClient)({ _id: dietEstablishment.client });
             return Object.assign(Object.assign({}, dietEstablishment), { patient: {
                     fullName: (client === null || client === void 0 ? void 0 : client.name) + ' ' + (client === null || client === void 0 ? void 0 : client.lastName),

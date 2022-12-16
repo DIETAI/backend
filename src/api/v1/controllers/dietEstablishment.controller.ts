@@ -212,7 +212,8 @@ export async function getDietEstablishmentsController(
 
   const dietEstablishmentQuery = await Promise.all(
     dietEstablishments.map(async (dietEstablishmentDocument) => {
-      const dietEstablishment = dietEstablishmentDocument.toObject();
+      // const dietEstablishment = dietEstablishmentDocument.toObject();
+      const dietEstablishment = dietEstablishmentDocument;
       const client = await getClient({ _id: dietEstablishment.client });
 
       return {

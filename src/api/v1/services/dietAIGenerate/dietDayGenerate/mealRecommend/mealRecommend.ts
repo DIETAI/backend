@@ -76,7 +76,7 @@ export const mealRecommend = async ({
   try {
     //w generowaniu diety przekazanie już wygenerowanych posiłków
     const recommendDietDaysRes = await axios.post<IRecommendDietDayData[]>(
-      'https://diet-ai-recommend-server.herokuapp.com/mvp-recommend-days-to-diet',
+      'https://recommend-server.dietai.pl/recommend-diet-days',
       { currentDayRecommendDinners: currentDayRecommendDinners }
     );
 
