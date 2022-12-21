@@ -173,7 +173,23 @@ export async function getDinnersController(
     return res.sendStatus(404);
   }
 
-  return res.send(dinners);
+  const dinnersQuery = await Promise.all(
+    dinners.map(async (dinner) => {
+      if (!dinner.image) {
+        return { ...dinner, imageObj: undefined };
+      }
+
+      const dinnerAsset = await getAsset({ _id: dinner.image });
+
+      if (!dinnerAsset) {
+        return { ...dinner, imageObj: undefined };
+      }
+
+      return { ...dinner, imageObj: dinnerAsset };
+    })
+  );
+
+  return res.send(dinnersQuery);
 }
 
 export async function deleteDinnerController(

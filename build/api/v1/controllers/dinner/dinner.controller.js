@@ -119,7 +119,17 @@ function getDinnersController(req, res) {
         if (!dinners) {
             return res.sendStatus(404);
         }
-        return res.send(dinners);
+        const dinnersQuery = yield Promise.all(dinners.map((dinner) => __awaiter(this, void 0, void 0, function* () {
+            if (!dinner.image) {
+                return Object.assign(Object.assign({}, dinner), { imageObj: undefined });
+            }
+            const dinnerAsset = yield (0, asset_service_1.getAsset)({ _id: dinner.image });
+            if (!dinnerAsset) {
+                return Object.assign(Object.assign({}, dinner), { imageObj: undefined });
+            }
+            return Object.assign(Object.assign({}, dinner), { imageObj: dinnerAsset });
+        })));
+        return res.send(dinnersQuery);
     });
 }
 exports.getDinnersController = getDinnersController;
