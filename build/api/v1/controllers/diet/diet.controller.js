@@ -212,10 +212,17 @@ function getDietQueryController(req, res) {
                         const dinnerProduct = yield (0, dinnerProduct_service_1.getDinnerProduct)({
                             _id: dietDinnerProduct.dinnerProductId,
                         });
-                        const product = yield (0, products_service_1.getProduct)({
+                        const product = (yield (0, products_service_1.getProduct)({
                             _id: dinnerProduct === null || dinnerProduct === void 0 ? void 0 : dinnerProduct.productId,
-                        });
-                        return Object.assign(Object.assign({}, dietDinnerProduct), { dinnerProduct: Object.assign(Object.assign({}, dinnerProduct), { product }) });
+                        }));
+                        if (!product.image) {
+                            return Object.assign(Object.assign({}, dietDinnerProduct), { dinnerProduct: Object.assign(Object.assign({}, dinnerProduct), { product: Object.assign(Object.assign({}, product), { imageURL: undefined }) }) });
+                        }
+                        const productAsset = yield (0, asset_service_1.getAsset)({ _id: product.image });
+                        if (!productAsset) {
+                            return Object.assign(Object.assign({}, dietDinnerProduct), { dinnerProduct: Object.assign(Object.assign({}, dinnerProduct), { product: Object.assign(Object.assign({}, product), { imageURL: undefined }) }) });
+                        }
+                        return Object.assign(Object.assign({}, dietDinnerProduct), { dinnerProduct: Object.assign(Object.assign({}, dinnerProduct), { product: Object.assign(Object.assign({}, product), { imageURL: productAsset.imageURL }) }) });
                     })));
                     const dinnerObj = Object.assign(Object.assign({}, dinnerPortion), { dinnerProducts, dinner: Object.assign(Object.assign({}, dinner), { imageObj: dinnerImageObj }) });
                     return Object.assign(Object.assign({}, dietDinner), { dinnerPortion: dinnerObj });

@@ -47,6 +47,7 @@ import { getProduct } from '../../services/products.service';
 import { getAsset } from '../../services/asset.service';
 import DietDayModel from '../../models/dietDay.model';
 import DietModel from '../../models/diet.model';
+import { IProductDocument } from '../../interfaces/products.interfaces';
 
 export async function createDietController(
   req: Request<{}, {}, CreateDietInput['body']>,
@@ -284,15 +285,37 @@ export async function getDietQueryController(
                   const dinnerProduct = await getDinnerProduct({
                     _id: dietDinnerProduct.dinnerProductId,
                   });
-                  const product = await getProduct({
+                  const product = (await getProduct({
                     _id: dinnerProduct?.productId,
-                  });
+                  })) as IProductDocument;
+
+                  if (!product.image) {
+                    return {
+                      ...dietDinnerProduct,
+                      dinnerProduct: {
+                        ...dinnerProduct,
+                        product: { ...product, imageURL: undefined },
+                      },
+                    };
+                  }
+
+                  const productAsset = await getAsset({ _id: product.image });
+
+                  if (!productAsset) {
+                    return {
+                      ...dietDinnerProduct,
+                      dinnerProduct: {
+                        ...dinnerProduct,
+                        product: { ...product, imageURL: undefined },
+                      },
+                    };
+                  }
 
                   return {
                     ...dietDinnerProduct,
                     dinnerProduct: {
                       ...dinnerProduct,
-                      product,
+                      product: { ...product, imageURL: productAsset.imageURL },
                     },
                   };
                 })
