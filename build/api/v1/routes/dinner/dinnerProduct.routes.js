@@ -14,6 +14,7 @@ const schema_middleware_1 = __importDefault(require("../../middleware/schema.mid
 const router = express_1.default.Router();
 router.get('/', dinnerProduct_controller_1.getAllDinnerProductsController);
 router.get('/allToRecommend', dinnerProduct_controller_1.getDinnerProductsToRecommendController);
+router.get('/populate', dinnerProduct_controller_1.getDinnerProductsPopulateController);
 router.get('/:dinnerProductId', [requireUser_1.default, (0, schema_middleware_1.default)(dinnerProducts_schema_1.getDinnerProductSchema)], dinnerProduct_controller_1.getDinnerProductController);
 router.get('/:dinnerProductId/query', [requireUser_1.default, (0, schema_middleware_1.default)(dinnerProducts_schema_1.getDinnerProductSchema)], dinnerProduct_controller_1.getDinnerProductQueryController);
 router.get('/dinner/:dinnerId', [requireUser_1.default, (0, schema_middleware_1.default)(dinnerProducts_schema_1.getDinnerProductsSchema)], dinnerProduct_controller_1.getDinnerProductsController);

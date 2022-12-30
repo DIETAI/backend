@@ -14,7 +14,7 @@ export const getDinnerPortionsMacro = async (dinnerId: string) => {
           _id: productId,
         })) as IProductDocument;
         //getProduct by productId aby obliczyć makro dla każdej porcji
-
+ 
         const macroForPortions = portionsGram.map((portionGram) => {
           const portionMacro = countMacroPortion(portionGram, product);
           return portionMacro;

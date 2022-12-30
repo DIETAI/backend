@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteDinnerProductController = exports.getDinnerProductsQueryController = exports.getDinnerProductsToRecommendController = exports.getDinnerProductsController = exports.getAllDinnerProductsController = exports.getDinnerProductQueryController = exports.getDinnerProductController = exports.updateDinnerProductController = exports.createDinnerProductController = void 0;
+exports.deleteDinnerProductController = exports.getDinnerProductsQueryController = exports.getDinnerProductsToRecommendController = exports.getDinnerProductsController = exports.getAllDinnerProductsController = exports.getDinnerProductsPopulateController = exports.getDinnerProductQueryController = exports.getDinnerProductController = exports.updateDinnerProductController = exports.createDinnerProductController = void 0;
 const dinnerProduct_service_1 = require("../../services/dinner/dinnerProduct.service");
 const dinnerPortion_service_1 = require("../../services/dinner/dinnerPortion.service");
 const products_service_1 = require("../../services/products.service");
@@ -165,6 +165,17 @@ function getDinnerProductQueryController(req, res) {
     });
 }
 exports.getDinnerProductQueryController = getDinnerProductQueryController;
+function getDinnerProductsPopulateController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // const userId = res.locals.user._id;
+        const dinnerProducts = yield (0, dinnerProduct_service_1.getDinnerProductsPopulate)();
+        if (!dinnerProducts) {
+            return res.sendStatus(404);
+        }
+        return res.send(dinnerProducts);
+    });
+}
+exports.getDinnerProductsPopulateController = getDinnerProductsPopulateController;
 function getAllDinnerProductsController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         // const userId = res.locals.user._id;

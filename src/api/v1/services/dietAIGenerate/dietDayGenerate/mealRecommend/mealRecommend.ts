@@ -68,6 +68,9 @@ interface IRecommendDietDayArgs {
   currentDayRecommendDinners: ICurrentDayRecommendDinner[];
 }
 
+const recommendURL =
+  'https://europe-central2-dietai-372609.cloudfunctions.net/recommend-server/recommend-diet-days';
+
 export const mealRecommend = async ({
   mealDayId,
   mealType,
@@ -76,7 +79,7 @@ export const mealRecommend = async ({
   try {
     //w generowaniu diety przekazanie już wygenerowanych posiłków
     const recommendDietDaysRes = await axios.post<IRecommendDietDayData[]>(
-      'https://recommend-server.dietai.pl/recommend-diet-days',
+      recommendURL,
       { currentDayRecommendDinners: currentDayRecommendDinners }
     );
 

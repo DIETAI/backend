@@ -1,0 +1,19 @@
+1)
+develop docker image
+docker build -t dietai-backend-dev -f Dockerfile.dev .
+
+develop image run
+docker run -p 1337:1337 dietai-backend-dev
+
+2)
+production docker image
+docker build -t dietai-backend .
+
+production image run
+docker run -p 1337:1337 dietai-backend
+
+3) deploy to gcr (google container registry)
+docker tag dietai-backend gcr.io/dietai-372609/backend
+docker push gcr.io/dietai-372609/backend
+
+//https://www.youtube.com/watch?v=aUBq-oQFHr8&t=95s

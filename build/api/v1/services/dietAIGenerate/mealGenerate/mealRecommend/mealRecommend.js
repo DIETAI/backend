@@ -16,10 +16,11 @@ exports.mealRecommend = void 0;
 const axios_1 = __importDefault(require("axios"));
 const dietDinner_service_1 = require("../../../diet/dietDinner.service");
 const dietMeal_service_1 = require("../../../diet/dietMeal.service");
+const mealRecommendURL = 'https://europe-central2-dietai-372609.cloudfunctions.net/recommend-server';
 const mealRecommend = ({ mealDayId, mealType, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //w generowaniu diety przekazanie już wygenerowanych posiłków
-        const recommendDietDaysRes = yield axios_1.default.get(`https://recommend-server.dietai.pl/recommend-days?currentDayId=${mealDayId}`);
+        const recommendDietDaysRes = yield axios_1.default.get(`${mealRecommendURL}/recommend-days?currentDayId=${mealDayId}`);
         // const recommendDietDaysRes = { data: [] as IRecommendDietDayData[] };
         //zwraca rekomendowany dzień
         if (!recommendDietDaysRes || recommendDietDaysRes.data.length < 1) {

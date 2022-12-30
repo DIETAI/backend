@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteDiet = exports.getAndUpdateDiet = exports.getDiets = exports.getDiet = exports.createDiet = void 0;
+exports.deleteDiet = exports.getAndUpdateDiet = exports.getDiets = exports.getDietPopulate = exports.getDiet = exports.createDiet = void 0;
 const diet_model_1 = __importDefault(require("../../models/diet.model"));
 const metrics_1 = require("../../utils/metrics");
 function createDiet(input) {
@@ -51,6 +51,40 @@ function getDiet(query, options = { lean: true }) {
     });
 }
 exports.getDiet = getDiet;
+function getDietPopulate(query, options = { lean: true }) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const metricsLabels = {
+            operation: 'getDiet',
+        };
+        const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
+        try {
+            const result = yield diet_model_1.default.findOne(query, {}, options).populate({
+                path: 'establishmentId',
+                select: ['name', 'measurementId'],
+                populate: {
+                    path: 'measurementId',
+                    populate: [
+                        {
+                            path: 'client',
+                            select: ['user', 'name', 'lastName'],
+                            populate: { path: 'user' },
+                        },
+                        {
+                            path: 'user',
+                        },
+                    ],
+                },
+            });
+            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
+            return result;
+        }
+        catch (e) {
+            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'false' }));
+            throw e;
+        }
+    });
+}
+exports.getDietPopulate = getDietPopulate;
 function getDiets(query, options = { lean: true }) {
     return __awaiter(this, void 0, void 0, function* () {
         const metricsLabels = {

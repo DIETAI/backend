@@ -44,6 +44,31 @@ export async function getDinnerProduct(
   }
 }
 
+export async function getDinnerProductsPopulate() {
+  const metricsLabels = {
+    operation: 'getDinnerProductPopulate',
+  };
+
+  const timer = databaseResponseTimeHistogram.startTimer();
+  try {
+    const result = await DinnerProductModel.find().populate({
+      path: 'productId',
+      populate: { path: 'image' },
+    });
+    // .populate({
+    //   path: 'dinnerId',
+    //   select: ['name', 'image'],
+    //   populate: { path: 'image' },
+    // });
+    timer({ ...metricsLabels, success: 'true' });
+    return result;
+  } catch (e) {
+    timer({ ...metricsLabels, success: 'false' });
+
+    throw e;
+  }
+}
+
 export async function getDinnerProducts(
   query: FilterQuery<IDinnerProductDocument>,
   options: QueryOptions = { lean: true }

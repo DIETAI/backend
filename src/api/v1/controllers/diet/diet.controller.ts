@@ -11,6 +11,7 @@ import {
   deleteDiet,
   getAndUpdateDiet,
   getDiet,
+  getDietPopulate,
   getDiets,
 } from '../../services/diet/diet.service';
 
@@ -206,6 +207,27 @@ export async function getDietController(
   const userId = res.locals.user._id;
   const dietId = req.params.dietId;
   const diet = await getDiet({
+    _id: dietId,
+  });
+
+  if (!diet) {
+    return res.sendStatus(404);
+  }
+
+  if (String(diet.user) !== userId) {
+    return res.sendStatus(403);
+  }
+
+  return res.send(diet);
+}
+
+export async function getDietPopulateController(
+  req: Request<GetDietInput['params']>,
+  res: Response
+) {
+  const userId = res.locals.user._id;
+  const dietId = req.params.dietId;
+  const diet = await getDietPopulate({
     _id: dietId,
   });
 

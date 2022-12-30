@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteDinnerProduct = exports.getAndUpdateDinnerProduct = exports.getDinnerProducts = exports.getDinnerProduct = exports.createDinnerProduct = void 0;
+exports.deleteDinnerProduct = exports.getAndUpdateDinnerProduct = exports.getDinnerProducts = exports.getDinnerProductsPopulate = exports.getDinnerProduct = exports.createDinnerProduct = void 0;
 const dinnerProduct_model_1 = __importDefault(require("../../models/dinners/dinnerProduct.model"));
 const metrics_1 = require("../../utils/metrics");
 function createDinnerProduct(input) {
@@ -51,6 +51,32 @@ function getDinnerProduct(query, options = { lean: true }) {
     });
 }
 exports.getDinnerProduct = getDinnerProduct;
+function getDinnerProductsPopulate() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const metricsLabels = {
+            operation: 'getDinnerProductPopulate',
+        };
+        const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
+        try {
+            const result = yield dinnerProduct_model_1.default.find().populate({
+                path: 'productId',
+                populate: { path: 'image' },
+            });
+            // .populate({
+            //   path: 'dinnerId',
+            //   select: ['name', 'image'],
+            //   populate: { path: 'image' },
+            // });
+            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
+            return result;
+        }
+        catch (e) {
+            timer(Object.assign(Object.assign({}, metricsLabels), { success: 'false' }));
+            throw e;
+        }
+    });
+}
+exports.getDinnerProductsPopulate = getDinnerProductsPopulate;
 function getDinnerProducts(query, options = { lean: true }) {
     return __awaiter(this, void 0, void 0, function* () {
         const metricsLabels = {

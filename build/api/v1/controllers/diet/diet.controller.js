@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteDietController = exports.getDietsController = exports.getDietQueryController = exports.getDietController = exports.updateDietController = exports.createDietController = void 0;
+exports.deleteDietController = exports.getDietsController = exports.getDietQueryController = exports.getDietPopulateController = exports.getDietController = exports.updateDietController = exports.createDietController = void 0;
 const diet_service_1 = require("../../services/diet/diet.service");
 const dietDay_service_1 = require("../../services/diet/dietDay.service");
 const dietEstablishment_service_1 = require("../../services/dietEstablishment.service");
@@ -164,6 +164,23 @@ function getDietController(req, res) {
     });
 }
 exports.getDietController = getDietController;
+function getDietPopulateController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const userId = res.locals.user._id;
+        const dietId = req.params.dietId;
+        const diet = yield (0, diet_service_1.getDietPopulate)({
+            _id: dietId,
+        });
+        if (!diet) {
+            return res.sendStatus(404);
+        }
+        if (String(diet.user) !== userId) {
+            return res.sendStatus(403);
+        }
+        return res.send(diet);
+    });
+}
+exports.getDietPopulateController = getDietPopulateController;
 function getDietQueryController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;

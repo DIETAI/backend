@@ -12,6 +12,7 @@ import {
   getAndUpdateDinnerProduct,
   getDinnerProduct,
   getDinnerProducts,
+  getDinnerProductsPopulate,
 } from '../../services/dinner/dinnerProduct.service';
 
 import {
@@ -225,6 +226,20 @@ export async function getDinnerProductQueryController(
   };
 
   return res.send(dinnerProductQueryObj);
+}
+
+export async function getDinnerProductsPopulateController(
+  req: Request,
+  res: Response
+) {
+  // const userId = res.locals.user._id;
+  const dinnerProducts = await getDinnerProductsPopulate();
+
+  if (!dinnerProducts) {
+    return res.sendStatus(404);
+  }
+
+  return res.send(dinnerProducts);
 }
 
 export async function getAllDinnerProductsController(

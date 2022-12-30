@@ -44,6 +44,42 @@ export async function getDiet(
   }
 }
 
+export async function getDietPopulate(
+  query: FilterQuery<IDietDocument>,
+  options: QueryOptions = { lean: true }
+) {
+  const metricsLabels = {
+    operation: 'getDiet',
+  };
+
+  const timer = databaseResponseTimeHistogram.startTimer();
+  try {
+    const result = await DietModel.findOne(query, {}, options).populate({
+      path: 'establishmentId',
+      select: ['name', 'measurementId'],
+      populate: {
+        path: 'measurementId',
+        populate: [
+          {
+            path: 'client',
+            select: ['user', 'name', 'lastName'],
+            populate: { path: 'user' },
+          },
+          {
+            path: 'user',
+          },
+        ],
+      },
+    });
+    timer({ ...metricsLabels, success: 'true' });
+    return result;
+  } catch (e) {
+    timer({ ...metricsLabels, success: 'false' });
+
+    throw e;
+  }
+}
+
 export async function getDiets(
   query: FilterQuery<IDietDocument>,
   options: QueryOptions = { lean: true }

@@ -6,6 +6,7 @@ import {
   updateDietController,
   deleteDietController,
   getDietController,
+  getDietPopulateController,
   getDietsController,
   getDietQueryController,
 } from '../controllers/diet/diet.controller';
@@ -28,6 +29,12 @@ router.get(
   '/:dietId',
   [requireUser, validateSchema(getDietSchema)],
   getDietController
+);
+
+router.get(
+  '/:dietId/populate',
+  [requireUser, validateSchema(getDietSchema)],
+  getDietPopulateController
 );
 
 // router.get('/:dietId/days/:dayId/meals/:mealId/dinners/:dinnerId/')

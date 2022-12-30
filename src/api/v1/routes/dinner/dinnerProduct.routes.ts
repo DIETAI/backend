@@ -11,6 +11,7 @@ import {
   getDinnerProductsQueryController,
   getAllDinnerProductsController,
   getDinnerProductsToRecommendController,
+  getDinnerProductsPopulateController,
 } from '../../controllers/dinner/dinnerProduct.controller';
 
 //schema
@@ -30,6 +31,7 @@ const router = express.Router();
 
 router.get('/', getAllDinnerProductsController);
 router.get('/allToRecommend', getDinnerProductsToRecommendController);
+router.get('/populate', getDinnerProductsPopulateController);
 
 router.get(
   '/:dinnerProductId',
