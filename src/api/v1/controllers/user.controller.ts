@@ -84,22 +84,25 @@ export async function createUserController(
 }
 
 export async function getUserController(req: Request, res: Response) {
-  console.log('pobieranie danych użytkownika');
   const userId = res.locals.user._id;
-
-  console.log({ userId });
-
   const user = await getUser({ _id: userId });
 
-  console.log({ host: req.hostname });
-
-  console.log({ user });
+  console.log(user);
 
   if (!user) {
     return res.sendStatus(404);
   }
 
-  return res.send(user);
+  const userData = {
+    name: user.name,
+    lastName: user.lastName,
+    fullName: user.getFullName(),
+    email: user.email,
+    emailVerified: user.emailVerified,
+    avatar: user.avatar,
+  };
+
+  return res.send(userData);
 }
 
 export async function updateUserController(
@@ -108,27 +111,28 @@ export async function updateUserController(
 ) {
   const update = req.body;
   const userId = res.locals.user._id;
-  const user = (await getUser({ _id: userId })) as IUserDocument;
+  const user = await getUser({ _id: userId });
 
   if (!user) {
     return res.sendStatus(404);
   }
 
-  const userData = user.toObject();
-
-  const newUserData = {
-    ...userData,
-    photoURL: update.photoURL,
-    name: update.name,
-    lastName: update.lastName,
-    fullName: update.fullName,
-  };
-
-  console.log({ newUserData });
-
-  const updatedUser = await getAndUpdateUser({ _id: userId }, newUserData, {
+  const updatedUser = await getAndUpdateUser({ _id: userId }, update, {
     new: true,
   });
 
-  return res.send(updatedUser);
+  if (!updatedUser) {
+    return res.sendStatus(404);
+  }
+
+  const updatedUserData = {
+    name: updatedUser.name,
+    lastName: updatedUser.lastName,
+    fullName: updatedUser.getFullName(),
+    email: updatedUser.email,
+    emailVerified: updatedUser.emailVerified,
+    avatar: updatedUser.avatar,
+  };
+
+  return res.send(updatedUserData);
 }

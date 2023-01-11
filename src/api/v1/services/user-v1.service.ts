@@ -1,5 +1,6 @@
 import { FilterQuery, UpdateQuery, QueryOptions } from 'mongoose';
 import UserModel from '../models/user.model';
+import { omit } from 'lodash';
 import {
   ICreateUserInput,
   IUserInput,
@@ -31,28 +32,11 @@ export async function getUser(query: FilterQuery<IUserDocument>) {
   const timer = databaseResponseTimeHistogram.startTimer();
 
   try {
-    const user = await UserModel.findOne(query);
-
-    if (!user?.role) {
-      timer({ ...metricsLabels, success: 'true' });
-      return user;
-    }
-
-    const userRole = await RoleModel.findOne(user.role);
-
-    if (!userRole) {
-      timer({ ...metricsLabels, success: 'true' });
-      return user;
-    }
-
+    const user = await UserModel.findOne(query).populate({
+      path: 'avatar',
+    });
     timer({ ...metricsLabels, success: 'true' });
-    return {
-      ...user,
-      role: {
-        id: userRole._id,
-        name: userRole.type,
-      },
-    };
+    return user;
   } catch (e) {
     timer({ ...metricsLabels, success: 'false' });
     throw e;
