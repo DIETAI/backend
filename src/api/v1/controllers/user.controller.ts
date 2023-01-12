@@ -87,8 +87,6 @@ export async function getUserController(req: Request, res: Response) {
   const userId = res.locals.user._id;
   const user = await getUser({ _id: userId });
 
-  console.log(user);
-
   if (!user) {
     return res.sendStatus(404);
   }

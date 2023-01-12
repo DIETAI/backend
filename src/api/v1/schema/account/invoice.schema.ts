@@ -45,11 +45,6 @@ export const deleteInvoiceSchema = object({
   ...params,
 });
 
-export const getInvoiceSchema = object({
-  ...params,
-});
-
 export type CreateInvoiceInput = TypeOf<typeof createInvoiceSchema>;
 export type UpdateInvoiceInput = TypeOf<typeof updateInvoiceSchema>;
-export type GetInvoiceInput = TypeOf<typeof getInvoiceSchema>;
 export type DeleteInvoiceInput = TypeOf<typeof deleteInvoiceSchema>;

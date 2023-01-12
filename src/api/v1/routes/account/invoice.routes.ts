@@ -6,14 +6,12 @@ import {
   updateInvoiceController,
   deleteInvoiceController,
   getInvoiceController,
-  getInvoicesController,
 } from '../../controllers/account/invoice.controller';
 
 //schema
 import {
   createInvoiceSchema,
   deleteInvoiceSchema,
-  getInvoiceSchema,
   updateInvoiceSchema,
 } from '../../schema/account/invoice.schema';
 
@@ -23,13 +21,7 @@ import validateSchema from '../../middleware/schema.middleware';
 
 const router = express.Router();
 
-router.get(
-  '/:invoiceId',
-  [requireUser, validateSchema(getInvoiceSchema)],
-  getInvoiceController
-);
-
-router.get('/', requireUser, getInvoicesController);
+router.get('/', requireUser, getInvoiceController);
 
 router.post(
   '/',
