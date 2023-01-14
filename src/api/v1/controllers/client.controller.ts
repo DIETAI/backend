@@ -71,14 +71,20 @@ export async function getClientController(
     return res.sendStatus(403);
   }
 
-  const clientImage = await getAsset({ _id: client.image });
+  // const clientObj = client.toObject();
+  // const fullName = client.getFullName();
 
-  const clientObj = {
-    ...client,
-    imageURL: clientImage ? clientImage.imageURL : undefined,
-  };
+  // const clientData = {
+  //   ...clientObj,
+  //   fullName,
+  //   image: clientObj.image,
+  // };
 
-  return res.send(clientObj);
+  // console.log({ clientData });
+
+  // return res.send(clientData);
+
+  return res.send(client);
 }
 
 export async function getClientsController(

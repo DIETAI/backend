@@ -31,7 +31,10 @@ export async function getClient(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await ClientModel.findOne(query, {}, options);
+    const result = await ClientModel.findOne(query, {}, options).populate({
+      path: 'image',
+    }); //przy podaniu 2 i 3 argumentu błąd => nie można odczytać fullName (przy lean = true)
+
     timer({ ...metricsLabels, success: 'true' });
     return result;
   } catch (e) {
@@ -51,7 +54,9 @@ export async function getClients(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await ClientModel.find(query, {}, options);
+    const result = await ClientModel.find(query, {}, options).populate({
+      path: 'image',
+    });
     timer({ ...metricsLabels, success: 'true' });
     return result;
   } catch (e) {

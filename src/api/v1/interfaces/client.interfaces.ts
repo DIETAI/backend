@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { IUserDocument } from './user.interfaces';
-// import { IRoleDocument } from './roles.interfaces';
 
 type IDisease =
   | 'flatulence'
@@ -42,4 +41,5 @@ export interface IClientInput {
 export interface IClientDocument extends IClientInput, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
+  getFullName(): string;
 }

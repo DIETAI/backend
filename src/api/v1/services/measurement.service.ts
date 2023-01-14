@@ -34,7 +34,15 @@ export async function getMeasurement(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await MeasurementModel.findOne(query, {}, options);
+    const result = await MeasurementModel.findOne(query, {}, options)
+      .populate({
+        path: 'client',
+        select: ['_id', 'name', 'lastName'],
+      })
+      .populate({
+        path: 'images',
+        select: ['_id', 'imageURL'],
+      });
     timer({ ...metricsLabels, success: 'true' });
     return result;
   } catch (e) {
@@ -54,7 +62,15 @@ export async function getMeasurements(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await MeasurementModel.find(query, {}, options);
+    const result = await MeasurementModel.find(query, {}, options)
+      .populate({
+        path: 'client',
+        select: ['_id', 'name', 'lastName'],
+      })
+      .populate({
+        path: 'images',
+        select: ['_id', 'imageURL'],
+      });
     timer({ ...metricsLabels, success: 'true' });
     return result;
   } catch (e) {
