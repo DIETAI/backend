@@ -34,7 +34,19 @@ export async function getDietEstablishment(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await DietEstablishmentModel.findOne(query, {}, options);
+    const result = await DietEstablishmentModel.findOne(query, {}, options)
+      .populate({
+        path: 'client',
+        select: ['_id', 'name', 'lastName'],
+      })
+      .populate({
+        path: 'dietKind',
+        select: ['_id', 'name', 'type'],
+      })
+      .populate({
+        path: 'measurementId',
+        select: ['_id', 'name', 'cpm'],
+      });
     timer({ ...metricsLabels, success: 'true' });
     return result;
   } catch (e) {
@@ -54,7 +66,19 @@ export async function getDietEstablishments(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await DietEstablishmentModel.find(query, {}, options);
+    const result = await DietEstablishmentModel.find(query, {}, options)
+      .populate({
+        path: 'client',
+        select: ['_id', 'name', 'lastName'],
+      })
+      .populate({
+        path: 'dietKind',
+        select: ['_id', 'name', 'type'],
+      })
+      .populate({
+        path: 'measurementId',
+        select: ['_id', 'name', 'cpm'],
+      });
     timer({ ...metricsLabels, success: 'true' });
     return result;
   } catch (e) {
