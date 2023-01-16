@@ -34,7 +34,9 @@ export async function getProduct(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await ProductModel.findOne(query, {}, options);
+    const result = await ProductModel.findOne(query, {}, options).populate({
+      path: 'image',
+    });
     timer({ ...metricsLabels, success: 'true' });
     return result;
   } catch (e) {
@@ -54,7 +56,9 @@ export async function getUserProducts(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await ProductModel.find(query, {}, options);
+    const result = await ProductModel.find(query, {}, options).populate({
+      path: 'image',
+    });
     timer({ ...metricsLabels, success: 'true' });
     return result;
   } catch (e) {
