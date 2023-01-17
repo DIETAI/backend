@@ -7,8 +7,13 @@ const DinnerSchema = new Schema<IDinnerDocument>(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     name: { type: String, required: true },
-    image: { type: String },
-    gallery: [{ type: String }],
+    image: {
+      type: mongoose.Schema.Types.String,
+      ref: 'Asset',
+    },
+    gallery: [
+      { type: mongoose.Schema.Types.String, ref: 'Asset', required: true },
+    ],
     mealTypes: [{ type: String, required: true }],
     mealTypesKind: { type: String, required: true },
     description: { type: String },

@@ -120,9 +120,12 @@ export async function getDinnerPortionsController(
     return res.sendStatus(404);
   }
 
+  console.log({ dinnerPortionsProducts: dinnerPortions[0].dinnerProducts[0] });
+
   return res.send(dinnerPortions);
 }
 
+//do usunięcia
 export async function getDinnerPortionsQueryController(
   req: Request<GetDinnerPortionsInput['params']>,
   res: Response

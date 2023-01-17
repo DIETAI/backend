@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { IAssetDocument } from '../assets.interfaces';
+import { IDietKindDocument } from '../dietKind/dietKind.interfaces';
 import { IUserDocument } from '../user.interfaces';
 
 type IPreparationTime =
@@ -26,8 +28,8 @@ type IPreparationTime =
 export interface IDinnerInput {
   user: IUserDocument['_id'];
   name: string;
-  image?: string;
-  gallery?: string[];
+  image?: IAssetDocument['_id'];
+  gallery?: IAssetDocument['_id'][];
   mealTypes: (
     | 'breakfast'
     | 'dinner'
@@ -38,7 +40,7 @@ export interface IDinnerInput {
   mealTypesKind: 'soup' | 'mainCourse' | 'drink';
   description?: string;
   recipe?: string;
-  dietKindsExclude?: string[];
+  dietKindsExclude?: IDietKindDocument['_id'][];
   tags?: ('nogluten' | 'lactose-free')[];
   preparation_time: IPreparationTime;
 }

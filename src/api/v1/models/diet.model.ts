@@ -25,6 +25,12 @@ const DietSchema = new Schema<IDietDocument>(
   }
 );
 
+DietSchema.virtual('dietDays', {
+  ref: 'DietDay',
+  localField: '_id',
+  foreignField: 'dietId',
+});
+
 const DietModel = mongoose.model<IDietDocument>('Diet', DietSchema);
 
 export default DietModel;

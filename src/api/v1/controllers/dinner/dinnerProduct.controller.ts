@@ -196,6 +196,7 @@ export async function getDinnerProductController(
   return res.send(dinnerProduct);
 }
 
+//usunąć
 export async function getDinnerProductQueryController(
   req: Request<GetDinnerProductInput['params']>,
   res: Response
@@ -228,6 +229,7 @@ export async function getDinnerProductQueryController(
   return res.send(dinnerProductQueryObj);
 }
 
+//usunąć
 export async function getDinnerProductsPopulateController(
   req: Request,
   res: Response
@@ -242,6 +244,7 @@ export async function getDinnerProductsPopulateController(
   return res.send(dinnerProducts);
 }
 
+//usunąć
 export async function getAllDinnerProductsController(
   req: Request,
   res: Response
