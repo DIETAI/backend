@@ -86,6 +86,7 @@ export async function getDietPopulate(
       {
         path: 'dietDays',
         select: ['_id', 'name', 'order', 'dietMeals', 'date', 'total'],
+        options: { sort: { order: 1 } },
         populate: {
           path: 'dietMeals',
           select: [
@@ -97,9 +98,11 @@ export async function getDietPopulate(
             'establishmentMealId',
             'dietDinners',
           ],
+          options: { sort: { order: 1 } },
           populate: {
             path: 'dietDinners',
             select: ['_id', 'order', 'dinnerPortionId', 'dayId'],
+            options: { sort: { order: 1 } },
             populate: {
               path: 'dinnerPortionId',
               select: ['_id', 'total', 'dinnerId', 'dinnerProducts'],
