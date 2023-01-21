@@ -65,6 +65,29 @@ export async function getDietDinners(
   }
 }
 
+export async function getDietDinnersWithTotal(
+  query: FilterQuery<IDietDinnerDocument>,
+  options: QueryOptions = { lean: true }
+) {
+  const metricsLabels = {
+    operation: 'getDietDinners',
+  };
+
+  const timer = databaseResponseTimeHistogram.startTimer();
+  try {
+    const result = await DietDinnerModel.find(query, {}, options).populate({
+      path: 'dinnerPortionId',
+      select: 'total',
+    });
+    timer({ ...metricsLabels, success: 'true' });
+    return result;
+  } catch (e) {
+    timer({ ...metricsLabels, success: 'false' });
+
+    throw e;
+  }
+}
+
 export async function getAndUpdateDietDinner(
   query: FilterQuery<IDietDinnerDocument>,
   update: UpdateQuery<IDietDinnerDocument>,

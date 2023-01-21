@@ -120,8 +120,6 @@ export async function getDinnerPortionsController(
     return res.sendStatus(404);
   }
 
-  console.log({ dinnerPortionsProducts: dinnerPortions[0].dinnerProducts[0] });
-
   return res.send(dinnerPortions);
 }
 

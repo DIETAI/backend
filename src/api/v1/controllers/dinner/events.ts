@@ -37,7 +37,7 @@ dinnerEmitter.on(
   'dinnerProduct:create',
   async (dinnerProduct: IDinnerProductDocument, userId: string) => {
     //if dietDinners includes dinnerPortionId => deleteDietDinner => change mealMacro, dayMacro, dietMacro
-    console.log({ dinnerProduct });
+
     const dinnerProductQuery = await getProduct({
       _id: dinnerProduct.productId,
     });
@@ -125,8 +125,6 @@ dinnerEmitter.on(
             editPortionObj,
             { new: true }
           );
-
-          console.log({ updatedPortion });
         })
       );
 
@@ -150,8 +148,6 @@ dinnerEmitter.on(
     if (dietDinners.length < 1) {
       return;
     }
-
-    console.log({ dietDinners });
 
     const dietDinnersQuery = await Promise.all(
       dietDinners.map(async (dietDinner) => {
@@ -197,7 +193,6 @@ dinnerEmitter.on(
           );
 
           dietEmitter.emit('dietMeal::updated', 200, updatedMeal);
-          console.log(updatedMeal);
         } catch (e) {
           console.log(e);
         }
@@ -216,8 +211,6 @@ dinnerEmitter.on('dinnerPortion:delete', async (dinnerPortionId: string) => {
   if (dietDinners.length < 1) {
     return;
   }
-
-  console.log({ dietDinners });
 
   const deleteDietDinners = await Promise.all(
     dietDinners.map(async (dietDinner) => {

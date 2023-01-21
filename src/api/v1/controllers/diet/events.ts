@@ -39,8 +39,6 @@ dietEmitter.on(
       })
     );
 
-    console.log({ dietDinnersQueryPortion: dietDinnersQuery[0].dinnerPortion });
-
     const dietMeal = await getDietMeal({
       _id: dietDinner.dietMealId,
     });
@@ -63,7 +61,6 @@ dietEmitter.on(
       );
 
       dietEmitter.emit('dietMeal::updated', 200, updatedMeal);
-      console.log(updatedMeal);
     } catch (e) {
       console.log(e);
     }
@@ -82,17 +79,13 @@ dietEmitter.on(
 dietEmitter.on(
   'dietDinner::deleted',
   async (code: number, dietDinner: IDietDinnerDocument) => {
-    console.log(`Got ${code} and ${dietDinner._id}`);
-
-    console.log({ dietDinner });
+    console.log(`Got ${code} and dinnerId: ${dietDinner._id}`);
 
     //mealId
 
     const dietDinners = await getDietDinners({
       dietMealId: dietDinner.dietMealId,
     });
-
-    console.log({ dietDinners });
 
     //jesli brak potraw w posiłku zmienic total na 0
     if (dietDinners.length < 1) {
@@ -117,7 +110,6 @@ dietEmitter.on(
         );
 
         dietEmitter.emit('dietMeal::updated', 200, updatedMeal);
-        console.log(updatedMeal);
       } catch (e) {
         console.log(e);
       }
@@ -136,8 +128,6 @@ dietEmitter.on(
         };
       })
     );
-
-    console.log({ dietDinnersQueryPortion: dietDinnersQuery[0].dinnerPortion });
 
     const dietMeal = await getDietMeal({
       _id: dietDinner.dietMealId,
@@ -161,7 +151,6 @@ dietEmitter.on(
       );
 
       dietEmitter.emit('dietMeal::updated', 200, updatedMeal);
-      console.log(updatedMeal);
     } catch (e) {
       console.log(e);
     }
@@ -171,15 +160,13 @@ dietEmitter.on(
 dietEmitter.on(
   'dietMeal::created',
   async (code: number, dietMeal: IDietMealDocument) => {
-    console.log(dietMeal);
+    console.log('created meal');
   }
 );
 
 dietEmitter.on(
   'dietMeal::updated',
   async (code: number, dietMeal: IDietMealDocument) => {
-    console.log(`Edytowano ${dietMeal.name}`);
-
     const dietDayMeals = await getDietMeals({
       dayId: dietMeal.dayId,
     });
@@ -203,8 +190,7 @@ dietEmitter.on(
           new: true,
         }
       );
-      console.log('updated day');
-      console.log(updatedDay);
+      console.log('edytowano wartości total posiłku w diecie');
     } catch (e) {
       console.log(e);
     }
