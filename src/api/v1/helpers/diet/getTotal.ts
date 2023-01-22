@@ -39,64 +39,55 @@ export const getMealTotalProcent = ({
 
 //items to wartości total dietDinners lub dietMeals
 //przy zmianie dietMealTotal dodać jeszcze procent
-export const getTotal = async (items: IItem[]): Promise<ITotal> => {
+//jeśli brak items (brak potraw w posiłku, to zmień wartości na 0)
+
+export const getTotal = async (items?: IItem[]): Promise<ITotal> => {
   //kcal
-  const totalKcal = items.reduce(
-    (acc, field) => acc + Number(field.total.kcal),
-    0
-  );
+  const totalKcal =
+    items?.reduce((acc, field) => acc + Number(field.total.kcal), 0) || 0;
 
   //protein
-  const totalProteinGram = items.reduce(
-    (acc, field) => acc + Number(field.total.protein.gram),
-    0
-  );
+  const totalProteinGram =
+    items?.reduce((acc, field) => acc + Number(field.total.protein.gram), 0) ||
+    0;
 
-  const totalProteinKcal = items.reduce(
-    (acc, field) => acc + Number(field.total.protein.gram),
-    0
-  );
+  const totalProteinKcal =
+    items?.reduce((acc, field) => acc + Number(field.total.protein.gram), 0) ||
+    0;
 
-  const proteinProcent = round2((totalProteinKcal * 100) / totalKcal);
+  const proteinProcent = round2((totalProteinKcal * 100) / totalKcal) || 0;
 
   //fat
-  const totalFatGram = items.reduce(
-    (acc, field) => acc + Number(field.total.fat.gram),
-    0
-  );
+  const totalFatGram =
+    items?.reduce((acc, field) => acc + Number(field.total.fat.gram), 0) || 0;
 
-  const totalFatKcal = items.reduce(
-    (acc, field) => acc + Number(field.total.fat.gram),
-    0
-  );
+  const totalFatKcal =
+    items?.reduce((acc, field) => acc + Number(field.total.fat.gram), 0) || 0;
 
-  const fatProcent = round2((totalFatKcal * 100) / totalKcal);
+  const fatProcent = round2((totalFatKcal * 100) / totalKcal) || 0;
 
   //carbohydrates
-  const totalCarbohydratesGram = items.reduce(
-    (acc, field) => acc + Number(field.total.carbohydrates.gram),
-    0
-  );
+  const totalCarbohydratesGram =
+    items?.reduce(
+      (acc, field) => acc + Number(field.total.carbohydrates.gram),
+      0
+    ) || 0;
 
-  const totalCarbohydratesKcal = items.reduce(
-    (acc, field) => acc + Number(field.total.carbohydrates.gram),
-    0
-  );
+  const totalCarbohydratesKcal =
+    items?.reduce(
+      (acc, field) => acc + Number(field.total.carbohydrates.gram),
+      0
+    ) || 0;
 
-  const carbohydratesProcent = round2(
-    (totalCarbohydratesKcal * 100) / totalKcal
-  );
+  const carbohydratesProcent =
+    round2((totalCarbohydratesKcal * 100) / totalKcal) || 0;
 
   //fiber
-  const totalFiberGram = items.reduce(
-    (acc, field) => acc + Number(field.total.fiber.gram),
-    0
-  );
+  const totalFiberGram =
+    items?.reduce((acc, field) => acc + Number(field.total.fiber.gram), 0) || 0;
 
-  const totalFiberKcal = items.reduce(
-    (acc, field) => acc + Number(field.total.fiber.gram),
-    0
-  );
+  const totalFiberKcal =
+    items?.reduce((acc, field) => acc + Number(field.total.fiber.gram), 0) || 0;
 
   const totalValues: ITotal = {
     kcal: totalKcal,
