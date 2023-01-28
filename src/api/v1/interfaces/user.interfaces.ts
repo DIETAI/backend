@@ -16,7 +16,7 @@ export interface IUserInput extends ICreateUserInput {
   photoURL?: string;
   avatar?: IAssetDocument['_id'];
 }
-
+//user data
 export interface IUserDocument extends IUserInput, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
