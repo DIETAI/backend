@@ -19,10 +19,13 @@ import { getDietDinners } from '../../diet/dietDinner.service';
 
 interface IMealGenerateArgs {
   mealId: string;
-  mealGenerateOption: "changeAmountAddedMealDinners" | "newMeal";
+  mealGenerateOption: 'changeAmountAddedMealDinners' | 'newMeal';
 }
 
-export const mealGenerate = async ({ mealId, mealGenerateOption }: IMealGenerateArgs) => {
+export const mealGenerate = async ({
+  mealId,
+  mealGenerateOption,
+}: IMealGenerateArgs) => {
   console.log('start generowania posiłku');
   const metricsLabels = {
     operation: 'mealGenerate',
@@ -37,21 +40,18 @@ export const mealGenerate = async ({ mealId, mealGenerateOption }: IMealGenerate
       return;
     }
 
+    let recommendMeal;
 
-    let recommendMeal
-
-    if(mealGenerateOption === "changeAmountAddedMealDinners"){
-      const mealDinners = await getDietDinners({dietMealId: mealId})
-      const mealObj : IMealRecommend = {
+    if (mealGenerateOption === 'changeAmountAddedMealDinners') {
+      const mealDinners = await getDietDinners({ dietMealId: mealId });
+      const mealObj: IMealRecommend = {
         dayMealId: mealId,
         dayMealDinners: mealDinners,
-        dayId: meal.dayId
-      }
+        dayId: meal.dayId,
+      };
 
-      recommendMeal = {...mealObj, mealGenerateOption}
-
-     
-    }else {
+      recommendMeal = { ...mealObj, mealGenerateOption };
+    } else {
       const recommendedMeal = await mealRecommend({
         mealDayId: meal.dayId,
         mealType: meal.type,
@@ -59,14 +59,10 @@ export const mealGenerate = async ({ mealId, mealGenerateOption }: IMealGenerate
 
       if (!recommendedMeal) return; //random dietMeal
 
-      recommendMeal = {...recommendedMeal, mealGenerateOption};
+      recommendMeal = { ...recommendedMeal, mealGenerateOption };
 
-      console.log(recommendMeal)
-
-
+      console.log(recommendMeal);
     }
-  
-    // if(!recommendMeal || recommendMeal.dayMealId) return;
 
     console.log(
       `Wybrano posiłek poprzez: ${recommendMeal.dayMealGenerateType}`
@@ -111,7 +107,11 @@ export const mealGenerate = async ({ mealId, mealGenerateOption }: IMealGenerate
     // //zabezpieczenie przed brakiem grup (zmiana procenta)
     const cartesianResultGroups = [];
 
-    for (let currentProcent = 2, l = 10; currentProcent < l; currentProcent++) {
+    for (
+      let currentProcent = 2, l = 100;
+      currentProcent < l;
+      currentProcent++
+    ) {
       const dinnersCartesianGroups = cartesianDinners(
         mealEstablishment,
         dietEstablishment,
@@ -140,7 +140,10 @@ export const mealGenerate = async ({ mealId, mealGenerateOption }: IMealGenerate
 
     const selectedDinnersGroups = selectGroups(cartesianResultGroups);
 
-    console.log('Wybrano grupy');
+    console.log({ cartesianResultGroups });
+
+    console.log('Wybrano grupy'); //correct
+    console.log({ selectedDinnersGroups });
 
     // console.log(selectedDinnersGroups.main);
 

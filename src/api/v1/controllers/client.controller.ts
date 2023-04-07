@@ -7,7 +7,7 @@ import {
   GetClientInput,
   GetClientsInput,
 } from '../schema/client.schema';
-import { getAsset } from '../services/asset.service';
+
 import {
   createClient,
   deleteClient,
@@ -70,19 +70,6 @@ export async function getClientController(
   if (String(client.user) !== userId) {
     return res.sendStatus(403);
   }
-
-  // const clientObj = client.toObject();
-  // const fullName = client.getFullName();
-
-  // const clientData = {
-  //   ...clientObj,
-  //   fullName,
-  //   image: clientObj.image,
-  // };
-
-  // console.log({ clientData });
-
-  // return res.send(clientData);
 
   return res.send(client);
 }

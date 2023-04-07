@@ -12,7 +12,6 @@ export const cartesianDinners = (
   const result: Array<ICartesianResult> = [];
   const max = portions.length - 1;
   let loop = 0;
-  console.log(loop);
 
   const helper = (
     arr: Array<IMealDinnersPortionsMacro['dinnerProductsPortions'][0]>,
@@ -28,6 +27,11 @@ export const cartesianDinners = (
         if (result.length === 100000) {
           return;
         }
+
+        //test
+        // if (loop === maxCartesianGroups) {
+        //   return;
+        // }
 
         const macroTotalCount = cartesianGroupTotalCount(a); //correct
 

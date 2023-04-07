@@ -32,6 +32,11 @@ export const cartesianDinners = (
           return;
         }
 
+        // //test
+        // if (loop === 1000) {
+        //   return;
+        // }
+
         const macroTotalCount = cartesianGroupTotalCount(a); //correct
 
         const missingProcentCount = cartesianGroupMissingProcentCount(
