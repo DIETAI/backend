@@ -44,9 +44,9 @@ function updateDinnerPortionController(req, res) {
         if (!dinnerPortion) {
             return res.sendStatus(404);
         }
-        if (String(dinnerPortion.user) !== userId) {
-            return res.sendStatus(403);
-        }
+        // if (String(dinnerPortion.user) !== userId) {
+        //   return res.sendStatus(403);
+        // }
         const updatedDinnerPortion = yield (0, dinnerPortion_service_1.getAndUpdateDinnerPortion)({ _id: dinnerPortionId }, update, {
             new: true,
         });
@@ -64,9 +64,9 @@ function getDinnerPortionController(req, res) {
         if (!dinnerPortion) {
             return res.sendStatus(404);
         }
-        if (String(dinnerPortion.user) !== userId) {
-            return res.sendStatus(403);
-        }
+        // if (String(dinnerPortion.user) !== userId) {
+        //   return res.sendStatus(403);
+        // }
         return res.send(dinnerPortion);
     });
 }
@@ -76,7 +76,7 @@ function getDinnerPortionsController(req, res) {
         const userId = res.locals.user._id;
         const dinnerId = req.params.dinnerId;
         const dinnerPortions = yield (0, dinnerPortion_service_1.getDinnerPortions)({
-            user: userId,
+            // user: userId,
             dinnerId: dinnerId,
         });
         if (!dinnerPortions) {
@@ -86,12 +86,13 @@ function getDinnerPortionsController(req, res) {
     });
 }
 exports.getDinnerPortionsController = getDinnerPortionsController;
+//do usunięcia
 function getDinnerPortionsQueryController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
         const dinnerId = req.params.dinnerId;
         const dinnerPortions = yield (0, dinnerPortion_service_1.getDinnerPortions)({
-            user: userId,
+            // user: userId,
             dinnerId: dinnerId,
         });
         if (!dinnerPortions) {
@@ -125,9 +126,9 @@ function deleteDinnerPortionController(req, res) {
         if (!dinnerPortion) {
             return res.sendStatus(404);
         }
-        if (String(dinnerPortion.user) !== userId) {
-            return res.sendStatus(403);
-        }
+        // if (String(dinnerPortion.user) !== userId) {
+        //   return res.sendStatus(403);
+        // }
         yield (0, dinnerPortion_service_1.deleteDinnerPortion)({ _id: dinnerPortionId });
         events_1.dinnerEmitter.emit('dinnerPortion:delete', dinnerPortionId);
         return res.sendStatus(200);

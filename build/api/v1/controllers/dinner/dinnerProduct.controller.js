@@ -116,9 +116,9 @@ function updateDinnerProductController(req, res) {
         if (!dinnerProduct) {
             return res.sendStatus(404);
         }
-        if (String(dinnerProduct.user) !== userId) {
-            return res.sendStatus(403);
-        }
+        // if (String(dinnerProduct.user) !== userId) {
+        //   return res.sendStatus(403);
+        // }
         const updatedDinnerProduct = yield (0, dinnerProduct_service_1.getAndUpdateDinnerProduct)({ _id: dinnerProductId }, update, {
             new: true,
         });
@@ -136,13 +136,14 @@ function getDinnerProductController(req, res) {
         if (!dinnerProduct) {
             return res.sendStatus(404);
         }
-        if (String(dinnerProduct.user) !== userId) {
-            return res.sendStatus(403);
-        }
+        // if (String(dinnerProduct.user) !== userId) {
+        //   return res.sendStatus(403);
+        // }
         return res.send(dinnerProduct);
     });
 }
 exports.getDinnerProductController = getDinnerProductController;
+//usunąć
 function getDinnerProductQueryController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
@@ -153,9 +154,9 @@ function getDinnerProductQueryController(req, res) {
         if (!dinnerProduct) {
             return res.sendStatus(404);
         }
-        if (String(dinnerProduct.user) !== userId) {
-            return res.sendStatus(403);
-        }
+        // if (String(dinnerProduct.user) !== userId) {
+        //   return res.sendStatus(403);
+        // }
         const product = yield (0, products_service_1.getProduct)({ _id: dinnerProduct.productId });
         if (!product) {
             return res.sendStatus(404);
@@ -165,6 +166,7 @@ function getDinnerProductQueryController(req, res) {
     });
 }
 exports.getDinnerProductQueryController = getDinnerProductQueryController;
+//usunąć
 function getDinnerProductsPopulateController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         // const userId = res.locals.user._id;
@@ -176,6 +178,7 @@ function getDinnerProductsPopulateController(req, res) {
     });
 }
 exports.getDinnerProductsPopulateController = getDinnerProductsPopulateController;
+//usunąć
 function getAllDinnerProductsController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         // const userId = res.locals.user._id;
@@ -198,7 +201,7 @@ function getDinnerProductsController(req, res) {
         const userId = res.locals.user._id;
         const dinnerId = req.params.dinnerId;
         const dinnerProducts = yield (0, dinnerProduct_service_1.getDinnerProducts)({
-            user: userId,
+            // user: userId,
             dinnerId: dinnerId,
         });
         if (!dinnerProducts) {
@@ -233,7 +236,7 @@ function getDinnerProductsQueryController(req, res) {
         const userId = res.locals.user._id;
         const dinnerId = req.params.dinnerId;
         const dinnerProducts = yield (0, dinnerProduct_service_1.getDinnerProducts)({
-            user: userId,
+            // user: userId,
             dinnerId: dinnerId,
         });
         if (!dinnerProducts) {
@@ -261,16 +264,16 @@ function deleteDinnerProductController(req, res) {
         if (!dinnerProduct) {
             return res.sendStatus(404);
         }
-        if (String(dinnerProduct.user) !== userId) {
-            return res.sendStatus(403);
-        }
+        // if (String(dinnerProduct.user) !== userId) {
+        //   return res.sendStatus(403);
+        // }
         //delete portions
         const dinnerPortions = (0, dinnerPortion_service_1.getDinnerPortions)({
-            user: userId,
+            // user: userId,
             dinnerId: dinnerProduct.dinnerId,
         });
         const dinnerProducts = (0, dinnerProduct_service_1.getDinnerProducts)({
-            user: userId,
+            // user: userId,
             dinnerId: dinnerProduct.dinnerId,
         });
         const [portions, products] = yield Promise.all([

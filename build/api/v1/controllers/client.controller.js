@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteClientController = exports.getClientsController = exports.getClientController = exports.updateClientController = exports.createClientController = void 0;
 const client_model_1 = __importDefault(require("../models/client.model"));
-const asset_service_1 = require("../services/asset.service");
 const client_service_1 = require("../services/client.service");
 function createClientController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -55,9 +54,7 @@ function getClientController(req, res) {
         if (String(client.user) !== userId) {
             return res.sendStatus(403);
         }
-        const clientImage = yield (0, asset_service_1.getAsset)({ _id: client.image });
-        const clientObj = Object.assign(Object.assign({}, client), { imageURL: clientImage ? clientImage.imageURL : undefined });
-        return res.send(clientObj);
+        return res.send(client);
     });
 }
 exports.getClientController = getClientController;

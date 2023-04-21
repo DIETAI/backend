@@ -40,7 +40,15 @@ function getMeasurement(query, options = { lean: true }) {
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const result = yield measurement_model_1.default.findOne(query, {}, options);
+            const result = yield measurement_model_1.default.findOne(query, {}, options)
+                .populate({
+                path: 'client',
+                select: ['_id', 'name', 'lastName'],
+            })
+                .populate({
+                path: 'images',
+                select: ['_id', 'imageURL'],
+            });
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }
@@ -58,7 +66,15 @@ function getMeasurements(query, options = { lean: true }) {
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const result = yield measurement_model_1.default.find(query, {}, options);
+            const result = yield measurement_model_1.default.find(query, {}, options)
+                .populate({
+                path: 'client',
+                select: ['_id', 'name', 'lastName'],
+            })
+                .populate({
+                path: 'images',
+                select: ['_id', 'imageURL'],
+            });
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }

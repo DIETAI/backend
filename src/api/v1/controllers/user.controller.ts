@@ -28,7 +28,7 @@ export async function createUserController(
     const existingUserEmail = await validateEmail(email);
     if (existingUserEmail) {
       return res
-        .status(400)
+        .status(409)
         .json({ msg: 'There is already a user with this email address' });
     }
 
@@ -39,8 +39,6 @@ export async function createUserController(
         .status(500)
         .json({ msg: 'A server error occurred during registration' });
     }
-
-    console.log({ createdUser: user });
 
     // create a session
     // const session = await createSession(user._id, req.get('user-agent') || '');
@@ -79,7 +77,7 @@ export async function createUserController(
   } catch (e: any) {
     logger.error(e);
     console.log(e);
-    return res.status(409).send(e.message);
+    return res.status(404).send(e.message);
   }
 }
 

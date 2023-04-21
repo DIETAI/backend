@@ -69,9 +69,9 @@ export async function updateDinnerPortionController(
     return res.sendStatus(404);
   }
 
-  if (String(dinnerPortion.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(dinnerPortion.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   const updatedDinnerPortion = await getAndUpdateDinnerPortion(
     { _id: dinnerPortionId },
@@ -98,9 +98,9 @@ export async function getDinnerPortionController(
     return res.sendStatus(404);
   }
 
-  if (String(dinnerPortion.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(dinnerPortion.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   return res.send(dinnerPortion);
 }
@@ -112,7 +112,7 @@ export async function getDinnerPortionsController(
   const userId = res.locals.user._id;
   const dinnerId = req.params.dinnerId;
   const dinnerPortions = await getDinnerPortions({
-    user: userId,
+    // user: userId,
     dinnerId: dinnerId,
   });
 
@@ -132,7 +132,7 @@ export async function getDinnerPortionsQueryController(
   const dinnerId = req.params.dinnerId;
 
   const dinnerPortions = await getDinnerPortions({
-    user: userId,
+    // user: userId,
     dinnerId: dinnerId,
   });
 
@@ -194,9 +194,9 @@ export async function deleteDinnerPortionController(
     return res.sendStatus(404);
   }
 
-  if (String(dinnerPortion.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(dinnerPortion.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   await deleteDinnerPortion({ _id: dinnerPortionId });
   dinnerEmitter.emit('dinnerPortion:delete', dinnerPortionId);

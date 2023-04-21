@@ -8,8 +8,13 @@ const Schema = mongoose_1.default.Schema;
 const DinnerSchema = new Schema({
     user: { type: mongoose_1.default.Schema.Types.ObjectId, ref: 'User' },
     name: { type: String, required: true },
-    image: { type: String },
-    gallery: [{ type: String }],
+    image: {
+        type: mongoose_1.default.Schema.Types.String,
+        ref: 'Asset',
+    },
+    gallery: [
+        { type: mongoose_1.default.Schema.Types.String, ref: 'Asset', required: true },
+    ],
     mealTypes: [{ type: String, required: true }],
     mealTypesKind: { type: String, required: true },
     description: { type: String },

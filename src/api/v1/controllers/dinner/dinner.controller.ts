@@ -59,9 +59,9 @@ export async function updateDinnerController(
     return res.sendStatus(404);
   }
 
-  if (String(dinner.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(dinner.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   const updatedDinner = await getAndUpdateDinner({ _id: dinnerId }, update, {
     new: true,
@@ -84,9 +84,9 @@ export async function getDinnerController(
     return res.sendStatus(404);
   }
 
-  if (String(dinner.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(dinner.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   return res.send(dinner);
 }
@@ -105,7 +105,8 @@ export async function getDinnersController(
 
     const countPromise = DinnerModel.estimatedDocumentCount();
     const dinnersPromise = DinnerModel.find(
-      { user: userId },
+      // { user: userId },
+      {},
       {},
       { lean: true }
     )
@@ -161,9 +162,9 @@ export async function deleteDinnerController(
     return res.sendStatus(404);
   }
 
-  if (String(dinner.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(dinner.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   await deleteDinner({ _id: dinnerId });
 

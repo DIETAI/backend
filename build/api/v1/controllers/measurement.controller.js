@@ -60,6 +60,7 @@ function getMeasurementController(req, res) {
     });
 }
 exports.getMeasurementController = getMeasurementController;
+//do usunięcia
 function getMeasurementQueryController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
@@ -93,9 +94,16 @@ function getMeasurementsController(req, res) {
         if (queryPage && itemsCount) {
             const page = parseInt(queryPage);
             const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
-            console.log({ skip });
             const countPromise = measurement_model_1.default.estimatedDocumentCount();
             const measurementsPromise = measurement_model_1.default.find({ user: userId })
+                .populate({
+                path: 'client',
+                select: ['_id', 'name', 'lastName'],
+            })
+                .populate({
+                path: 'images',
+                select: ['_id', 'imageURL'],
+            })
                 .limit(parseInt(itemsCount))
                 .skip(skip);
             const [count, measurements] = yield Promise.all([
@@ -106,20 +114,12 @@ function getMeasurementsController(req, res) {
             if (!count || !measurements) {
                 return res.sendStatus(404);
             }
-            const measurementsQuery = yield Promise.all(measurements.map((measurement) => __awaiter(this, void 0, void 0, function* () {
-                const client = yield (0, client_service_1.getClient)({ _id: measurement.client });
-                return Object.assign(Object.assign({}, measurement.toObject()), { measurementClient: {
-                        name: client === null || client === void 0 ? void 0 : client.name,
-                        lastName: client === null || client === void 0 ? void 0 : client.lastName,
-                        fullName: (client === null || client === void 0 ? void 0 : client.name) + ' ' + (client === null || client === void 0 ? void 0 : client.lastName),
-                    } });
-            })));
             return res.send({
                 pagination: {
                     count,
                     pageCount,
                 },
-                measurements: measurementsQuery,
+                measurements,
             });
         }
         const measurements = yield (0, measurement_service_1.getMeasurements)({ user: userId });

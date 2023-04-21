@@ -29,7 +29,6 @@ exports.dietEmitter.on('dietDinner::created', (code, dietDinner) => __awaiter(vo
         });
         return Object.assign(Object.assign({}, dietDinner), { dinnerPortion: dinnerPortion });
     })));
-    console.log({ dietDinnersQueryPortion: dietDinnersQuery[0].dinnerPortion });
     const dietMeal = yield (0, dietMeal_service_1.getDietMeal)({
         _id: dietDinner.dietMealId,
     });
@@ -42,7 +41,6 @@ exports.dietEmitter.on('dietDinner::created', (code, dietDinner) => __awaiter(vo
             new: true,
         });
         exports.dietEmitter.emit('dietMeal::updated', 200, updatedMeal);
-        console.log(updatedMeal);
     }
     catch (e) {
         console.log(e);
@@ -53,13 +51,11 @@ exports.dietEmitter.on('dietDinner::updated', (code, dietDinner) => {
     console.log(`Got ${code} and ${dietDinner._id}`);
 }); // Register for eventOne
 exports.dietEmitter.on('dietDinner::deleted', (code, dietDinner) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(`Got ${code} and ${dietDinner._id}`);
-    console.log({ dietDinner });
+    console.log(`Got ${code} and dinnerId: ${dietDinner._id}`);
     //mealId
     const dietDinners = yield (0, dietDinner_service_1.getDietDinners)({
         dietMealId: dietDinner.dietMealId,
     });
-    console.log({ dietDinners });
     //jesli brak potraw w posiłku zmienic total na 0
     if (dietDinners.length < 1) {
         const dietMeal = yield (0, dietMeal_service_1.getDietMeal)({
@@ -73,7 +69,6 @@ exports.dietEmitter.on('dietDinner::deleted', (code, dietDinner) => __awaiter(vo
                 new: true,
             });
             exports.dietEmitter.emit('dietMeal::updated', 200, updatedMeal);
-            console.log(updatedMeal);
         }
         catch (e) {
             console.log(e);
@@ -86,7 +81,6 @@ exports.dietEmitter.on('dietDinner::deleted', (code, dietDinner) => __awaiter(vo
         });
         return Object.assign(Object.assign({}, dietDinner), { dinnerPortion: dinnerPortion });
     })));
-    console.log({ dietDinnersQueryPortion: dietDinnersQuery[0].dinnerPortion });
     const dietMeal = yield (0, dietMeal_service_1.getDietMeal)({
         _id: dietDinner.dietMealId,
     });
@@ -99,17 +93,15 @@ exports.dietEmitter.on('dietDinner::deleted', (code, dietDinner) => __awaiter(vo
             new: true,
         });
         exports.dietEmitter.emit('dietMeal::updated', 200, updatedMeal);
-        console.log(updatedMeal);
     }
     catch (e) {
         console.log(e);
     }
 })); // Register for eventOne
 exports.dietEmitter.on('dietMeal::created', (code, dietMeal) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(dietMeal);
+    console.log('created meal');
 }));
 exports.dietEmitter.on('dietMeal::updated', (code, dietMeal) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(`Edytowano ${dietMeal.name}`);
     const dietDayMeals = yield (0, dietMeal_service_1.getDietMeals)({
         dayId: dietMeal.dayId,
     });
@@ -123,8 +115,7 @@ exports.dietEmitter.on('dietMeal::updated', (code, dietMeal) => __awaiter(void 0
         const updatedDay = yield (0, dietDay_service_1.getAndUpdateDietDay)({ _id: dietDay === null || dietDay === void 0 ? void 0 : dietDay._id }, dayTotal, {
             new: true,
         });
-        console.log('updated day');
-        console.log(updatedDay);
+        console.log('edytowano wartości total posiłku w diecie');
     }
     catch (e) {
         console.log(e);

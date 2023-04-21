@@ -22,7 +22,7 @@ const selectGroups_1 = require("./selectGroups");
 const dinnerPortion_service_1 = require("../../dinner/dinnerPortion.service");
 const dinner_service_1 = require("../../dinner/dinner.service");
 const dietDinner_service_1 = require("../../diet/dietDinner.service");
-const mealGenerate = ({ mealId, mealGenerateOption }) => __awaiter(void 0, void 0, void 0, function* () {
+const mealGenerate = ({ mealId, mealGenerateOption, }) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('start generowania posiłku');
     const metricsLabels = {
         operation: 'mealGenerate',
@@ -35,12 +35,12 @@ const mealGenerate = ({ mealId, mealGenerateOption }) => __awaiter(void 0, void 
             return;
         }
         let recommendMeal;
-        if (mealGenerateOption === "changeAmountAddedMealDinners") {
+        if (mealGenerateOption === 'changeAmountAddedMealDinners') {
             const mealDinners = yield (0, dietDinner_service_1.getDietDinners)({ dietMealId: mealId });
             const mealObj = {
                 dayMealId: mealId,
                 dayMealDinners: mealDinners,
-                dayId: meal.dayId
+                dayId: meal.dayId,
             };
             recommendMeal = Object.assign(Object.assign({}, mealObj), { mealGenerateOption });
         }
@@ -54,7 +54,6 @@ const mealGenerate = ({ mealId, mealGenerateOption }) => __awaiter(void 0, void 
             recommendMeal = Object.assign(Object.assign({}, recommendedMeal), { mealGenerateOption });
             console.log(recommendMeal);
         }
-        // if(!recommendMeal || recommendMeal.dayMealId) return;
         console.log(`Wybrano posiłek poprzez: ${recommendMeal.dayMealGenerateType}`);
         const mealDinnersPortionsMacro = yield Promise.all(recommendMeal.dayMealDinners.map((dinner) => __awaiter(void 0, void 0, void 0, function* () {
             const dinnerMacroPortion = yield (0, getDinnerPortionsMacro_1.getMealDinnersPortionsMacro)(dinner);
@@ -82,7 +81,7 @@ const mealGenerate = ({ mealId, mealGenerateOption }) => __awaiter(void 0, void 
         const maxCartesianGroups = mealDinners.length < 6 ? 50000 : 100;
         // //zabezpieczenie przed brakiem grup (zmiana procenta)
         const cartesianResultGroups = [];
-        for (let currentProcent = 2, l = 10; currentProcent < l; currentProcent++) {
+        for (let currentProcent = 2, l = 100; currentProcent < l; currentProcent++) {
             const dinnersCartesianGroups = (0, cartesianDinners_1.cartesianDinners)(mealEstablishment, dietEstablishment, maxCartesianGroups, currentProcent, ...mealDinners);
             if (dinnersCartesianGroups.length > 0) {
                 console.log(`Procent odchylenia grup: ${currentProcent}`);
@@ -100,7 +99,9 @@ const mealGenerate = ({ mealId, mealGenerateOption }) => __awaiter(void 0, void 
         // );
         console.timeEnd('cartesianProduct');
         const selectedDinnersGroups = (0, selectGroups_1.selectGroups)(cartesianResultGroups);
-        console.log('Wybrano grupy');
+        console.log({ cartesianResultGroups });
+        console.log('Wybrano grupy'); //correct
+        console.log({ selectedDinnersGroups });
         // console.log(selectedDinnersGroups.main);
         const selectedMealDinners = yield Promise.all(recommendMeal.dayMealDinners.map((dietDinner) => __awaiter(void 0, void 0, void 0, function* () {
             const dinnerPortion = (yield (0, dinnerPortion_service_1.getDinnerPortion)({

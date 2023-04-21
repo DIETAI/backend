@@ -40,7 +40,19 @@ function getDietEstablishment(query, options = { lean: true }) {
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const result = yield dietEstablishments_model_1.default.findOne(query, {}, options);
+            const result = yield dietEstablishments_model_1.default.findOne(query, {}, options)
+                .populate({
+                path: 'client',
+                select: ['_id', 'name', 'lastName'],
+            })
+                .populate({
+                path: 'dietKind',
+                select: ['_id', 'name', 'type'],
+            })
+                .populate({
+                path: 'measurementId',
+                select: ['_id', 'name', 'cpm'],
+            });
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }
@@ -58,7 +70,19 @@ function getDietEstablishments(query, options = { lean: true }) {
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const result = yield dietEstablishments_model_1.default.find(query, {}, options);
+            const result = yield dietEstablishments_model_1.default.find(query, {}, options)
+                .populate({
+                path: 'client',
+                select: ['_id', 'name', 'lastName'],
+            })
+                .populate({
+                path: 'dietKind',
+                select: ['_id', 'name', 'type'],
+            })
+                .populate({
+                path: 'measurementId',
+                select: ['_id', 'name', 'cpm'],
+            });
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }

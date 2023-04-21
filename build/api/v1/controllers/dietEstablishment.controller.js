@@ -61,10 +61,12 @@ function getDietEstablishmentController(req, res) {
         if (String(dietEstablishment.user) !== userId) {
             return res.sendStatus(403);
         }
+        console.log({ dietEstablishment });
         return res.send(dietEstablishment);
     });
 }
 exports.getDietEstablishmentController = getDietEstablishmentController;
+//do usunięcia
 function getDietEstablishmentQueryController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
@@ -126,21 +128,26 @@ function getDietEstablishmentsController(req, res) {
             const dietEstablishmentsPromise = dietEstablishments_model_1.default.find({
                 user: userId,
             })
+                .populate({
+                path: 'client',
+                select: ['_id', 'name', 'lastName'],
+            })
+                .populate({
+                path: 'dietKind',
+                select: ['_id', 'name', 'type'],
+            })
+                .populate({
+                path: 'measurementId',
+                select: ['_id', 'name', 'cpm'],
+            })
                 .limit(parseInt(itemsCount))
                 .skip(skip);
             const [count, dietEstablishments] = yield Promise.all([
                 countPromise,
                 dietEstablishmentsPromise,
             ]);
-            const dietEstablishmentsQuery = yield Promise.all(dietEstablishments.map((dietEstablishmentDocument) => __awaiter(this, void 0, void 0, function* () {
-                const dietEstablishment = dietEstablishmentDocument.toObject();
-                const client = yield (0, client_service_1.getClient)({ _id: dietEstablishment.client });
-                return Object.assign(Object.assign({}, dietEstablishment), { patient: {
-                        fullName: (client === null || client === void 0 ? void 0 : client.name) + ' ' + (client === null || client === void 0 ? void 0 : client.lastName),
-                    } });
-            })));
             const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
-            if (!count || !dietEstablishmentsQuery) {
+            if (!count || !dietEstablishments) {
                 return res.sendStatus(404);
             }
             return res.send({
@@ -148,25 +155,14 @@ function getDietEstablishmentsController(req, res) {
                     count,
                     pageCount,
                 },
-                dietEstablishments: dietEstablishmentsQuery,
+                dietEstablishments,
             });
         }
         const dietEstablishments = yield (0, dietEstablishment_service_1.getDietEstablishments)({ user: userId });
         if (!dietEstablishments) {
             return res.sendStatus(404);
         }
-        const dietEstablishmentQuery = yield Promise.all(dietEstablishments.map((dietEstablishmentDocument) => __awaiter(this, void 0, void 0, function* () {
-            // const dietEstablishment = dietEstablishmentDocument.toObject();
-            const dietEstablishment = dietEstablishmentDocument;
-            const client = yield (0, client_service_1.getClient)({ _id: dietEstablishment.client });
-            return Object.assign(Object.assign({}, dietEstablishment), { patient: {
-                    fullName: (client === null || client === void 0 ? void 0 : client.name) + ' ' + (client === null || client === void 0 ? void 0 : client.lastName),
-                } });
-        })));
-        if (!dietEstablishmentQuery) {
-            return res.sendStatus(404);
-        }
-        return res.send(dietEstablishmentQuery);
+        return res.send(dietEstablishments);
     });
 }
 exports.getDietEstablishmentsController = getDietEstablishmentsController;

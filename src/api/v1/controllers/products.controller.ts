@@ -49,9 +49,9 @@ export async function updateProductController(
     return res.sendStatus(404);
   }
 
-  if (String(product.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(product.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   const updatedProduct = await getAndUpdateProduct({ _id: productId }, update, {
     new: true,
@@ -74,9 +74,9 @@ export async function getProductController(
     return res.sendStatus(404);
   }
 
-  if (String(product.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(product.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   return res.send(product);
 }
@@ -106,7 +106,8 @@ export async function getProductsController(
     const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
 
     const countPromise = ProductModel.estimatedDocumentCount();
-    const productsPromise = ProductModel.find({ user: userId })
+    // const productsPromise = ProductModel.find({ user: userId })
+    const productsPromise = ProductModel.find()
       .populate({
         path: 'image',
       })
@@ -133,7 +134,8 @@ export async function getProductsController(
     });
   }
 
-  const products = await getUserProducts({ user: userId });
+  // const products = await getUserProducts({ user: userId });
+  const products = await getUserProducts({});
 
   if (!products) {
     return res.sendStatus(404);
@@ -157,9 +159,9 @@ export async function deleteProductController(
     return res.sendStatus(404);
   }
 
-  if (String(product.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(product.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   await deleteProduct({ _id: productId });
 

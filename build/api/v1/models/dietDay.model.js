@@ -46,5 +46,10 @@ const DietDaySchema = new Schema({
 }, {
     timestamps: true,
 });
+DietDaySchema.virtual('dietMeals', {
+    ref: 'DietMeal',
+    localField: '_id',
+    foreignField: 'dayId',
+});
 const DietDayModel = mongoose_1.default.model('DietDay', DietDaySchema);
 exports.default = DietDayModel;

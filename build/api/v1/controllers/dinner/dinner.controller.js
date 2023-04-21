@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteDinnerController = exports.getDinnersController = exports.getDinnerController = exports.updateDinnerController = exports.createDinnerController = void 0;
 const dinner_model_1 = __importDefault(require("../../models/dinners/dinner.model"));
-const asset_service_1 = require("../../services/asset.service");
 const dinner_service_1 = require("../../services/dinner/dinner.service");
 const dinnerPortion_service_1 = require("../../services/dinner/dinnerPortion.service");
 const dinnerProduct_service_1 = require("../../services/dinner/dinnerProduct.service");
@@ -40,9 +39,9 @@ function updateDinnerController(req, res) {
         if (!dinner) {
             return res.sendStatus(404);
         }
-        if (String(dinner.user) !== userId) {
-            return res.sendStatus(403);
-        }
+        // if (String(dinner.user) !== userId) {
+        //   return res.sendStatus(403);
+        // }
         const updatedDinner = yield (0, dinner_service_1.getAndUpdateDinner)({ _id: dinnerId }, update, {
             new: true,
         });
@@ -51,7 +50,6 @@ function updateDinnerController(req, res) {
 }
 exports.updateDinnerController = updateDinnerController;
 function getDinnerController(req, res) {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
         const dinnerId = req.params.dinnerId;
@@ -61,20 +59,10 @@ function getDinnerController(req, res) {
         if (!dinner) {
             return res.sendStatus(404);
         }
-        if (String(dinner.user) !== userId) {
-            return res.sendStatus(403);
-        }
-        const dinnerAsset = yield (0, asset_service_1.getAsset)({ _id: dinner.image });
-        const dinnerGalleryAssets = dinner.gallery && dinner.gallery.length > 0
-            ? yield Promise.all((_a = dinner.gallery) === null || _a === void 0 ? void 0 : _a.map((galleryAsset) => __awaiter(this, void 0, void 0, function* () {
-                const dinnerAsset = yield (0, asset_service_1.getAsset)({ _id: galleryAsset });
-                return dinnerAsset;
-            })))
-            : [];
-        if (!dinnerAsset) {
-            return res.send(Object.assign(Object.assign({}, dinner), { imageObj: undefined, galleryArr: dinnerGalleryAssets }));
-        }
-        return res.send(Object.assign(Object.assign({}, dinner), { imageObj: dinnerAsset, galleryArr: dinnerGalleryAssets }));
+        // if (String(dinner.user) !== userId) {
+        //   return res.sendStatus(403);
+        // }
+        return res.send(dinner);
     });
 }
 exports.getDinnerController = getDinnerController;
@@ -87,24 +75,22 @@ function getDinnersController(req, res) {
             const page = parseInt(queryPage);
             const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
             const countPromise = dinner_model_1.default.estimatedDocumentCount();
-            const dinnersPromise = dinner_model_1.default.find({ user: userId })
+            const dinnersPromise = dinner_model_1.default.find(
+            // { user: userId },
+            {}, {}, { lean: true })
+                .populate({
+                path: 'image',
+                select: ['_id', 'imageURL'],
+            })
+                .populate({
+                path: 'gallery',
+                select: ['_id', 'imageURL'],
+            })
                 .limit(parseInt(itemsCount))
                 .skip(skip);
             const [count, dinners] = yield Promise.all([countPromise, dinnersPromise]);
-            const dinnersQuery = yield Promise.all(dinners.map((dinnerDocument) => __awaiter(this, void 0, void 0, function* () {
-                const dinner = dinnerDocument.toObject();
-                if (!dinner.image) {
-                    return Object.assign(Object.assign({}, dinner), { imageObj: undefined });
-                }
-                const dinnerAsset = yield (0, asset_service_1.getAsset)({ _id: dinner.image });
-                if (!dinnerAsset) {
-                    return Object.assign(Object.assign({}, dinner), { imageObj: undefined });
-                }
-                return Object.assign(Object.assign({}, dinner), { imageObj: dinnerAsset });
-            })));
             const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
-            console.log({ dinnerCounts: count, dinnersLength: dinnersQuery.length });
-            if (!count || !dinnersQuery) {
+            if (!count || !dinners) {
                 return res.sendStatus(404);
             }
             return res.send({
@@ -112,24 +98,14 @@ function getDinnersController(req, res) {
                     count,
                     pageCount,
                 },
-                dinners: dinnersQuery,
+                dinners,
             });
         }
         const dinners = yield (0, dinner_service_1.getDinners)({ user: userId });
         if (!dinners) {
             return res.sendStatus(404);
         }
-        const dinnersQuery = yield Promise.all(dinners.map((dinner) => __awaiter(this, void 0, void 0, function* () {
-            if (!dinner.image) {
-                return Object.assign(Object.assign({}, dinner), { imageObj: undefined });
-            }
-            const dinnerAsset = yield (0, asset_service_1.getAsset)({ _id: dinner.image });
-            if (!dinnerAsset) {
-                return Object.assign(Object.assign({}, dinner), { imageObj: undefined });
-            }
-            return Object.assign(Object.assign({}, dinner), { imageObj: dinnerAsset });
-        })));
-        return res.send(dinnersQuery);
+        return res.send(dinners);
     });
 }
 exports.getDinnersController = getDinnersController;
@@ -143,9 +119,9 @@ function deleteDinnerController(req, res) {
         if (!dinner) {
             return res.sendStatus(404);
         }
-        if (String(dinner.user) !== userId) {
-            return res.sendStatus(403);
-        }
+        // if (String(dinner.user) !== userId) {
+        //   return res.sendStatus(403);
+        // }
         yield (0, dinner_service_1.deleteDinner)({ _id: dinnerId });
         const dinnerProducts = yield (0, dinnerProduct_service_1.getDinnerProducts)({ dinnerId: dinnerId });
         const dinnerPortions = yield (0, dinnerPortion_service_1.getDinnerPortions)({ dinnerId: dinnerId });

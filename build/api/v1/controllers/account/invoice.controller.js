@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteInvoiceController = exports.getInvoicesController = exports.getInvoiceController = exports.updateInvoiceController = exports.createInvoiceController = void 0;
+exports.deleteInvoiceController = exports.getInvoiceController = exports.updateInvoiceController = exports.createInvoiceController = void 0;
 const invoice_service_1 = require("../../services/account/invoice.service");
 function createInvoiceController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -44,10 +44,10 @@ exports.updateInvoiceController = updateInvoiceController;
 function getInvoiceController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;
-        const invoiceId = req.params.invoiceId;
         const invoice = yield (0, invoice_service_1.getInvoice)({
-            _id: invoiceId,
+            user: userId,
         });
+        console.log(invoice);
         if (!invoice) {
             return res.sendStatus(404);
         }
@@ -58,17 +58,6 @@ function getInvoiceController(req, res) {
     });
 }
 exports.getInvoiceController = getInvoiceController;
-function getInvoicesController(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const userId = res.locals.user._id;
-        const invoices = yield (0, invoice_service_1.getInvoices)({ user: userId });
-        if (!invoices) {
-            return res.sendStatus(404);
-        }
-        return res.send(invoices);
-    });
-}
-exports.getInvoicesController = getInvoicesController;
 function deleteInvoiceController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = res.locals.user._id;

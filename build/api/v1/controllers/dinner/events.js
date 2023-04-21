@@ -26,7 +26,6 @@ const dietMeal_service_2 = require("../../services/diet/dietMeal.service");
 exports.dinnerEmitter = new events_1.EventEmitter();
 exports.dinnerEmitter.on('dinnerProduct:create', (dinnerProduct, userId) => __awaiter(void 0, void 0, void 0, function* () {
     //if dietDinners includes dinnerPortionId => deleteDietDinner => change mealMacro, dayMacro, dietMacro
-    console.log({ dinnerProduct });
     const dinnerProductQuery = yield (0, products_service_1.getProduct)({
         _id: dinnerProduct.productId,
     });
@@ -84,7 +83,6 @@ exports.dinnerEmitter.on('dinnerProduct:create', (dinnerProduct, userId) => __aw
             ];
             const editPortionObj = Object.assign(Object.assign({}, dinnerPortion), { total: (0, sumTotal_1.sumTotal)({ dinnerPortionProducts: newDinerProducts }), dinnerProducts: newDinerProducts });
             const updatedPortion = yield (0, dinnerPortion_service_1.getAndUpdateDinnerPortion)({ _id: dinnerPortion._id }, editPortionObj, { new: true });
-            console.log({ updatedPortion });
         })));
         //jesli dietDinners include updatedPortion => change dietDinner => change dietMeal
         //change dietTotal
@@ -99,7 +97,6 @@ exports.dinnerEmitter.on('dinnerPortion:update', (updatedDinnerPortionId) => __a
     if (dietDinners.length < 1) {
         return;
     }
-    console.log({ dietDinners });
     const dietDinnersQuery = yield Promise.all(dietDinners.map((dietDinner) => __awaiter(void 0, void 0, void 0, function* () {
         const dinnerPortion = yield (0, dinnerPortion_service_1.getDinnerPortion)({
             _id: dietDinner.dinnerPortionId,
@@ -122,7 +119,6 @@ exports.dinnerEmitter.on('dinnerPortion:update', (updatedDinnerPortionId) => __a
                 new: true,
             });
             events_2.dietEmitter.emit('dietMeal::updated', 200, updatedMeal);
-            console.log(updatedMeal);
         }
         catch (e) {
             console.log(e);
@@ -137,7 +133,6 @@ exports.dinnerEmitter.on('dinnerPortion:delete', (dinnerPortionId) => __awaiter(
     if (dietDinners.length < 1) {
         return;
     }
-    console.log({ dietDinners });
     const deleteDietDinners = yield Promise.all(dietDinners.map((dietDinner) => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, dietDinner_service_1.deleteDietDinner)({ _id: dietDinner._id });
         events_2.dietEmitter.emit('dietDinner::deleted', 200, dietDinner);
