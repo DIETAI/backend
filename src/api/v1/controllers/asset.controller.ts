@@ -110,9 +110,9 @@ export async function getAssetController(
     return res.sendStatus(404);
   }
 
-  if (String(asset.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(asset.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   return res.send(asset);
 }
