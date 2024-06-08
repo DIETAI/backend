@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { IAssetDocument } from '../assets.interfaces';
 import { IUserDocument } from '../user.interfaces';
 import { ISubscriptionPlanDocument } from '../subscriptionPlan/subscriptionPlan.interfaces';
 

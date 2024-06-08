@@ -1,12 +1,5 @@
 import mongoose from 'mongoose';
 
-// export enum Roles {
-//   personal = 'personal',
-//   patient = 'patient',
-//   dietician = 'dietician',
-//   admin = 'admin',
-// }
-
 export interface IRoleInput {
   type: 'personal' | 'patient' | 'dietician' | 'admin';
 }

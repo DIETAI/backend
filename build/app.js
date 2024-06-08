@@ -23,27 +23,19 @@ const logger_1 = __importDefault(require("./api/v1/utils/logger"));
 const routes_1 = __importDefault(require("./api/v1/routes/routes"));
 const deserializeUser_1 = __importDefault(require("./api/v1/middleware/deserializeUser"));
 const metrics_1 = require("./api/v1/utils/metrics");
+const corsOptions_1 = require("./api/v1/utils/corsOptions");
 const port = process.env.PORT || 1337;
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
-    origin: [
-        'http://localhost:3000',
-        'https://diet-ai-vaq5g.ondigitalocean.app',
-        'https://dashboard.dietai.mederak.com',
-        'https://dashboard.dietai.pl',
-        'https://recommend-server.dietai.pl',
-    ],
-    // origin: process.env.ORIGIN || 'http://localhost:3000',
+    origin: corsOptions_1.corsOptions.origin,
     credentials: true,
 }));
 app.use((0, cookie_parser_1.default)());
-// app.use(express.raw({ type: '*/*' }));
-// app.use(express.json())
 app.use(express_1.default.json({
     verify: (req, res, buf) => {
         req.rawBody = buf;
     },
-})); //correct
+}));
 app.use(deserializeUser_1.default);
 app.use((0, response_time_1.default)((req, res, time) => {
     var _a;

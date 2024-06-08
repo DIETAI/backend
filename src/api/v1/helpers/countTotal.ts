@@ -1,9 +1,6 @@
 import { IProductDocument } from '../interfaces/products.interfaces';
 import { ITotal } from '../interfaces/total/totalCount.interfaces';
 
-// type IMacroType = "protein" | "fat" | "carbohydrates";
-// type IRoundValue = 0 | 1 | 2 | 3 | 4;
-
 interface ICountNutrientArgs {
   nutrientAmount: number;
   portion: number;
@@ -72,8 +69,7 @@ export const countTotal = ({ product, portion }: ICountTotalArgs) => {
         portion,
       }),
     },
-    //   animalProtein?: IMacrohydrate;
-    //   vegetableProtein?: IMacrohydrate;
+
     carbohydrateExchangers: 5,
     proteinFatExchangers: 5,
     kcal: countNutrient({

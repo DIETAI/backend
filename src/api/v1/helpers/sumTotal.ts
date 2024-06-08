@@ -5,16 +5,6 @@ interface ISumNutrientArgs {
   dinnerPortionProducts: IDinnerProductPortion[];
 }
 
-// const sumNutrients = ({ dinnerPortionProducts }: ISumNutrientArgs) => {
-//   const sum = dinnerPortionProducts.reduce(
-//     (acc, field) => acc + Number(field.total),
-//     0
-//   );
-
-//   const nutrientValue = (nutrientAmount * portion) / 100;
-//   return Math.round(nutrientValue * 1e2) / 1e2;
-// };
-
 const roundValue = (value: number) => {
   return Math.round(value * 1e2) / 1e2;
 };
@@ -94,8 +84,6 @@ export const sumTotal = ({ dinnerPortionProducts }: ISumNutrientArgs) => {
         )
       ),
     },
-    //   animalProtein?: IMacrohydrate;
-    //   vegetableProtein?: IMacrohydrate;
     carbohydrateExchangers: 5,
     proteinFatExchangers: 5,
     kcal: roundValue(

@@ -13,18 +13,11 @@ const deserializeUser = async (
     get(req, 'cookies.accessToken') ||
     get(req, 'headers.authorization', '').replace(/^Bearer\s/, '');
 
-  // console.log({ accessToken });
-
   const refreshToken =
     get(req, 'cookies.refreshToken') || get(req, 'headers.x-refresh');
 
-  // console.log({ refreshToken });
-
-  //przeniesc pod
   if (accessToken) {
     const { decoded, expired } = verifyJwt(accessToken, 'accessTokenPublicKey');
-
-    // console.log({ decoded });
 
     if (decoded) {
       res.locals.user = decoded;

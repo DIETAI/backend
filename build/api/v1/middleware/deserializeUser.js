@@ -16,13 +16,9 @@ const cookieOptions_1 = require("../utils/cookieOptions");
 const deserializeUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const accessToken = (0, lodash_1.get)(req, 'cookies.accessToken') ||
         (0, lodash_1.get)(req, 'headers.authorization', '').replace(/^Bearer\s/, '');
-    // console.log({ accessToken });
     const refreshToken = (0, lodash_1.get)(req, 'cookies.refreshToken') || (0, lodash_1.get)(req, 'headers.x-refresh');
-    // console.log({ refreshToken });
-    //przeniesc pod
     if (accessToken) {
         const { decoded, expired } = (0, jwt_utils_1.verifyJwt)(accessToken, 'accessTokenPublicKey');
-        // console.log({ decoded });
         if (decoded) {
             res.locals.user = decoded;
             return next();

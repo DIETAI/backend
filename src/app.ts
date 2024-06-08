@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import responseTime from 'response-time';
 import connect from './api/v1/utils/dbConnect';
@@ -14,36 +13,26 @@ import {
   restResponseTimeHistogram,
   startMetricsServer,
 } from './api/v1/utils/metrics';
-
-import { createStripePaymentWebhook } from './api/v1/controllers/transaction/transaction.webhook';
+import { corsOptions } from './api/v1/utils/corsOptions';
 
 const port = process.env.PORT || 1337;
 const app = express();
 
 app.use(
   cors({
-    origin: [
-      'http://localhost:3000',
-      'https://diet-ai-vaq5g.ondigitalocean.app',
-      'https://dashboard.dietai.mederak.com',
-      'https://dashboard.dietai.pl',
-      'https://recommend-server.dietai.pl',
-    ],
-    // origin: process.env.ORIGIN || 'http://localhost:3000',
+    origin: corsOptions.origin,
     credentials: true,
   })
 );
 
 app.use(cookieParser());
-// app.use(express.raw({ type: '*/*' }));
-// app.use(express.json())
 app.use(
   express.json({
     verify: (req, res, buf) => {
       req.rawBody = buf;
     },
   })
-); //correct
+);
 
 app.use(deserializeUser);
 

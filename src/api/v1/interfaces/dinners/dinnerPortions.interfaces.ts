@@ -1,13 +1,8 @@
 import mongoose from 'mongoose';
 import { IUserDocument } from '../user.interfaces';
-import { IProductDocument } from '../products.interfaces';
 import { IDinnerDocument } from './dinners.interfaces';
 import { IDinnerProductDocument } from './dinnerProducts.interfaces';
 import { ITotal } from '../total/totalCount.interfaces';
-
-// interface ITotal {
-//   kcal?: number;
-// }
 
 type IDinnerPortionType = 'default' | 'custom';
 

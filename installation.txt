@@ -16,4 +16,7 @@ docker run -p 1337:1337 dietai-backend
 docker tag dietai-backend gcr.io/dietai-372609/backend
 docker push gcr.io/dietai-372609/backend
 
-//https://www.youtube.com/watch?v=aUBq-oQFHr8&t=95s
+https://www.youtube.com/watch?v=aUBq-oQFHr8&t=95s
+
+Cookie:
+https://medium.com/swlh/working-with-cookies-and-creating-cookies-in-javascript-764eb95aa4a1

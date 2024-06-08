@@ -17,7 +17,6 @@ export interface ISubscriptionPlanInput {
   stripeId: string;
   name: 'test' | 'standard' | 'pro' | 'vip';
   role: 'admin' | 'patient' | 'dietetic' | 'personal';
-  // roles: ('admin' | 'patient' | 'dietetic' | 'personal')[];
   shortDescription?: string;
   description?: string;
   price: number;

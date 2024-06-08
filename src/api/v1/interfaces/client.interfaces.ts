@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { IUserDocument } from './user.interfaces';
-// import { IRoleDocument } from './roles.interfaces';
 
 type IDisease =
   | 'flatulence'

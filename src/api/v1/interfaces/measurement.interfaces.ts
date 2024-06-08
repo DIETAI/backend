@@ -9,14 +9,10 @@ export interface IMeasurementInput {
   name: string;
   date: Date;
   notes?: string;
+  images?: IAssetDocument['_id'][];
   weight: number;
   height: number;
-  // age: number;
-  // sex: 'male' | 'female';
-  // pal: number;
   bmi: number;
-  images?: IAssetDocument['_id'][];
-  //   bmi_type: 'niedowaga' | 'norma' | 'nadwaga' | 'otyłość';
   ppmMifflin: number;
   ppmHarris: number;
   cpm: number;

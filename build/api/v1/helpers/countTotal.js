@@ -59,8 +59,6 @@ const countTotal = ({ product, portion }) => {
                 portion,
             }),
         },
-        //   animalProtein?: IMacrohydrate;
-        //   vegetableProtein?: IMacrohydrate;
         carbohydrateExchangers: 5,
         proteinFatExchangers: 5,
         kcal: countNutrient({

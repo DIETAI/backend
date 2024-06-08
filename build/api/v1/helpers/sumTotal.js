@@ -1,14 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sumTotal = void 0;
-// const sumNutrients = ({ dinnerPortionProducts }: ISumNutrientArgs) => {
-//   const sum = dinnerPortionProducts.reduce(
-//     (acc, field) => acc + Number(field.total),
-//     0
-//   );
-//   const nutrientValue = (nutrientAmount * portion) / 100;
-//   return Math.round(nutrientValue * 1e2) / 1e2;
-// };
 const roundValue = (value) => {
     return Math.round(value * 1e2) / 1e2;
 };
@@ -35,8 +27,6 @@ const sumTotal = ({ dinnerPortionProducts }) => {
             gram: roundValue(dinnerPortionProducts.reduce((acc, field) => acc + Number(field.total.fiber.gram), 0)),
             kcal: roundValue(dinnerPortionProducts.reduce((acc, field) => acc + Number(field.total.fiber.kcal), 0)),
         },
-        //   animalProtein?: IMacrohydrate;
-        //   vegetableProtein?: IMacrohydrate;
         carbohydrateExchangers: 5,
         proteinFatExchangers: 5,
         kcal: roundValue(dinnerPortionProducts.reduce((acc, field) => acc + Number(field.total.kcal), 0)),
