@@ -32,5 +32,9 @@ const ClientSchema = new Schema({
 }, {
     timestamps: true,
 });
+ClientSchema.methods.getFullName = function getFullName() {
+    const client = this;
+    return client.name + ' ' + client.lastName;
+};
 const ClientModel = mongoose_1.default.model('Client', ClientSchema);
 exports.default = ClientModel;

@@ -49,9 +49,9 @@ export async function updateProductController(
     return res.sendStatus(404);
   }
 
-  if (String(product.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(product.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   const updatedProduct = await getAndUpdateProduct({ _id: productId }, update, {
     new: true,
@@ -74,18 +74,11 @@ export async function getProductController(
     return res.sendStatus(404);
   }
 
-  const productImage = await getAsset({ _id: product.image });
+  // if (String(product.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
-  if (String(product.user) !== userId) {
-    return res.sendStatus(403);
-  }
-
-  const productObj = {
-    ...product,
-    imageURL: productImage ? productImage.imageURL : undefined,
-  };
-
-  return res.send(productObj);
+  return res.send(product);
 }
 
 export async function getAllProductsController(req: Request, res: Response) {
@@ -111,9 +104,13 @@ export async function getProductsController(
   if (queryPage && itemsCount) {
     const page = parseInt(queryPage);
     const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
-    console.log({ skip });
+
     const countPromise = ProductModel.estimatedDocumentCount();
-    const productsPromise = ProductModel.find({ user: userId })
+    // const productsPromise = ProductModel.find({ user: userId })
+    const productsPromise = ProductModel.find()
+      .populate({
+        path: 'image',
+      })
       .limit(parseInt(itemsCount))
       .skip(skip);
 
@@ -122,27 +119,7 @@ export async function getProductsController(
       productsPromise,
     ]);
 
-    console.log({ productCounts: count });
-
-    const productsQuery = await Promise.all(
-      products.map(async (productDocument) => {
-        const product = productDocument.toObject();
-        if (!product.image) {
-          return { ...product, imageURL: undefined };
-        }
-
-        const productAsset = await getAsset({ _id: product.image });
-
-        if (!productAsset) {
-          return { ...product, imageURL: undefined };
-        }
-
-        return { ...product, imageURL: productAsset.imageURL };
-      })
-    );
-
     const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
-    console.log({ productsPageCount: pageCount });
 
     if (!count || !products) {
       return res.sendStatus(404);
@@ -153,11 +130,12 @@ export async function getProductsController(
         count,
         pageCount,
       },
-      products: productsQuery,
+      products,
     });
   }
 
-  const products = await getUserProducts({ user: userId });
+  // const products = await getUserProducts({ user: userId });
+  const products = await getUserProducts({});
 
   if (!products) {
     return res.sendStatus(404);
@@ -181,9 +159,9 @@ export async function deleteProductController(
     return res.sendStatus(404);
   }
 
-  if (String(product.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(product.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   await deleteProduct({ _id: productId });
 

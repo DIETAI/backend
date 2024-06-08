@@ -16,8 +16,10 @@ import {
   getAndUpdateDietDinner,
   getDietDinner,
   getDietDinners,
+  getDietDinnersWithTotal,
 } from '../../services/diet/dietDinner.service';
 
+import { getAndUpdateDietMeal } from '../../services/diet/dietMeal.service';
 import { getDiet } from '../../services/diet/diet.service';
 
 import { getDinnerPortion } from '../../services/dinner/dinnerPortion.service';
@@ -32,9 +34,18 @@ import {
   getDietMeal,
   getDietMeals,
 } from '../../services/diet/dietMeal.service';
-import { getDietDay, getDietDays } from '../../services/diet/dietDay.service';
+import {
+  getAndUpdateDietDay,
+  getDietDay,
+  getDietDays,
+} from '../../services/diet/dietDay.service';
 import { IDinnerPortionDocument } from '../../interfaces/dinners/dinnerPortions.interfaces';
 import { IDietMealDocument } from '../../interfaces/diet/dietMeal.interfaces';
+import {
+  getMealTotalProcent,
+  getTotal,
+  ITotal,
+} from '../../helpers/diet/getTotal';
 
 export async function createDietDinnerController(
   req: Request<{}, {}, CreateDietDinnerInput['body']>,
@@ -52,50 +63,53 @@ export async function createDietDinnerController(
     return res.sendStatus(404);
   }
 
-  // const dinnerPortion = await getDinnerPortion({
-  //   _id: dietDinner.dinnerPortionId,
-  // });
+  //remove
+  // dietEmitter.emit('dietDinner::created', 200, dietDinner);
 
-  // if (!dinnerPortion) {
-  //   return res.sendStatus(404);
-  // }
+  //update meal_total
+  const currentMealDietDinners = await getDietDinnersWithTotal({
+    dietMealId: dietDinner.dietMealId,
+  });
 
-  // const dinner = await getDinner({
-  //   _id: dinnerPortion.dinnerId,
-  // });
+  const dinnersTotal = currentMealDietDinners.map((dietDinner) => ({
+    total: dietDinner.dinnerPortionId.total as ITotal,
+  }));
 
-  dietEmitter.emit('dietDinner::created', 200, dietDinner);
+  const mealTotalValues = await getTotal(dinnersTotal);
 
-  // const dietDinnerPortionProducts = await Promise.all(
-  //   dinnerPortion.dinnerProducts.map(async (dinnerPortionProduct) => {
-  //     const dinnerProduct = await getDinnerProduct({
-  //       _id: dinnerPortionProduct.dinnerProductId,
-  //     });
-  //     const product = await getProduct({ _id: dinnerProduct?.productId });
+  const newMealTotal = {
+    ...mealTotalValues,
+    procent: getMealTotalProcent({
+      mealTotalKcal: mealTotalValues.kcal,
+      dayTotalKcal: 2000,
+    }),
+  };
 
-  //     return {
-  //       ...dinnerPortionProduct,
-  //       dinnerProduct: {
-  //         ...dinnerProduct,
-  //         product,
-  //       },
-  //     };
-  //   })
-  // );
+  const updatedMeal = await getAndUpdateDietMeal(
+    { _id: dietDinner.dietMealId },
+    { $set: { total: newMealTotal } },
+    { new: true }
+  );
 
-  // const dietDinnerQueryObj = {
-  //   ...dietDinner,
-  //   dinnerPortion: {
-  //     ...dinnerPortion,
-  //     dinner,
-  //     dinnerProducts: dietDinnerPortionProducts,
-  //   },
-  // }; //correct => przeniesc do get dietDinner
+  //update day total
+  const currentDayMealsTotal = await getDietMeals(
+    { dayId: dietDinner.dayId },
+    { select: 'total' }
+  );
 
-  console.log('send dinner to frontend');
+  const dayMealsTotal = currentDayMealsTotal.map((dayMeal) => ({
+    total: dayMeal.total as ITotal,
+  }));
+
+  const newDayTotal = await getTotal(dayMealsTotal);
+
+  const updatedDay = await getAndUpdateDietDay(
+    { _id: dietDinner.dayId },
+    { $set: { total: newDayTotal } },
+    { new: true }
+  );
 
   return res.send(dietDinner);
-  // return res.send(dietDinnerQueryObj);
 }
 
 export async function updateDietDinnerController(
@@ -126,7 +140,52 @@ export async function updateDietDinnerController(
     }
   );
 
-  dietEmitter.emit('dietDinner::created', 200, dietDinner);
+  //update meal_total
+  const currentMealDietDinners = await getDietDinnersWithTotal({
+    dietMealId: dietDinner.dietMealId,
+  });
+
+  const dinnersTotal = currentMealDietDinners.map((dietDinner) => ({
+    total: dietDinner.dinnerPortionId.total as ITotal,
+  }));
+
+  const mealTotalValues = await getTotal(dinnersTotal);
+
+  const newMealTotal = {
+    ...mealTotalValues,
+    procent: getMealTotalProcent({
+      mealTotalKcal: mealTotalValues.kcal,
+      dayTotalKcal: 2000,
+    }),
+  };
+
+  const updatedMeal = await getAndUpdateDietMeal(
+    { _id: dietDinner.dietMealId },
+    { $set: { total: newMealTotal } },
+    { new: true }
+  );
+
+  //update day total
+  const currentDayMealsTotal = await getDietMeals(
+    { dayId: dietDinner.dayId },
+    { select: 'total' }
+  );
+
+  const dayMealsTotal = currentDayMealsTotal.map((dayMeal) => ({
+    total: dayMeal.total as ITotal,
+  }));
+
+  const newDayTotal = await getTotal(dayMealsTotal);
+
+  const updatedDay = await getAndUpdateDietDay(
+    { _id: dietDinner.dayId },
+    { $set: { total: newDayTotal } },
+    { new: true }
+  );
+
+  // dietEmitter.emit('dietDinner::created', 200, dietDinner);
+
+  // console.log('Edytowano i wysłano posiłek: 200');
 
   return res.send(updatedDietDinner);
 }
@@ -475,7 +534,50 @@ export async function deleteDietDinnerController(
 
   await deleteDietDinner({ _id: dietDinnerId });
 
-  dietEmitter.emit('dietDinner::deleted', 200, dietDinner);
+  //update meal_total
+  const currentMealDietDinners = await getDietDinnersWithTotal({
+    dietMealId: dietDinner.dietMealId,
+  });
+
+  const dinnersTotal = currentMealDietDinners.map((dietDinner) => ({
+    total: dietDinner.dinnerPortionId.total as ITotal,
+  }));
+
+  const mealTotalValues = await getTotal(dinnersTotal);
+
+  const newMealTotal = {
+    ...mealTotalValues,
+    procent: getMealTotalProcent({
+      mealTotalKcal: mealTotalValues.kcal,
+      dayTotalKcal: 2000,
+    }),
+  };
+
+  const updatedMeal = await getAndUpdateDietMeal(
+    { _id: dietDinner.dietMealId },
+    { $set: { total: newMealTotal } },
+    { new: true }
+  );
+
+  //update day total
+  const currentDayMealsTotal = await getDietMeals(
+    { dayId: dietDinner.dayId },
+    { select: 'total' }
+  );
+
+  const dayMealsTotal = currentDayMealsTotal.map((dayMeal) => ({
+    total: dayMeal.total as ITotal,
+  }));
+
+  const newDayTotal = await getTotal(dayMealsTotal);
+
+  const updatedDay = await getAndUpdateDietDay(
+    { _id: dietDinner.dayId },
+    { $set: { total: newDayTotal } },
+    { new: true }
+  );
+
+  // dietEmitter.emit('dietDinner::deleted', 200, dietDinner);
 
   return res.sendStatus(200);
 }

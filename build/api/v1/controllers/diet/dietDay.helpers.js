@@ -5,7 +5,6 @@ const roundValue = (value) => {
     return Math.round(value * 1e2) / 1e2;
 };
 const sumDietDayMealsTotal = ({ dietMeals }) => {
-    console.log(dietMeals);
     const kcal = roundValue(dietMeals.reduce((acc, field) => acc + Number(field.total.kcal), 0));
     //protein
     const proteinGram = roundValue(dietMeals.reduce((acc, field) => acc + Number(field.total.protein.gram), 0));

@@ -23,7 +23,7 @@ function createUserController(req, res) {
             const existingUserEmail = yield (0, user_v1_service_1.validateEmail)(email);
             if (existingUserEmail) {
                 return res
-                    .status(400)
+                    .status(409)
                     .json({ msg: 'There is already a user with this email address' });
             }
             const user = yield (0, user_v1_service_1.createUser)(req.body);
@@ -32,7 +32,6 @@ function createUserController(req, res) {
                     .status(500)
                     .json({ msg: 'A server error occurred during registration' });
             }
-            console.log({ createdUser: user });
             // create a session
             // const session = await createSession(user._id, req.get('user-agent') || '');
             // if (!session) {
@@ -64,23 +63,27 @@ function createUserController(req, res) {
         catch (e) {
             logger_1.default.error(e);
             console.log(e);
-            return res.status(409).send(e.message);
+            return res.status(404).send(e.message);
         }
     });
 }
 exports.createUserController = createUserController;
 function getUserController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('pobieranie danych użytkownika');
         const userId = res.locals.user._id;
-        console.log({ userId });
         const user = yield (0, user_v1_service_1.getUser)({ _id: userId });
-        console.log({ host: req.hostname });
-        console.log({ user });
         if (!user) {
             return res.sendStatus(404);
         }
-        return res.send(user);
+        const userData = {
+            name: user.name,
+            lastName: user.lastName,
+            fullName: user.getFullName(),
+            email: user.email,
+            emailVerified: user.emailVerified,
+            avatar: user.avatar,
+        };
+        return res.send(userData);
     });
 }
 exports.getUserController = getUserController;
@@ -88,17 +91,25 @@ function updateUserController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const update = req.body;
         const userId = res.locals.user._id;
-        const user = (yield (0, user_v1_service_1.getUser)({ _id: userId }));
+        const user = yield (0, user_v1_service_1.getUser)({ _id: userId });
         if (!user) {
             return res.sendStatus(404);
         }
-        const userData = user.toObject();
-        const newUserData = Object.assign(Object.assign({}, userData), { photoURL: update.photoURL, name: update.name, lastName: update.lastName, fullName: update.fullName });
-        console.log({ newUserData });
-        const updatedUser = yield (0, user_v1_service_1.getAndUpdateUser)({ _id: userId }, newUserData, {
+        const updatedUser = yield (0, user_v1_service_1.getAndUpdateUser)({ _id: userId }, update, {
             new: true,
         });
-        return res.send(updatedUser);
+        if (!updatedUser) {
+            return res.sendStatus(404);
+        }
+        const updatedUserData = {
+            name: updatedUser.name,
+            lastName: updatedUser.lastName,
+            fullName: updatedUser.getFullName(),
+            email: updatedUser.email,
+            emailVerified: updatedUser.emailVerified,
+            avatar: updatedUser.avatar,
+        };
+        return res.send(updatedUserData);
     });
 }
 exports.updateUserController = updateUserController;

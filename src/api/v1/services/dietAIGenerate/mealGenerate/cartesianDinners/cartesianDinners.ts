@@ -12,7 +12,6 @@ export const cartesianDinners = (
   const result: Array<ICartesianResult> = [];
   const max = portions.length - 1;
   let loop = 0;
-  console.log(loop);
 
   const helper = (
     arr: Array<IMealDinnersPortionsMacro['dinnerProductsPortions'][0]>,
@@ -23,17 +22,16 @@ export const cartesianDinners = (
       a.push(portions[i][j]);
 
       if (i == max) {
-        // if (result.length < 100000) {
-        //   result.push(a);
-        // }
-        //meal establishments uwzględnić przedziały
-        //przy przedziałach nie trzeba tu liczyć missing procent tylko minMissingProcent  => przykład => dania
-
         loop = loop + 1;
 
         if (result.length === 100000) {
           return;
         }
+
+        //test
+        // if (loop === maxCartesianGroups) {
+        //   return;
+        // }
 
         const macroTotalCount = cartesianGroupTotalCount(a); //correct
 
@@ -54,17 +52,6 @@ export const cartesianDinners = (
         ) {
           return result.push(cartesianProductGroup);
         }
-
-        // result.push(cartesianProductGroup);
-
-        //poprawić (może brakować grup)
-
-        // if (loop === 1000000) {
-        //   return;
-        // }
-
-        //przy randomDinner obliczyć najwiekszą mozliwą porcje i najmniejszą jesli nie miesci sie w przedziale wylosowac ponownie
-        // result.push(cartesianProductGroup);
       } else {
         helper(a, i + 1);
       }

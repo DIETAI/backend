@@ -19,6 +19,10 @@ const cartesianDinners = (currentProcent, mealEstablishment, dietEstablishment, 
                 if (result.length === 100000) {
                     return;
                 }
+                // //test
+                // if (loop === 1000) {
+                //   return;
+                // }
                 const macroTotalCount = cartesianGroupTotalCount(a); //correct
                 const missingProcentCount = (0, exports.cartesianGroupMissingProcentCount)(macroTotalCount, mealEstablishment, dietEstablishment);
                 const cartesianProductGroup = {

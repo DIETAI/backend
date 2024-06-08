@@ -40,7 +40,15 @@ function getDinner(query, options = { lean: true }) {
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const result = yield dinner_model_1.default.findOne(query, {}, options);
+            const result = yield dinner_model_1.default.findOne(query, {}, options)
+                .populate({
+                path: 'image',
+                select: ['_id', 'imageURL'],
+            })
+                .populate({
+                path: 'gallery',
+                select: ['_id', 'imageURL'],
+            });
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }
@@ -58,7 +66,15 @@ function getDinners(query, options = { lean: true }) {
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const result = yield dinner_model_1.default.find(query, {}, options);
+            const result = yield dinner_model_1.default.find(query, {}, options)
+                .populate({
+                path: 'image',
+                select: ['_id', 'imageURL'],
+            })
+                .populate({
+                path: 'gallery',
+                select: ['_id', 'imageURL'],
+            });
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }

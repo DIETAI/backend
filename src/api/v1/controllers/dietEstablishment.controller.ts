@@ -83,9 +83,12 @@ export async function getDietEstablishmentController(
     return res.sendStatus(403);
   }
 
+  console.log({ dietEstablishment });
+
   return res.send(dietEstablishment);
 }
 
+//do usunięcia
 export async function getDietEstablishmentQueryController(
   req: Request<GetDietEstablishmentInput['params']>,
   res: Response
@@ -167,6 +170,18 @@ export async function getDietEstablishmentsController(
     const dietEstablishmentsPromise = DietEstablishmentModel.find({
       user: userId,
     })
+      .populate({
+        path: 'client',
+        select: ['_id', 'name', 'lastName'],
+      })
+      .populate({
+        path: 'dietKind',
+        select: ['_id', 'name', 'type'],
+      })
+      .populate({
+        path: 'measurementId',
+        select: ['_id', 'name', 'cpm'],
+      })
       .limit(parseInt(itemsCount))
       .skip(skip);
 
@@ -175,23 +190,9 @@ export async function getDietEstablishmentsController(
       dietEstablishmentsPromise,
     ]);
 
-    const dietEstablishmentsQuery = await Promise.all(
-      dietEstablishments.map(async (dietEstablishmentDocument) => {
-        const dietEstablishment = dietEstablishmentDocument.toObject();
-        const client = await getClient({ _id: dietEstablishment.client });
-
-        return {
-          ...dietEstablishment,
-          patient: {
-            fullName: client?.name + ' ' + client?.lastName,
-          },
-        };
-      })
-    );
-
     const pageCount = count / parseInt(itemsCount); // 400 items / 20 = 20
 
-    if (!count || !dietEstablishmentsQuery) {
+    if (!count || !dietEstablishments) {
       return res.sendStatus(404);
     }
 
@@ -200,7 +201,7 @@ export async function getDietEstablishmentsController(
         count,
         pageCount,
       },
-      dietEstablishments: dietEstablishmentsQuery,
+      dietEstablishments,
     });
   }
 
@@ -210,26 +211,7 @@ export async function getDietEstablishmentsController(
     return res.sendStatus(404);
   }
 
-  const dietEstablishmentQuery = await Promise.all(
-    dietEstablishments.map(async (dietEstablishmentDocument) => {
-      // const dietEstablishment = dietEstablishmentDocument.toObject();
-      const dietEstablishment = dietEstablishmentDocument;
-      const client = await getClient({ _id: dietEstablishment.client });
-
-      return {
-        ...dietEstablishment,
-        patient: {
-          fullName: client?.name + ' ' + client?.lastName,
-        },
-      };
-    })
-  );
-
-  if (!dietEstablishmentQuery) {
-    return res.sendStatus(404);
-  }
-
-  return res.send(dietEstablishmentQuery);
+  return res.send(dietEstablishments);
 }
 
 export async function deleteDietEstablishmentController(

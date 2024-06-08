@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateEmail = exports.getAndUpdateUser = exports.getUser = exports.createUser = void 0;
 const user_model_1 = __importDefault(require("../models/user.model"));
 const metrics_1 = require("../utils/metrics");
-const role_model_1 = __importDefault(require("../models/role.model"));
 function createUser(input) {
     return __awaiter(this, void 0, void 0, function* () {
         const metricsLabels = {
@@ -41,21 +40,11 @@ function getUser(query) {
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const user = yield user_model_1.default.findOne(query);
-            if (!(user === null || user === void 0 ? void 0 : user.role)) {
-                timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
-                return user;
-            }
-            const userRole = yield role_model_1.default.findOne(user.role);
-            if (!userRole) {
-                timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
-                return user;
-            }
+            const user = yield user_model_1.default.findOne(query).populate({
+                path: 'avatar',
+            });
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
-            return Object.assign(Object.assign({}, user), { role: {
-                    id: userRole._id,
-                    name: userRole.type,
-                } });
+            return user;
         }
         catch (e) {
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'false' }));

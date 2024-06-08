@@ -160,9 +160,9 @@ export async function updateDinnerProductController(
     return res.sendStatus(404);
   }
 
-  if (String(dinnerProduct.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(dinnerProduct.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   const updatedDinnerProduct = await getAndUpdateDinnerProduct(
     { _id: dinnerProductId },
@@ -189,13 +189,14 @@ export async function getDinnerProductController(
     return res.sendStatus(404);
   }
 
-  if (String(dinnerProduct.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(dinnerProduct.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   return res.send(dinnerProduct);
 }
 
+//usunąć
 export async function getDinnerProductQueryController(
   req: Request<GetDinnerProductInput['params']>,
   res: Response
@@ -210,9 +211,9 @@ export async function getDinnerProductQueryController(
     return res.sendStatus(404);
   }
 
-  if (String(dinnerProduct.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(dinnerProduct.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   const product = await getProduct({ _id: dinnerProduct.productId });
 
@@ -228,6 +229,7 @@ export async function getDinnerProductQueryController(
   return res.send(dinnerProductQueryObj);
 }
 
+//usunąć
 export async function getDinnerProductsPopulateController(
   req: Request,
   res: Response
@@ -242,6 +244,7 @@ export async function getDinnerProductsPopulateController(
   return res.send(dinnerProducts);
 }
 
+//usunąć
 export async function getAllDinnerProductsController(
   req: Request,
   res: Response
@@ -276,7 +279,7 @@ export async function getDinnerProductsController(
   const userId = res.locals.user._id;
   const dinnerId = req.params.dinnerId;
   const dinnerProducts = await getDinnerProducts({
-    user: userId,
+    // user: userId,
     dinnerId: dinnerId,
   });
 
@@ -322,7 +325,7 @@ export async function getDinnerProductsQueryController(
   const userId = res.locals.user._id;
   const dinnerId = req.params.dinnerId;
   const dinnerProducts = await getDinnerProducts({
-    user: userId,
+    // user: userId,
     dinnerId: dinnerId,
   });
 
@@ -368,18 +371,18 @@ export async function deleteDinnerProductController(
     return res.sendStatus(404);
   }
 
-  if (String(dinnerProduct.user) !== userId) {
-    return res.sendStatus(403);
-  }
+  // if (String(dinnerProduct.user) !== userId) {
+  //   return res.sendStatus(403);
+  // }
 
   //delete portions
   const dinnerPortions = getDinnerPortions({
-    user: userId,
+    // user: userId,
     dinnerId: dinnerProduct.dinnerId,
   });
 
   const dinnerProducts = getDinnerProducts({
-    user: userId,
+    // user: userId,
     dinnerId: dinnerProduct.dinnerId,
   });
 

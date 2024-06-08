@@ -6,9 +6,6 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema<IUserDocument>(
   {
-    // uid: { type: String, required: true },
-    // providerId: { type: String, required: true },
-    fullName: { type: String, required: true },
     name: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -16,11 +13,7 @@ const UserSchema = new Schema<IUserDocument>(
     emailVerified: { type: Boolean, default: false },
     role: { type: mongoose.Schema.Types.ObjectId, ref: 'Role' },
     phoneNumber: { type: String },
-    photoURL: {
-      type: String,
-      default:
-        'https://upload.wikimedia.org/wikipedia/commons/7/7c/User_font_awesome.svg',
-    },
+    avatar: { type: mongoose.Schema.Types.ObjectId, ref: 'Asset' },
   },
   {
     timestamps: true,
@@ -49,6 +42,11 @@ UserSchema.methods.comparePassword = async function (
   const user = this as IUserDocument;
 
   return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
+};
+
+UserSchema.methods.getFullName = function getFullName() {
+  const user = this as IUserDocument;
+  return user.name + ' ' + user.lastName;
 };
 
 const UserModel = mongoose.model<IUserDocument>('User', UserSchema);

@@ -40,7 +40,9 @@ function getClient(query, options = { lean: true }) {
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const result = yield client_model_1.default.findOne(query, {}, options);
+            const result = yield client_model_1.default.findOne(query, {}, options).populate({
+                path: 'image',
+            }); //przy podaniu 2 i 3 argumentu błąd => nie można odczytać fullName (przy lean = true)
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }
@@ -58,7 +60,9 @@ function getClients(query, options = { lean: true }) {
         };
         const timer = metrics_1.databaseResponseTimeHistogram.startTimer();
         try {
-            const result = yield client_model_1.default.find(query, {}, options);
+            const result = yield client_model_1.default.find(query, {}, options).populate({
+                path: 'image',
+            });
             timer(Object.assign(Object.assign({}, metricsLabels), { success: 'true' }));
             return result;
         }

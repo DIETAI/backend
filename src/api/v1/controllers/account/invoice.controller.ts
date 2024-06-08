@@ -3,7 +3,6 @@ import {
   CreateInvoiceInput,
   UpdateInvoiceInput,
   DeleteInvoiceInput,
-  GetInvoiceInput,
 } from '../../schema/account/invoice.schema';
 import {
   createInvoice,
@@ -56,15 +55,14 @@ export async function updateInvoiceController(
   return res.send(updatedInvoice);
 }
 
-export async function getInvoiceController(
-  req: Request<GetInvoiceInput['params']>,
-  res: Response
-) {
+export async function getInvoiceController(req: Request, res: Response) {
   const userId = res.locals.user._id;
-  const invoiceId = req.params.invoiceId;
+
   const invoice = await getInvoice({
-    _id: invoiceId,
+    user: userId,
   });
+
+  console.log(invoice);
 
   if (!invoice) {
     return res.sendStatus(404);
@@ -75,17 +73,6 @@ export async function getInvoiceController(
   }
 
   return res.send(invoice);
-}
-
-export async function getInvoicesController(req: Request, res: Response) {
-  const userId = res.locals.user._id;
-  const invoices = await getInvoices({ user: userId });
-
-  if (!invoices) {
-    return res.sendStatus(404);
-  }
-
-  return res.send(invoices);
 }
 
 export async function deleteInvoiceController(

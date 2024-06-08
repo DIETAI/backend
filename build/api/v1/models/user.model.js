@@ -16,9 +16,6 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const Schema = mongoose_1.default.Schema;
 const UserSchema = new Schema({
-    // uid: { type: String, required: true },
-    // providerId: { type: String, required: true },
-    fullName: { type: String, required: true },
     name: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -26,10 +23,7 @@ const UserSchema = new Schema({
     emailVerified: { type: Boolean, default: false },
     role: { type: mongoose_1.default.Schema.Types.ObjectId, ref: 'Role' },
     phoneNumber: { type: String },
-    photoURL: {
-        type: String,
-        default: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/User_font_awesome.svg',
-    },
+    avatar: { type: mongoose_1.default.Schema.Types.ObjectId, ref: 'Asset' },
 }, {
     timestamps: true,
 });
@@ -50,6 +44,10 @@ UserSchema.methods.comparePassword = function (candidatePassword) {
         const user = this;
         return bcrypt_1.default.compare(candidatePassword, user.password).catch((e) => false);
     });
+};
+UserSchema.methods.getFullName = function getFullName() {
+    const user = this;
+    return user.name + ' ' + user.lastName;
 };
 const UserModel = mongoose_1.default.model('User', UserSchema);
 exports.default = UserModel;

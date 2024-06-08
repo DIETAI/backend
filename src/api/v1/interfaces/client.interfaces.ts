@@ -41,4 +41,5 @@ export interface IClientInput {
 export interface IClientDocument extends IClientInput, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
+  getFullName(): string;
 }

@@ -34,7 +34,14 @@ export async function getDinnerPortion(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await DinnerPortionModel.findOne(query, {}, options);
+    const result = await DinnerPortionModel.findOne(
+      query,
+      {},
+      options
+    ).populate({
+      path: 'dinnerProducts.dinnerProductId',
+      populate: { path: 'productId', populate: { path: 'image' } },
+    });
     timer({ ...metricsLabels, success: 'true' });
     return result;
   } catch (e) {
@@ -55,7 +62,11 @@ export async function getDinnerPortions(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await DinnerPortionModel.find(query, {}, options);
+    const result = await DinnerPortionModel.find(query, {}, options).populate({
+      path: 'dinnerProducts.dinnerProductId',
+      populate: { path: 'productId', populate: { path: 'image' } },
+    });
+
     timer({ ...metricsLabels, success: 'true' });
     return result;
   } catch (e) {

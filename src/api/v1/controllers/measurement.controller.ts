@@ -79,6 +79,7 @@ export async function getMeasurementController(
   return res.send(measurement);
 }
 
+//do usunięcia
 export async function getMeasurementQueryController(
   req: Request<GetMeasurementInput['params']>,
   res: Response
@@ -129,10 +130,17 @@ export async function getMeasurementsController(
   if (queryPage && itemsCount) {
     const page = parseInt(queryPage);
     const skip = (page - 1) * parseInt(itemsCount); // 1 * 20 = 20
-    console.log({ skip });
 
     const countPromise = MeasurementModel.estimatedDocumentCount();
     const measurementsPromise = MeasurementModel.find({ user: userId })
+      .populate({
+        path: 'client',
+        select: ['_id', 'name', 'lastName'],
+      })
+      .populate({
+        path: 'images',
+        select: ['_id', 'imageURL'],
+      })
       .limit(parseInt(itemsCount))
       .skip(skip);
 
@@ -147,27 +155,12 @@ export async function getMeasurementsController(
       return res.sendStatus(404);
     }
 
-    const measurementsQuery = await Promise.all(
-      measurements.map(async (measurement) => {
-        const client = await getClient({ _id: measurement.client });
-
-        return {
-          ...measurement.toObject(),
-          measurementClient: {
-            name: client?.name,
-            lastName: client?.lastName,
-            fullName: client?.name + ' ' + client?.lastName,
-          },
-        };
-      })
-    );
-
     return res.send({
       pagination: {
         count,
         pageCount,
       },
-      measurements: measurementsQuery,
+      measurements,
     });
   }
 

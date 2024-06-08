@@ -10,8 +10,6 @@ interface ISumTotal {
 }
 
 export const sumDietDayMealsTotal = ({ dietMeals }: ISumTotal) => {
-  console.log(dietMeals);
-
   const kcal = roundValue(
     dietMeals.reduce((acc, field) => acc + Number(field.total.kcal), 0)
   );
